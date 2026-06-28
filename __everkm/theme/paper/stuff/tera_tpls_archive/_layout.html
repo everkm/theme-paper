@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-ajax-element="title">{% block page_title %}{% endblock page_title %}{{ __config.site.name }}</title>
+  <meta name="description" content="{%block page_description%}{%endblock page_description%}" />
+  <meta name="keywords" content="{%block page_keywords%}{%endblock page_keywords%}" />
+  <meta name="generator" content="everkm-publish@v{{ __everkm_publish_version }}" />
+  <meta name="theme" content="{{__theme_name}}@{{ __theme_version }}" />
+  {% if __config.custom_css %}
+  <link rel="stylesheet" href="{{ asset_base_url(url=__config.custom_css) }}">
+  {% endif %}
+  {% if __config.theme_color %}
+  <meta name="theme-color" content="{{__config.theme_color}}">
+  {% endif %}
+  <script>
+    window.__everkm_lang = "{{ __lang | default(value='') }}";
+    window.__everkm_base_url = "{{ base_url() ~ '/' | safe }}";
+  </script>
+  {{asset(type="css", section="youlog")}}
+  {{asset(type="js", section="youlog")}}
+  {{asset(type="css", section="plugin-in-search")}}
+  {{asset(type="js", section="plugin-in-search")}}
+  <script src="{{asset_base_url()}}/assets/alpinejs@3.14.9.js" defer></script>
+</head>
+
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+  {% block content %}{% endblock %}
+</body>
+
+</html> 
