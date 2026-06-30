@@ -6,3 +6,36 @@ repository: https://github.com/everkm/theme-paper
 demo: https://paper.theme.everkm.com/
 
 default_template: post
+
+config:
+  site:
+    name: Paper Theme
+    description: A minimal, responsive blog theme migrated from Astro Paper.
+    author: Everkm
+    lang: en
+    timezone: UTC
+
+  code_highlight:
+    server: true
+
+  home: '[[home]]'
+  about: '[[about]]'
+
+  posts:
+    per_page: 4
+    per_index: 4
+    featured_tag: featured
+
+  features:
+    light_and_dark_mode: true
+    show_archives: true
+    show_back_button: true
+    search: pagefind
+    view_transitions: true
+    edit_post:
+      enabled: false
+
+folders:
+  "/":
+    url_slug: posts
+    url_id_suffix: true
