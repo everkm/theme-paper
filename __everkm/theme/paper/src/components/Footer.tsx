@@ -16,7 +16,7 @@ export const Footer: Component<FooterProps> = (props) => {
 
   return (
     <footer class={`app-layout ${props.noMarginTop ? "" : "mt-auto"}`}>
-      <div class="border-border flex flex-col items-center justify-between border-t py-6 sm:flex-row-reverse sm:py-4">
+      <div class="flex flex-col items-center justify-between border-t border-muted py-6 sm:flex-row-reverse sm:py-4">
         <Socials ctx={props.ctx} socials={props.config.socials ?? []} />
         <div class="my-2 flex flex-col items-center whitespace-nowrap sm:flex-row">
           <span>

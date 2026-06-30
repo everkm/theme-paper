@@ -4,10 +4,11 @@ import {
   installMobileNav,
 } from "./clientMounts";
 import { carryThemeColorTo, installTheme } from "./theme";
+import { installFootnoteBackButton } from "./footnote";
 import { updateActiveNav } from "./activeNav";
 import { syncBackUrlFromPage, updateBackButton } from "./backButton";
 
-const PAPER_PAGE_SWAP = "paper:page-swap";
+import { PAPER_PAGE_SWAP } from "./events";
 
 function shouldIntercept(anchor: HTMLAnchorElement): boolean {
   if (anchor.target === "_blank") return false;
@@ -150,6 +151,7 @@ export function bootClient(): void {
   installMobileNav();
   updateActiveNav();
   mountClientBlocks();
+  installFootnoteBackButton("#article");
   installViewTransitions();
   syncBackUrlFromPage();
   updateBackButton();

@@ -13,6 +13,7 @@
 | 0.1 | 260628 | 初稿：基于 astro-paper → theme-paper 迁移讨论抽象通用提示词 |
 | 0.2 | 260628 | 补充：虚拟模板页 fallback、分页 URL 与 JsRender compName 归一化 |
 | 0.3 | 260628 | home 虚拟 index.html + home.md；default_template 详情；featured tag；客户端交互块与 VT |
+| 0.4 | 260630 | 补充 theme-paper 实践：服务端代码高亮、定义列表/脚注样式与 youlog 对齐、browser 启动链排错 |
 
 ---
 
@@ -176,6 +177,65 @@ JsRender `renderPage` 须 **归一化 compName**（去掉 `.p{N}`、`index.html`
 - 源框架 Content Collections / `getCollection` — 改用 `everkm.posts`
 - RSS / sitemap — 查 ekmp 是否内置，否则单独脚本
 
+### J. Markdown 正文样式与 everkm-markdown 扩展（参考 theme-youlog `markdown2.css`）
+
+everkm-publish 渲染的正文 HTML **不是** Shiki `.astro-code`，而是带语义 class 的 DOM（脚注、定义列表、syntect 代码块等）。迁移时须对照 **参考框架** 的 `markdown2.css` + 客户端 widget，而非仅移植源模板的 prose 样式。
+
+#### J.1 服务端代码高亮（`config.code_highlight.server: true`）
+
+| 项 | 做法 |
+|----|------|
+| 引擎 | ekmp 用 syntect 给 `pre > code` 内 span 打 token class（如 `.keyword`） |
+| 主题 CSS | 从 `everkm-publish/highlight-packages/themes/` 取 **light + dark** 两套 syntect 导出 CSS |
+| 合并 | 脚本生成 `code-highlight.css`：`:root/[data-theme=light]` 与 `[data-theme=dark]` 分包，选择器加 scope `.app-prose pre:not(.astro-code)`（避免污染页面、不与 Shiki 冲突） |
+| 构建 | `make code-highlight-build LIGHT=... DARK=...` 或 `pnpm run code-highlight:build` |
+| 打入主 CSS | `@import "./code-highlight.css"` 于 `global.css`（不必像 yilog 单独 `code-highlight` manifest section） |
+| typography 注意 | `pre:not(.astro-code)` 勿用 `bg-muted` / `text-foreground` 盖掉 token 色；行内 `` `code` `` 单独样式 |
+
+两套高亮分工：**Shiki** → `.astro-code`（若源模板构建期有）；**syntect** → 普通 `pre > code`。
+
+#### J.2 定义列表（GFM Definition List）
+
+- HTML：`<dl><dt>…</dt><dd>…</dd></dl>`（everkm-markdown 输出）
+- **内容**：术语与 `:` 定义行之间 **不能有空行**，否则解析成两个 `<p>` 而非 `<dl>`
+- **样式**：参考 `markdown2.css` §Definition List — `dt` 加粗、`dd` 缩进/左边框；作用域 `.app-prose`
+
+#### J.3 脚注（everkm-markdown）
+
+**HTML 契约**（与 youlog 一致）：
+
+```html
+<sup class="footnote-reference"><a href="#slugify">1</a></sup>
+<hr class="footnote-definitions-separator" />
+<div class="footnote-definition" id="slugify">
+  <span class="footnote-definition-label">1</span>
+  <p>…</p>
+</div>
+```
+
+**CSS**（对齐 `theme-youlog/.../markdown2.css`）：
+
+- `.footnote-definition` 建议 **`display: grid; grid-template-columns: auto 1fr`**（比 flex 稳：SSR 在 `</span>` 与 `<p>` 间常有换行文本节点，flex 会竖排错位）
+- `.footnote-definition > p { margin: 0 !important }` 覆盖 `@tailwindcss/typography` 默认段落边距
+- `hr.footnote-definitions-separator` 分隔线勿用暗色 `--border`（paper 暗色主题为 accent 色）；用 `muted-foreground` 半透明
+- 最后一条脚注加 `margin-bottom`，避免与 footer `border-t` 重叠
+- 脚注编号 label 色可与 youlog 一致用 `accent`；正文用 `muted-foreground`
+
+**客户端返回按钮**（移植 `youlog_lib/widgets/footnote/index.ts`）：
+
+- 容器：`#article`（youlog 为 `#article-main` 内的 `.markdown-body`）
+- 查找引用：`.footnote-reference a[href="#{id}"]`（比裸 `a[href=…]` 更准）
+- 按钮挂到 **`definition.lastElementChild`（通常是 `<p>`）** 末尾，字符 `⤴`，`margin-left: 0.8em`
+- 生命周期：`DOMContentLoaded` / 立即执行 + 换页事件（paper：`paper:page-swap`；youlog：`page-loaded`）
+- **仅当正文存在对应 `[^id]` 引用时** 才注入按钮（底部仅有 `[^id]:` 定义、无正文引用则无返回目标）
+- 初始化前 **删除** `.footnote-definition` 内仅含空白的文本子节点
+
+**browser 启动链（易踩坑）**：
+
+- `src/entries/browser.ts` → `bootClient()`；任一步 `ReferenceError` 会导致后续 widget **全部不执行**（脚注、VT、主题切换等）
+- 修改 `viewTransitions.ts` 等入口时 **勿漏 import**（曾误删 `installTheme` 导致脚注脚本从未运行）
+- 排错：浏览器控制台看 `pageerror`；Playwright/手动查 `document.querySelectorAll('.footnote-back-button').length`
+
 ## 输出格式要求
 
 1. **先方案、后编码**：除非用户明确说「开始编码」，否则只讨论方案。
@@ -205,6 +265,8 @@ JsRender `renderPage` 须 **归一化 compName**（去掉 `.p{N}`、`index.html`
 | C8 | 先出 km 文档再编码 | ✅ | |
 | C9 | JsRender 与 Client 交互块分离（search 等 mount） | ✅ | |
 | C10 | home 虚拟 index.html + home.md Hero | ✅ | |
+| C11 | `code_highlight.server` 时 syntect 主题 CSS 并入主 bundle | 视情况 | |
+| C12 | 定义列表/脚注样式对齐参考框架 `markdown2.css` + footnote widget | 视情况 | |
 
 ---
 
@@ -222,6 +284,9 @@ JsRender `renderPage` 须 **归一化 compName**（去掉 `.p{N}`、`index.html`
 - [ ] **R8** MVP 边界与用户确认一致
 - [ ] **R9** 客户端交互块（Pagefind 等）有 mount/teardown，与 VT 换页配合
 - [ ] **R10** home 为虚拟页；Hero 读 `home.md`；根目录无 `index.md`
+- [ ] **R11** 启用 `code_highlight.server` 时，light/dark syntect CSS 已 scope 进 `.app-prose pre:not(.astro-code)`，且不与 Shiki/行内 code 冲突
+- [ ] **R12** 脚注/定义列表在 `everkm-markdown` 示例页目测通过（横排对齐、分隔线颜色、有引用处显示 `⤴`）
+- [ ] **R13** `bootClient()` 无控制台报错；换页后 client widget 重新挂载
 
 ---
 
@@ -236,3 +301,37 @@ JsRender `renderPage` 须 **归一化 compName**（去掉 `.p{N}`、`index.html`
 | `{{TARGET_THEME_PATH}}` | `theme-paper/__everkm/theme/paper` |
 | `{{REFERENCE_THEME_PATH}}` | `theme-youlog/__everkm/theme/youlog` |
 | `{{EKMP_DOCS_PATH}}` | `everkm-pages/publish-2026/zh` |
+
+---
+
+## 6. 附录：theme-paper 迁移实践经验（260630）
+
+> 摘自 theme-paper 落地过程，供后续主题迁移直接复用。
+
+### 6.1 文件清单
+
+| 能力 | 路径 / 命令 |
+|------|-------------|
+| syntect 主题源 | `src/assets/css/code_themes/*.css`（自 ekmp `highlight-packages/themes` 拷贝） |
+| 合并 light/dark | `scripts/build-code-highlight.mjs` → `src/assets/css/code-highlight.css` |
+| Makefile | `make code-highlight-build CODE_HIGHLIGHT_LIGHT=... CODE_HIGHLIGHT_DARK=...` |
+| 配置 | `everkm-theme.yaml` → `config.code_highlight.server: true` |
+| 正文排版 | `src/assets/css/typography.css` → `.app-prose` 内 dl/footnote |
+| 脚注 widget | `src/lib/footnote.ts`（自 youlog 移植，换容器与换页事件） |
+| 入口 | `bootClient()` 内 `installFootnoteBackButton("#article")` |
+
+### 6.2 验收页面
+
+- 使用含 **定义列表、脚注、多语言代码块** 的 demo 文（如 `posts/everkm-markdown.md`）
+- 本地 `make work`（`__everkm` 级）预览后硬刷新，确认 JS bundle hash 已更新
+
+### 6.3 常见故障
+
+| 现象 | 原因 | 处理 |
+|------|------|------|
+| 代码块无着色 | 未引 `code-highlight.css` 或 `server: false` | 检查 yaml + `global.css` import |
+| 代码块单色 + 灰底 | typography 覆盖了 syntect 背景/字色 | 去掉 `pre:not(.astro-code)` 上 `text-foreground`/`bg-muted` |
+| 定义列表标题与解释分成两段 | Markdown 术语与 `:` 行之间有空行 | 改正文；必要时补 `dl` 样式 |
+| 脚注 `[n]` 与正文上下叠放 | flex + SSR 空白文本节点；或 prose `p` 大 margin | 改 grid；`p { margin: 0 !important }`；JS 删空白节点 |
+| 脚注无 `⤴` | 正文无 `[^id]` 引用，或 `bootClient` 中途报错 | 补引用；查控制台 `installTheme is not defined` 等 |
+| 脚注区与 footer 线重叠 | 末条脚注无下边距 / footer 用 accent 色 `border` | `margin-bottom` + footer `border-muted` |
