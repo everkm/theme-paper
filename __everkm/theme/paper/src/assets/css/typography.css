@@ -22,8 +22,7 @@
     ol,
     ul,
     figcaption,
-    table,
-    code {
+    table {
       @apply text-foreground;
     }
 
@@ -79,13 +78,14 @@
       @apply flex-[1_0_100%] bg-inherit p-0;
     }
 
-    /* Fenced / prism blocks (everkm-publish) when not Shiki `.astro-code` */
+    /* Fenced / syntect blocks (everkm-publish) when not Shiki `.astro-code` */
     pre:not(.astro-code) {
-      @apply outline-border overflow-x-auto border bg-muted/40;
+      @apply outline-border overflow-x-auto border;
+      /* background + token colors: code-highlight.css (light/dark) */
     }
 
     pre:not(.astro-code) > code {
-      @apply block w-full bg-transparent p-4 text-foreground wrap-break-word before:content-none after:content-none;
+      @apply block w-full p-4 wrap-break-word before:content-none after:content-none;
     }
 
     blockquote {

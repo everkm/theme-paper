@@ -9,6 +9,7 @@
     "dev": "node build.js --watch",
     "build:jsrender": "JSRENDER=true NODE_ENV=production node build.js",
     "dev:jsrender": "JSRENDER=true node build.js --watch",
+    "code-highlight:build": "node scripts/build-code-highlight.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui"

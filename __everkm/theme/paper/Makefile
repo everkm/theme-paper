@@ -1,4 +1,4 @@
-.PHONY: tag client-build client-dev jsrender-build jsrender-dev build bundle
+.PHONY: tag client-build client-dev jsrender-build jsrender-dev build bundle code-highlight-build
 tag:
 	cd ../.. && $(MAKE) tag
 
@@ -7,6 +7,14 @@ DIST_DIR=./dist
 
 fe-install:
 	cd . && pnpm i
+
+# syntect 明暗主题 → src/assets/css/code-highlight.css
+# 例: make code-highlight-build CODE_HIGHLIGHT_LIGHT=Solarized-light.css CODE_HIGHLIGHT_DARK=Solarized-dark.css
+CODE_HIGHLIGHT_LIGHT ?= InspiredGitHub.css
+CODE_HIGHLIGHT_DARK ?= base16-ocean.dark.css
+
+code-highlight-build:
+	pnpm run code-highlight:build $(CODE_HIGHLIGHT_LIGHT) $(CODE_HIGHLIGHT_DARK)
 
 # 清理 dist/ 与 templates/everkm-render.js
 fe-clean:
