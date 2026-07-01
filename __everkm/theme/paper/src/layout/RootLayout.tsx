@@ -1,6 +1,5 @@
-import { Component, ParentComponent, Show } from "solid-js";
+import { ParentComponent, Show } from "solid-js";
 import { getPaperConfig } from "../lib/config";
-import { resolvePostDetail } from "../lib/postDetail";
 import { pageUrl } from "../lib/url";
 
 const FOUC_SCRIPT = `(function () {
@@ -23,14 +22,14 @@ export const RootLayout: ParentComponent<RootLayoutProps> = (props) => {
   const ctx = () => props.context;
   const cfg = () => getPaperConfig(ctx());
   const siteName = () => cfg().site.name;
-  const post = () => resolvePostDetail(ctx());
-  const postTitle = () => post()?.title ?? "";
+  const postMeta = () => ctx().post;
+  const postTitle = () => postMeta()?.title ?? "";
   const pageTitle = () =>
     props.title ??
     (postTitle() ? `${postTitle()} | ${siteName()}` : siteName());
   const metaDesc = () =>
     props.description ??
-    post()?.summary ??
+    postMeta()?.summary ??
     cfg().site.description ??
     "";
   const baseUrl = () => everkm.base_url(ctx().request_id);

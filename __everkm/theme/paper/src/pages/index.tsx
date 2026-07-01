@@ -34,13 +34,31 @@ function renderPageBody(pageKey: string, props: PageContext) {
   }
 }
 
+function resolveLayoutTitle(
+  pageKey: string,
+  props: PageContext,
+  cfg: ReturnType<typeof getPaperConfig>,
+): string | undefined {
+  const siteName = cfg.site.name;
+  if (pageKey === "home") {
+    return siteName;
+  }
+  if (pageKey === "about") {
+    const aboutPath = cfg.about ?? "/about.md";
+    const aboutMeta = everkm.post_meta(props.request_id, {
+      path: aboutPath,
+      allow_missing: true,
+    });
+    const aboutTitle = aboutMeta?.title;
+    return aboutTitle ? `${aboutTitle} | ${siteName}` : undefined;
+  }
+  return undefined;
+}
+
 async function renderPage(compName: string, props: PageContext) {
   const pageKey = resolvePageKey(compName, props.tpl_path, props.post);
   const cfg = getPaperConfig(props);
-  const title =
-    pageKey === "home"
-      ? cfg.site.name
-      : undefined;
+  const title = resolveLayoutTitle(pageKey, props, cfg);
 
   const html = await renderToStringAsync(() => (
     <RootLayout context={props} title={title}>

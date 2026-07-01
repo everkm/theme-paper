@@ -21,22 +21,17 @@ export const PostPage: Component<PostPageProps> = (p) => {
   const ctx = () => p.props;
   const cfg = () => getPaperConfig(ctx());
   const t = () => useTranslations(ctx().lang);
-  const post = () => resolvePostDetail(ctx());
+  const post = resolvePostDetail(p.props);
   const showBack = () => cfg().features?.show_back_button !== false;
   const hasBreadcrumb = () => shouldShowBreadcrumb(ctx(), "post");
   const padMainTop = () => !showBack() && !hasBreadcrumb();
 
-  const prevPost = () => {
-    const id = post()?.prev_id;
-    if (!id) return null;
-    return everkm.post_meta(ctx().request_id, { id });
-  };
-
-  const nextPost = () => {
-    const id = post()?.next_id;
-    if (!id) return null;
-    return everkm.post_meta(ctx().request_id, { id });
-  };
+  const prevPost = post?.prev_id
+    ? everkm.post_meta(p.props.request_id, { id: post.prev_id })
+    : null;
+  const nextPost = post?.next_id
+    ? everkm.post_meta(p.props.request_id, { id: post.next_id })
+    : null;
 
   return (
     <>
@@ -48,7 +43,7 @@ export const PostPage: Component<PostPageProps> = (p) => {
         data-pagefind-body=""
         class={`app-layout${padMainTop() ? " mt-8" : ""}`}
       >
-        <Show when={post()}>
+        <Show when={post}>
           {(item) => (
             <>
               <h1
@@ -85,9 +80,9 @@ export const PostPage: Component<PostPageProps> = (p) => {
                 class={APP_PROSE_POST}
                 innerHTML={item().content_html ?? ""}
               />
-              <Show when={prevPost() || nextPost()}>
+              <Show when={prevPost || nextPost}>
                 <nav class="my-8 grid grid-cols-1 gap-6 sm:grid-cols-2">
-                  <Show when={prevPost()}>
+                  <Show when={prevPost}>
                     {(prev) => (
                       <LinkButton
                         href={pageUrl(ctx().request_id, prev().url_path)}
@@ -97,7 +92,7 @@ export const PostPage: Component<PostPageProps> = (p) => {
                       </LinkButton>
                     )}
                   </Show>
-                  <Show when={nextPost()}>
+                  <Show when={nextPost}>
                     {(next) => (
                       <LinkButton
                         href={pageUrl(ctx().request_id, next().url_path)}

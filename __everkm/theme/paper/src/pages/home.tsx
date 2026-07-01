@@ -21,13 +21,13 @@ export const HomePage: Component<HomePageProps> = (p) => {
   const t = () => useTranslations(ctx().lang);
   const featuredTag = () => cfg().posts?.featured_tag ?? "featured";
   const perIndex = () => cfg().posts?.per_index ?? 4;
-  const homePath = () => cfg().home ?? "/home.md";
+  const homePath = cfg().home ?? "/home.md";
 
-  const heroPost = () =>
-    everkm.post_detail(ctx().request_id, {
-      path: homePath(),
-      allow_missing: true,
-    });
+  const heroPost = everkm.post_detail(p.props.request_id, {
+    path: homePath,
+    allow_missing: true,
+  });
+  const heroHtml = heroPost?.content_html ?? "";
 
   const featured = () =>
     everkm.posts(ctx().request_id, {
@@ -49,8 +49,6 @@ export const HomePage: Component<HomePageProps> = (p) => {
       draft: false,
     }).items;
 
-  const heroHtml = () => heroPost()?.content_html ?? "";
-
   return (
     <>
       <Header ctx={ctx()} />
@@ -67,8 +65,8 @@ export const HomePage: Component<HomePageProps> = (p) => {
           <Show when={!!cfg().site.description}>
             <p>{cfg().site.description}</p>
           </Show>
-          <Show when={!!heroHtml()}>
-            <div class={`${APP_PROSE} mt-4`} innerHTML={heroHtml()} />
+          <Show when={!!heroHtml}>
+            <div class={`${APP_PROSE} mt-4`} innerHTML={heroHtml} />
           </Show>
           <Show when={(cfg().socials?.length ?? 0) > 0}>
             <div class="mt-4 flex max-sm:flex-col sm:items-center">

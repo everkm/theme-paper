@@ -15,15 +15,13 @@ export const AboutPage: Component<AboutPageProps> = (p) => {
   const ctx = () => p.props;
   const cfg = () => getPaperConfig(ctx());
   const t = () => useTranslations(ctx().lang);
-  const aboutPath = () => cfg().about ?? "/about.md";
+  const aboutPath = cfg().about ?? "/about.md";
 
-  const aboutDoc = () =>
-    everkm.post_detail(ctx().request_id, {
-      path: aboutPath(),
-      allow_missing: true,
-    });
-
-  const pageTitle = () => aboutDoc()?.title ?? t().nav.about;
+  const aboutDoc = everkm.post_detail(p.props.request_id, {
+    path: aboutPath,
+    allow_missing: true,
+  });
+  const pageTitle = aboutDoc?.title ?? t().nav.about;
 
   return (
     <>
@@ -32,12 +30,12 @@ export const AboutPage: Component<AboutPageProps> = (p) => {
       <Main
         ctx={ctx()}
         pageKey="about"
-        pageTitle={pageTitle()}
+        pageTitle={pageTitle}
         layout="about"
         class={APP_PROSE}
       >
         <Show
-          when={aboutDoc()?.content_html}
+          when={aboutDoc?.content_html}
           fallback={
             <p class="text-muted-foreground italic">{t().pages.aboutEmpty}</p>
           }
