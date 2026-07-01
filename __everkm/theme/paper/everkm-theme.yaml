@@ -21,8 +21,8 @@ config:
     server: true
     font_size: 14
 
-  home: '[[home]]'
-  about: '[[about]]'
+  home: '[[_home]]'
+  about: '[[_about]]'
 
   posts:
     per_page: 4
