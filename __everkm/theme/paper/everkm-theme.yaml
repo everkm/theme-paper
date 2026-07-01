@@ -17,6 +17,9 @@ config:
 
   code_highlight:
     server: true
+  math_render:
+    server: true
+    font_size: 14
 
   home: '[[home]]'
   about: '[[about]]'

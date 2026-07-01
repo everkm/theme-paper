@@ -2,6 +2,7 @@
 @import "./theme.css";
 @import "./typography.css";
 @import "./code-highlight.css";
+@import "./math-svg.css";
 @import "./callouts-obsidian.css";
 
 @source "../../**/*.{tsx,ts}";
