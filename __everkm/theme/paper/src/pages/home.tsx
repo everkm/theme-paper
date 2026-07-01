@@ -1,6 +1,7 @@
 import { Component, For, Show } from "solid-js";
 import { getPaperConfig } from "../lib/config";
 import { useTranslations } from "../lib/i18n";
+import { POSTS_CONTENT_DIR, POSTS_INDEX_URL } from "../lib/postsPath";
 import { pageUrl } from "../lib/url";
 import { APP_PROSE } from "../lib/proseClasses";
 import { Header } from "../layout/Header";
@@ -40,7 +41,7 @@ export const HomePage: Component<HomePageProps> = (p) => {
 
   const recent = () =>
     everkm.posts(ctx().request_id, {
-      dir: "/posts/",
+      dir: POSTS_CONTENT_DIR,
       recursive: true,
       exclude_tags: [featuredTag()],
       limit: perIndex(),
@@ -112,7 +113,7 @@ export const HomePage: Component<HomePageProps> = (p) => {
         </Show>
 
         <div class="my-8 text-center">
-          <LinkButton href={pageUrl(ctx().request_id, "/posts/index.html")}>
+          <LinkButton href={pageUrl(ctx().request_id, POSTS_INDEX_URL)}>
             {t().home.allPosts}
             <Icon svg={IconArrowRight} class="inline-block rtl:-rotate-180" />
           </LinkButton>

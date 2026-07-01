@@ -1,6 +1,7 @@
 import { Component, For } from "solid-js";
 import { getPaperConfig } from "../lib/config";
 import { useTranslations } from "../lib/i18n";
+import { POSTS_CONTENT_DIR, POSTS_PATH } from "../lib/postsPath";
 import { readPagination } from "../lib/pagination";
 import { Header } from "../layout/Header";
 import { Footer } from "../components/Footer";
@@ -20,7 +21,7 @@ export const PostsListPage: Component<PostsListPageProps> = (p) => {
 
   const all = () =>
     everkm.posts(ctx().request_id, {
-      dir: "/posts/",
+      dir: POSTS_CONTENT_DIR,
       recursive: true,
       order_by: "date",
       order_direction: "desc",
@@ -32,7 +33,7 @@ export const PostsListPage: Component<PostsListPageProps> = (p) => {
 
   const items = () =>
     everkm.posts(ctx().request_id, {
-      dir: "/posts/",
+      dir: POSTS_CONTENT_DIR,
       recursive: true,
       order_by: "date",
       order_direction: "desc",
@@ -60,7 +61,7 @@ export const PostsListPage: Component<PostsListPageProps> = (p) => {
         ctx={ctx()}
         pageNo={pagination().pageNo}
         pageCount={pagination().pageCount}
-        basePath="/posts"
+        basePath={POSTS_PATH}
       />
       <Footer
         ctx={ctx()}

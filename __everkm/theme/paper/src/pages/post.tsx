@@ -11,6 +11,7 @@ import { Tag } from "../components/Tag";
 import { LinkButton } from "../components/LinkButton";
 import { shouldShowBreadcrumb } from "../lib/breadcrumb";
 import { resolvePostDetail } from "../lib/postDetail";
+import { POSTS_CONTENT_DIR } from "../lib/postsPath";
 import { APP_PROSE_POST } from "../lib/proseClasses";
 
 type PostPageProps = {
@@ -26,11 +27,21 @@ export const PostPage: Component<PostPageProps> = (p) => {
   const hasBreadcrumb = () => shouldShowBreadcrumb(ctx(), "post");
   const padMainTop = () => !showBack() && !hasBreadcrumb();
 
-  const prevPost = post?.prev_id
-    ? everkm.post_meta(p.props.request_id, { id: post.prev_id })
+  const neighbors = post?.id
+    ? everkm.post_neighbors(p.props.request_id, {
+        id: post.id,
+        dir: POSTS_CONTENT_DIR,
+        recursive: true,
+        order_by: "date",
+        order_direction: "desc",
+        draft: false,
+      })
     : null;
-  const nextPost = post?.next_id
-    ? everkm.post_meta(p.props.request_id, { id: post.next_id })
+  const prevPost = neighbors?.prev_id
+    ? everkm.post_meta(p.props.request_id, { id: neighbors.prev_id })
+    : null;
+  const nextPost = neighbors?.next_id
+    ? everkm.post_meta(p.props.request_id, { id: neighbors.next_id })
     : null;
 
   return (

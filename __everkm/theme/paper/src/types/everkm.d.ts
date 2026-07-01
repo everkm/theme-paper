@@ -43,6 +43,25 @@ declare global {
     ): string[];
     post_meta(requestId: string, args: FetchPostArgs): PostItem | null;
     post_detail(requestId: string, args: FetchPostArgs): PostItem | null;
+    post_neighbors(
+      requestId: string,
+      args: { id: string } & FetchPostsArgs,
+    ): { prev_id: string | null; next_id: string | null };
+    post_resources(
+      requestId: string,
+      args: { id?: string; path?: string; kinds?: ContentResourceKind[] },
+    ): { items: ContentResource[]; total: number } | null;
+    posts_resources(
+      requestId: string,
+      args?: FetchPostsArgs & {
+        kinds?: ContentResourceKind[];
+        offset?: number;
+        limit?: number;
+      },
+    ): {
+      items: Array<{ post: PostItem; resources: ContentResource[] }>;
+      total: number;
+    };
     has_post(requestId: string, args: { path: string }): boolean;
     nav_indicator(
       requestId: string,
@@ -94,6 +113,7 @@ declare global {
 
   interface FetchPostArgs {
     id?: string;
+    /** logical path，或 `[[...]]` 内链（slug/标题/绝对路径；`[[./x]]` 须在当前文章页上下文） */
     path?: string;
     lazy_img?: boolean;
     exclude_tags?: string;
@@ -132,6 +152,20 @@ declare global {
   interface ConfigArgs {
     key: string;
     default?: any;
+  }
+
+  type ContentResourceKind = "image" | "audio" | "video" | "other";
+
+  interface ContentResource {
+    kind: ContentResourceKind;
+    src: string;
+    via: "image" | "link";
+    url: string;
+    alt?: string;
+    title?: string;
+    width?: number;
+    height?: number;
+    external?: boolean;
   }
 
   var everkm: Everkm;

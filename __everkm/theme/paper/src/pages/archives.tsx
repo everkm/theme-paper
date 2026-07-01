@@ -1,6 +1,7 @@
 import { Component, For } from "solid-js";
 import dayjs from "dayjs";
 import { getPaperConfig } from "../lib/config";
+import { POSTS_CONTENT_DIR } from "../lib/postsPath";
 import { postDate, postTimestampSeconds } from "../lib/postDate";
 import { useTranslations } from "../lib/i18n";
 import { Header } from "../layout/Header";
@@ -42,7 +43,7 @@ export const ArchivesPage: Component<ArchivesPageProps> = (p) => {
 
   const posts = () =>
     everkm.posts(ctx().request_id, {
-      dir: "/posts/",
+      dir: POSTS_CONTENT_DIR,
       recursive: true,
       order_by: "date",
       order_direction: "desc",

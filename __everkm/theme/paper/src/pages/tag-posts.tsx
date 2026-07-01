@@ -2,6 +2,7 @@ import { Component, For } from "solid-js";
 import { getPaperConfig } from "../lib/config";
 import { useTranslations } from "../lib/i18n";
 import { extractTagSlug, normalizeTplPath } from "../lib/normalizeTplPath";
+import { POSTS_CONTENT_DIR } from "../lib/postsPath";
 import { readPagination } from "../lib/pagination";
 import { Header } from "../layout/Header";
 import { Footer } from "../components/Footer";
@@ -28,7 +29,7 @@ export const TagPostsPage: Component<TagPostsPageProps> = (p) => {
 
   const all = () =>
     everkm.posts(ctx().request_id, {
-      dir: "/posts/",
+      dir: POSTS_CONTENT_DIR,
       recursive: true,
       tags: [tagName()],
       order_by: "date",
@@ -41,7 +42,7 @@ export const TagPostsPage: Component<TagPostsPageProps> = (p) => {
 
   const items = () =>
     everkm.posts(ctx().request_id, {
-      dir: "/posts/",
+      dir: POSTS_CONTENT_DIR,
       recursive: true,
       tags: [tagName()],
       order_by: "date",

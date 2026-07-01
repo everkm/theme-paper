@@ -1,4 +1,5 @@
 import { normalizeTplPath } from "./normalizeTplPath";
+import { POSTS_INDEX_URL } from "./postsPath";
 import { normalizeNavPath, pageUrl } from "./url";
 import type { UIStrings } from "./i18n/lang/en";
 
@@ -120,7 +121,7 @@ export function buildBreadcrumbSegments(
     if (index === labels.length - 1) return undefined;
 
     if (raw[0] === "posts") {
-      return pageUrl(ctx.request_id, "/posts/index.html");
+      return pageUrl(ctx.request_id, POSTS_INDEX_URL);
     }
 
     if (raw[0] === "tags") {

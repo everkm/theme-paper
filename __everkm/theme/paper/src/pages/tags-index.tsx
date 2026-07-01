@@ -1,5 +1,6 @@
 import { Component, For } from "solid-js";
 import { getPaperConfig } from "../lib/config";
+import { POSTS_CONTENT_DIR } from "../lib/postsPath";
 import { useTranslations } from "../lib/i18n";
 import { Header } from "../layout/Header";
 import { Footer } from "../components/Footer";
@@ -18,7 +19,7 @@ export const TagsIndexPage: Component<TagsIndexPageProps> = (p) => {
 
   const tags = () =>
     everkm.posts_tag_list(ctx().request_id, {
-      dir: "/posts/",
+      dir: POSTS_CONTENT_DIR,
       recursive: true,
       draft: false,
     });

@@ -1,5 +1,6 @@
 import { Component, Show } from "solid-js";
 import { getPaperConfig } from "../lib/config";
+import { POSTS_INDEX_URL, POSTS_PATH } from "../lib/postsPath";
 import { useTranslations } from "../lib/i18n";
 import { currentPagePath, isActivePath, pageUrl } from "../lib/url";
 import { LinkButton } from "../components/LinkButton";
@@ -65,9 +66,9 @@ export const Header: Component<HeaderProps> = (props) => {
             >
               <li class="col-span-2">
                 <a
-                  href={pageUrl(props.ctx.request_id, "/posts/index.html")}
-                  data-nav-path="/posts"
-                  class={isActive("/posts") ? "active-nav" : ""}
+                  href={pageUrl(props.ctx.request_id, POSTS_INDEX_URL)}
+                  data-nav-path={POSTS_PATH}
+                  class={isActive(POSTS_PATH) ? "active-nav" : ""}
                 >
                   {t().nav.posts}
                 </a>
