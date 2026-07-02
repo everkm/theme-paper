@@ -2972,9 +2972,50 @@ var Header = (props) => {
   })))];
 };
 
+// src/assets/icons/socials/facebook.svg
+var facebook_default = '<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-facebook"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 10v4h3v7h4v-7h3l1 -4h-4v-2a1 1 0 0 1 1 -1h3v-4h-3a5 5 0 0 0 -5 5v2h-3" /></svg>';
+
+// src/assets/icons/socials/github.svg
+var github_default = '<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-github"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" /></svg>';
+
+// src/assets/icons/socials/linkedin.svg
+var linkedin_default = '<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5" /><path d="M8 8v.01" /><path d="M12 16v-5" /><path d="M16 16v-3a2 2 0 1 0 -4 0" /><path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z" /></svg>';
+
+// src/assets/icons/socials/mail.svg
+var mail_default = '<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-mail"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z" /><path d="M3 7l9 6l9 -6" /></svg>';
+
+// src/assets/icons/socials/pinterest.svg
+var pinterest_default = '<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-pinterest"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 20l4 -9" /><path d="M10.7 14c.437 1.263 1.43 2 2.55 2c2.071 0 3.75 -1.554 3.75 -4a5 5 0 1 0 -9.7 1.7" /><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /></svg>';
+
+// src/assets/icons/socials/telegram.svg
+var telegram_default = '<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-telegram"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 10l-4 4l6 6l4 -16l-18 7l4 2l2 6l3 -4" /></svg>';
+
+// src/assets/icons/socials/whatsapp.svg
+var whatsapp_default = '<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-whatsapp"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 21l1.65 -3.8a9 9 0 1 1 3.4 2.9l-5.05 .9" /><path d="M9 10a.5 .5 0 0 0 1 0v-1a.5 .5 0 0 0 -1 0v1a5 5 0 0 0 5 5h1a.5 .5 0 0 0 0 -1h-1a.5 .5 0 0 0 0 1" /></svg>';
+
+// src/assets/icons/socials/x.svg
+var x_default = '<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-x"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4l11.733 16h4.267l-11.733 -16z" /><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" /></svg>';
+
+// src/lib/socialIcons.ts
+var SOCIAL_ICON_MAP = {
+  facebook: facebook_default,
+  github: github_default,
+  linkedin: linkedin_default,
+  mail: mail_default,
+  email: mail_default,
+  pinterest: pinterest_default,
+  telegram: telegram_default,
+  whatsapp: whatsapp_default,
+  x: x_default,
+  twitter: x_default
+};
+function getSocialIcon(name) {
+  return SOCIAL_ICON_MAP[name.toLowerCase().trim()];
+}
+
 // src/components/Socials.tsx
 var _tmpl$9 = ['<div class="flex flex-wrap items-center gap-4">', "</div>"];
-var _tmpl$23 = ["<a", ' target="_blank" rel="noopener noreferrer" class="text-accent hover:underline decoration-dashed underline-offset-4"', ">", "</a>"];
+var _tmpl$23 = ["<a", ' target="_blank" rel="noopener noreferrer"', ">", "</a>"];
 var Socials = (props) => {
   return createComponent(Show, {
     get when() {
@@ -2985,7 +3026,13 @@ var Socials = (props) => {
         get each() {
           return props.socials;
         },
-        children: (item) => ssr(_tmpl$23, ssrAttribute("href", escape(item.url, true), false), ssrAttribute("title", escape(item.name, true), false), escape(item.name))
+        children: (item) => {
+          const svg = getSocialIcon(item.name);
+          return ssr(_tmpl$23, ssrAttribute("href", escape(item.url, true), false), ssrAttribute("class", svg ? "inline-flex items-center text-accent hover:opacity-80 transition-opacity" : "inline-flex items-center text-accent hover:underline decoration-dashed underline-offset-4", false) + ssrAttribute("title", escape(item.name, true), false) + ssrAttribute("aria-label", svg ? escape(item.name, true) : escape(void 0, true), false), svg ? escape(createComponent(Icon, {
+            svg,
+            "class": "size-5 block shrink-0"
+          })) : escape(item.name));
+        }
       })));
     }
   });

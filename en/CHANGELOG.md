@@ -47,3 +47,4 @@ This changelog is for end users. Keep the wording user-friendly and avoid exposi
 - **Configuration**
   - Site info, social links, copyright, and post pagination via `everkm.yaml`
   - Homepage and about content from `_home.md` and `_about.md` via inner links
+  - Social links with bundled icons when `name` matches a known platform (case-insensitive); otherwise shows text
