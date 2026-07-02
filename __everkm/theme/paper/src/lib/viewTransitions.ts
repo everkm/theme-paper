@@ -32,7 +32,41 @@ async function fetchPage(url: string): Promise<Document> {
   return doc;
 }
 
-/** Sync #main-content shell attrs; spacing lives inside innerHTML only. */
+function getUrlHash(url: string): string {
+  try {
+    return new URL(url, window.location.href).hash.slice(1);
+  } catch {
+    const idx = url.indexOf("#");
+    return idx >= 0 ? url.slice(idx + 1) : "";
+  }
+}
+
+function scrollToHash(hash: string): void {
+  if (!hash) return;
+  let id: string;
+  try {
+    id = decodeURIComponent(hash);
+  } catch {
+    id = hash;
+  }
+  const target = document.getElementById(id);
+  if (target) {
+    target.scrollIntoView({ behavior: "auto", block: "start" });
+  }
+}
+
+/** Reset scroll after VT swap: top for plain URLs, target element for hash URLs. */
+function scrollAfterNavigation(url: string): void {
+  const hash = getUrlHash(url);
+  requestAnimationFrame(() => {
+    if (hash) {
+      scrollToHash(hash);
+    } else {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    }
+  });
+}
+
 function syncMainShell(
   current: HTMLElement,
   next: HTMLElement,
@@ -100,7 +134,7 @@ function swapMainContent(doc: Document, url: string): void {
   ) {
     apply();
     history.pushState({}, "", url);
-    afterSwap();
+    afterSwap(url);
     return;
   }
 
@@ -108,16 +142,17 @@ function swapMainContent(doc: Document, url: string): void {
     apply();
     history.pushState({}, "", url);
   });
-  transition.finished.then(afterSwap).catch(afterSwap);
+  transition.finished.then(() => afterSwap(url)).catch(() => afterSwap(url));
 }
 
-function afterSwap(): void {
+function afterSwap(url: string): void {
   installTheme();
   installMobileNav();
   updateActiveNav();
   updateBackButton();
   const main = document.querySelector("#main-content");
   if (main) mountClientBlocks(main);
+  scrollAfterNavigation(url);
   document.dispatchEvent(new CustomEvent(PAPER_PAGE_SWAP));
 }
 
@@ -137,6 +172,10 @@ function onClick(e: MouseEvent): void {
 
 export function installViewTransitions(): void {
   if ((window as any).__everkm_features_view_transitions === false) return;
+
+  if ("scrollRestoration" in history) {
+    history.scrollRestoration = "manual";
+  }
 
   document.addEventListener("click", onClick);
   window.addEventListener("popstate", () => {

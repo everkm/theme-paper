@@ -35,6 +35,7 @@ This changelog is for end users. Keep the wording user-friendly and avoid exposi
 - **Features**
   - Dark mode toggle with localStorage persistence
   - View Transitions for smooth in-site navigation
+  - View Transitions restore scroll position on navigation (top of page, or hash target)
   - Pagefind client-side search on `/search/index.html`
   - Optional archives button and back button on post pages
 
