@@ -9,5 +9,5 @@ This is the **about** page for the Paper Theme demo site.
 Paper Theme supports:
 
 - Virtual pages for home, about, posts list, tags, archives, and search
-- Markdown posts under `/posts/`
+- Markdown posts under `posts/`
 - Dark mode, View Transitions, and Pagefind search (when index is available)

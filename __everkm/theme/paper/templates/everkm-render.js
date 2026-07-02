@@ -2620,21 +2620,6 @@ function getPaperConfig(ctx) {
   };
 }
 
-// src/lib/postDetail.ts
-function resolvePostDetail(ctx) {
-  const meta = ctx.post;
-  if (meta?.path) {
-    return everkm.post_detail(ctx.request_id, { path: meta.path }) ?? meta;
-  }
-  const pagePath = ctx.page_path;
-  if (pagePath?.endsWith(".html")) {
-    return everkm.post_detail(ctx.request_id, {
-      path: pagePath.replace(/\.html$/, ".md")
-    });
-  }
-  return meta;
-}
-
 // src/lib/normalizeTplPath.ts
 function normalizeTplPath(tplPath) {
   return tplPath.replace(/\.p\d+(?=\.html$)/i, "").replace(/^\/+/, "").replace(/\/index\.html$/i, "").replace(/index\.html$/i, "").replace(/\.html$/i, "").replace(/\/+$/, "");
@@ -2708,10 +2693,10 @@ var RootLayout = (props) => {
   const ctx = () => props.context;
   const cfg = () => getPaperConfig(ctx());
   const siteName = () => cfg().site.name;
-  const post = () => resolvePostDetail(ctx());
-  const postTitle = () => post()?.title ?? "";
+  const postMeta = () => ctx().post;
+  const postTitle = () => postMeta()?.title ?? "";
   const pageTitle = () => props.title ?? (postTitle() ? `${postTitle()} | ${siteName()}` : siteName());
-  const metaDesc = () => props.description ?? post()?.summary ?? cfg().site.description ?? "";
+  const metaDesc = () => props.description ?? postMeta()?.summary ?? cfg().site.description ?? "";
   const baseUrl = () => everkm.base_url(ctx().request_id);
   const lang = () => ctx().lang || cfg().site.lang || "en";
   const dir = () => cfg().site.dir ?? "ltr";
@@ -2781,7 +2766,8 @@ var en = {
     archivesTitle: "Archives",
     archivesDesc: "All the articles I've archived.",
     searchTitle: "Search",
-    searchDesc: "Search any article ..."
+    searchDesc: "Search any article ...",
+    aboutEmpty: "No content yet."
   },
   a11y: {
     skipToContent: "Skip to content",
@@ -2798,6 +2784,11 @@ var catalogs = { en };
 function useTranslations(lang) {
   return catalogs[lang || "en"] ?? en;
 }
+
+// src/lib/postsPath.ts
+var POSTS_CONTENT_DIR = "/";
+var POSTS_PATH = "/posts";
+var POSTS_INDEX_URL = `${POSTS_PATH}/index.html`;
 
 // src/lib/proseClasses.ts
 var APP_PROSE = "app-prose max-w-app w-full prose-pre:bg-(--shiki-light-bg) dark:prose-pre:bg-(--shiki-dark-bg)";
@@ -2890,7 +2881,7 @@ var _tmpl$42 = ['<li class="col-span-2">', "</li>"];
 var _tmpl$52 = ['<span class="sr-only">', "</span>"];
 var _tmpl$6 = ['<li class="col-span-1 flex items-center justify-center">', "</li>"];
 var _tmpl$7 = ['<li class="col-span-1 flex items-center justify-center"><button id="theme-btn" class="focus-outline hover:[&amp;>svg]:stroke-accent relative size-12 p-4 sm:size-8"', ' aria-label="auto" aria-live="polite" type="button">', "", "</button></li>"];
-var _tmpl$8 = ['<header class="app-layout flex flex-col items-center justify-between sm:flex-row" data-vt-swap="header"><div class="border-border bg-background relative flex w-full items-baseline justify-between border-b py-4 sm:items-center sm:py-6"><a', ' class="absolute py-1 text-xl leading-8 font-semibold whitespace-nowrap sm:static sm:my-auto sm:text-2xl sm:leading-none">', '</a><nav id="nav-menu" class="flex w-full flex-col items-center sm:ms-2 sm:flex-row sm:justify-end sm:space-x-4 sm:py-0"><button id="menu-btn" class="focus-outline self-end p-2 sm:hidden"', ' aria-expanded="false" aria-controls="menu-items"', ' type="button">', "", '</button><ul id="menu-items" class="[&amp;>li>a]:hover:text-accent mt-4 hidden w-44 grid-cols-2 place-content-center gap-2 sm:mt-0 sm:flex sm:w-auto sm:gap-x-5 sm:gap-y-0 sm:[&amp;>li]:h-8 [&amp;>li>a]:block [&amp;>li>a]:px-4 [&amp;>li>a]:py-3 [&amp;>li>a]:text-center [&amp;>li>a]:font-medium sm:[&amp;>li>a]:px-2 sm:[&amp;>li>a]:py-1"><li class="col-span-2"><a', ' data-nav-path="/posts"', ">", '</a></li><li class="col-span-2"><a', ' data-nav-path="/tags"', ">", '</a></li><li class="col-span-2"><a', ' data-nav-path="/about"', ">", "</a></li>", "", "", "</ul></nav></div></header>"];
+var _tmpl$8 = ['<header class="app-layout flex flex-col items-center justify-between sm:flex-row" data-vt-swap="header"><div class="border-border bg-background relative flex w-full items-baseline justify-between border-b py-4 sm:items-center sm:py-6"><a', ' class="absolute py-1 text-xl leading-8 font-semibold whitespace-nowrap sm:static sm:my-auto sm:text-2xl sm:leading-none">', '</a><nav id="nav-menu" class="flex w-full flex-col items-center sm:ms-2 sm:flex-row sm:justify-end sm:space-x-4 sm:py-0"><button id="menu-btn" class="focus-outline self-end p-2 sm:hidden"', ' aria-expanded="false" aria-controls="menu-items"', ' type="button">', "", '</button><ul id="menu-items" class="[&amp;>li>a]:hover:text-accent mt-4 hidden w-44 grid-cols-2 place-content-center gap-2 sm:mt-0 sm:flex sm:w-auto sm:gap-x-5 sm:gap-y-0 sm:[&amp;>li]:h-8 [&amp;>li>a]:block [&amp;>li>a]:px-4 [&amp;>li>a]:py-3 [&amp;>li>a]:text-center [&amp;>li>a]:font-medium sm:[&amp;>li>a]:px-2 sm:[&amp;>li>a]:py-1"><li class="col-span-2"><a', ">", '</a></li><li class="col-span-2"><a', ' data-nav-path="/tags"', ">", '</a></li><li class="col-span-2"><a', ' data-nav-path="/about"', ">", "</a></li>", "", "", "</ul></nav></div></header>"];
 var Header = (props) => {
   const cfg = () => getPaperConfig(props.ctx);
   const t2 = () => useTranslations(props.ctx.lang);
@@ -2903,7 +2894,7 @@ var Header = (props) => {
   })), escape(createComponent(Icon, {
     svg: IconMenuDeep_default,
     id: "menu-icon"
-  })), ssrAttribute("href", escape(pageUrl(props.ctx.request_id, "/posts/index.html"), true), false), ssrAttribute("class", isActive("/posts") ? "active-nav" : "", false), escape(t2().nav.posts), ssrAttribute("href", escape(pageUrl(props.ctx.request_id, "/tags/index.html"), true), false), ssrAttribute("class", isActive("/tags") ? "active-nav" : "", false), escape(t2().nav.tags), ssrAttribute("href", escape(pageUrl(props.ctx.request_id, "/about/"), true), false), ssrAttribute("class", isActive("/about") ? "active-nav" : "", false), escape(t2().nav.about), escape(createComponent(Show, {
+  })), ssrAttribute("href", escape(pageUrl(props.ctx.request_id, POSTS_INDEX_URL), true), false) + ssrAttribute("data-nav-path", escape(POSTS_PATH, true), false) + ssrAttribute("class", isActive(POSTS_PATH) ? "active-nav" : "", false), escape(t2().nav.posts), ssrAttribute("href", escape(pageUrl(props.ctx.request_id, "/tags/index.html"), true), false), ssrAttribute("class", isActive("/tags") ? "active-nav" : "", false), escape(t2().nav.tags), ssrAttribute("href", escape(pageUrl(props.ctx.request_id, "/about/"), true), false), ssrAttribute("class", isActive("/about") ? "active-nav" : "", false), escape(t2().nav.about), escape(createComponent(Show, {
     get when() {
       return cfg().features?.show_archives !== false;
     },
@@ -3001,7 +2992,7 @@ var Socials = (props) => {
 };
 
 // src/components/Footer.tsx
-var _tmpl$10 = ['<footer class="', '"><div class="border-border flex flex-col items-center justify-between border-t py-6 sm:flex-row-reverse sm:py-4">', '<div class="my-2 flex flex-col items-center whitespace-nowrap sm:flex-row"><span>', " &#169; ", '</span><span class="hidden sm:inline">&nbsp;|&nbsp;</span><span>', "</span></div></div></footer>"];
+var _tmpl$10 = ['<footer class="', '"><div class="flex flex-col items-center justify-between border-t border-muted py-6 sm:flex-row-reverse sm:py-4">', '<div class="my-2 flex flex-col items-center whitespace-nowrap sm:flex-row"><span>', " &#169; ", '</span><span class="hidden sm:inline">&nbsp;|&nbsp;</span><span>', "</span></div></div></footer>"];
 var Footer = (props) => {
   const t2 = () => useTranslations(props.ctx.lang);
   const year = (/* @__PURE__ */ new Date()).getFullYear();
@@ -3106,11 +3097,12 @@ var HomePage = (p3) => {
   const t2 = () => useTranslations(ctx().lang);
   const featuredTag = () => cfg().posts?.featured_tag ?? "featured";
   const perIndex = () => cfg().posts?.per_index ?? 4;
-  const homePath = () => cfg().home ?? "/home.md";
-  const heroPost = () => everkm.post_detail(ctx().request_id, {
-    path: homePath(),
+  const homePath = cfg().home ?? "/home.md";
+  const heroPost = everkm.post_detail(p3.props.request_id, {
+    path: homePath,
     allow_missing: true
   });
+  const heroHtml = heroPost?.content_html ?? "";
   const featured = () => everkm.posts(ctx().request_id, {
     tags: [featuredTag()],
     limit: 6,
@@ -3119,7 +3111,7 @@ var HomePage = (p3) => {
     draft: false
   }).items;
   const recent = () => everkm.posts(ctx().request_id, {
-    dir: "/posts/",
+    dir: POSTS_CONTENT_DIR,
     recursive: true,
     exclude_tags: [featuredTag()],
     limit: perIndex(),
@@ -3127,7 +3119,6 @@ var HomePage = (p3) => {
     order_direction: "desc",
     draft: false
   }).items;
-  const heroHtml = () => heroPost()?.content_html ?? "";
   return [createComponent(Header, {
     get ctx() {
       return ctx();
@@ -3140,11 +3131,9 @@ var HomePage = (p3) => {
       return ssr(_tmpl$13, escape(cfg().site.description));
     }
   })), escape(createComponent(Show, {
-    get when() {
-      return !!heroHtml();
-    },
+    when: !!heroHtml,
     get children() {
-      return ssr(_tmpl$26, `${escape(APP_PROSE, true)} mt-4`, heroHtml());
+      return ssr(_tmpl$26, `${escape(APP_PROSE, true)} mt-4`, heroHtml);
     }
   })), escape(createComponent(Show, {
     get when() {
@@ -3198,7 +3187,7 @@ var HomePage = (p3) => {
     }
   })), escape(createComponent(LinkButton, {
     get href() {
-      return pageUrl(ctx().request_id, "/posts/index.html");
+      return pageUrl(ctx().request_id, POSTS_INDEX_URL);
     },
     get children() {
       return [t2().home.allPosts, createComponent(Icon, {
@@ -3304,7 +3293,7 @@ function buildBreadcrumbSegments(ctx, t2, pageKey) {
   const hrefs = labels.map((_3, index) => {
     if (index === labels.length - 1) return void 0;
     if (raw[0] === "posts") {
-      return pageUrl(ctx.request_id, "/posts/index.html");
+      return pageUrl(ctx.request_id, POSTS_INDEX_URL);
     }
     if (raw[0] === "tags") {
       if (index === 0) return pageUrl(ctx.request_id, "/tags/index.html");
@@ -3324,7 +3313,7 @@ function buildBreadcrumbSegments(ctx, t2, pageKey) {
       if (page <= 1) return pageUrl(ctx.request_id, `${base}/index.html`);
       return pageUrl(
         ctx.request_id,
-        `${base}/index.p${page}.html?page=${page}`
+        `${base}/index.p${page}.html`
       );
     }
     if (pathSegments.length === 1 && pathSegments[0] === "about") {
@@ -3466,17 +3455,18 @@ var Main = (props) => {
 };
 
 // src/pages/about.tsx
-var _tmpl$18 = ["<div>", "</div>"];
+var _tmpl$18 = ['<p class="text-muted-foreground italic">', "</p>"];
+var _tmpl$210 = ["<div>", "</div>"];
 var AboutPage = (p3) => {
   const ctx = () => p3.props;
   const cfg = () => getPaperConfig(ctx());
   const t2 = () => useTranslations(ctx().lang);
-  const aboutPath = () => cfg().about ?? "/about.md";
-  const aboutDoc = () => everkm.post_detail(ctx().request_id, {
-    path: aboutPath(),
+  const aboutPath = cfg().about ?? "/about.md";
+  const aboutDoc = everkm.post_detail(p3.props.request_id, {
+    path: aboutPath,
     allow_missing: true
   });
-  const pageTitle = () => aboutDoc()?.title ?? t2().nav.about;
+  const pageTitle = aboutDoc?.title ?? t2().nav.about;
   return [createComponent(Header, {
     get ctx() {
       return ctx();
@@ -3491,17 +3481,18 @@ var AboutPage = (p3) => {
       return ctx();
     },
     pageKey: "about",
-    get pageTitle() {
-      return pageTitle();
-    },
+    pageTitle,
     layout: "about",
     "class": APP_PROSE,
     get children() {
       return createComponent(Show, {
         get when() {
-          return aboutDoc()?.content_html;
+          return aboutDoc?.content_html;
         },
-        children: (html) => ssr(_tmpl$18, html())
+        get fallback() {
+          return ssr(_tmpl$18, escape(t2().pages.aboutEmpty));
+        },
+        children: (html) => ssr(_tmpl$210, html())
       });
     }
   }), createComponent(Footer, {
@@ -3516,16 +3507,31 @@ var AboutPage = (p3) => {
 
 // src/components/Tag.tsx
 var _tmpl$19 = ["<li><a", ' class="text-accent decoration-dashed underline-offset-4 hover:underline">#', "", "</a></li>"];
-var _tmpl$210 = ['<sup class="text-muted-foreground ms-1 text-xs">', "</sup>"];
+var _tmpl$211 = ['<sup class="text-muted-foreground ms-1 text-xs">', "</sup>"];
 var Tag = (props) => {
   const slug = () => encodeURIComponent(props.tag);
   const href = () => pageUrl(props.ctx.request_id, `/tags/${slug()}/index.html`);
-  return ssr(_tmpl$19, ssrAttribute("href", escape(href(), true), false), escape(props.tag), props.count != null && ssr(_tmpl$210, escape(props.count)));
+  return ssr(_tmpl$19, ssrAttribute("href", escape(href(), true), false), escape(props.tag), props.count != null && ssr(_tmpl$211, escape(props.count)));
 };
+
+// src/lib/postDetail.ts
+function resolvePostDetail(ctx) {
+  const meta = ctx.post;
+  if (meta?.path) {
+    return everkm.post_detail(ctx.request_id, { path: meta.path }) ?? meta;
+  }
+  const pagePath = ctx.page_path;
+  if (pagePath?.endsWith(".html")) {
+    return everkm.post_detail(ctx.request_id, {
+      path: pagePath.replace(/\.html$/, ".md")
+    });
+  }
+  return meta;
+}
 
 // src/pages/post.tsx
 var _tmpl$20 = ['<main id="main-content" data-layout="post" data-pagefind-body class="', '">', "</main>"];
-var _tmpl$211 = ['<h1 style="', '" class="text-accent inline-block text-2xl font-bold sm:text-3xl">', "</h1>"];
+var _tmpl$212 = ['<h1 style="', '" class="text-accent inline-block text-2xl font-bold sm:text-3xl">', "</h1>"];
 var _tmpl$37 = ['<div class="my-4 flex flex-wrap gap-2"><span class="text-muted-foreground italic">', ':</span><ul class="flex flex-wrap gap-2">', "</ul></div>"];
 var _tmpl$45 = ['<article id="article"', ">", "</article>"];
 var _tmpl$55 = ['<nav class="my-8 grid grid-cols-1 gap-6 sm:grid-cols-2">', "", "</nav>"];
@@ -3535,24 +3541,24 @@ var PostPage = (p3) => {
   const ctx = () => p3.props;
   const cfg = () => getPaperConfig(ctx());
   const t2 = () => useTranslations(ctx().lang);
-  const post = () => resolvePostDetail(ctx());
+  const post = resolvePostDetail(p3.props);
   const showBack = () => cfg().features?.show_back_button !== false;
   const hasBreadcrumb = () => shouldShowBreadcrumb(ctx(), "post");
   const padMainTop = () => !showBack() && !hasBreadcrumb();
-  const prevPost = () => {
-    const id = post()?.prev_id;
-    if (!id) return null;
-    return everkm.post_meta(ctx().request_id, {
-      id
-    });
-  };
-  const nextPost = () => {
-    const id = post()?.next_id;
-    if (!id) return null;
-    return everkm.post_meta(ctx().request_id, {
-      id
-    });
-  };
+  const neighbors = post?.id ? everkm.post_neighbors(p3.props.request_id, {
+    id: post.id,
+    dir: POSTS_CONTENT_DIR,
+    recursive: true,
+    order_by: "date",
+    order_direction: "desc",
+    draft: false
+  }) : null;
+  const prevPost = neighbors?.prev_id ? everkm.post_meta(p3.props.request_id, {
+    id: neighbors.prev_id
+  }) : null;
+  const nextPost = neighbors?.next_id ? everkm.post_meta(p3.props.request_id, {
+    id: neighbors.next_id
+  }) : null;
   return [createComponent(Header, {
     get ctx() {
       return ctx();
@@ -3566,10 +3572,8 @@ var PostPage = (p3) => {
       return showBack();
     }
   }), ssr(_tmpl$20, `app-layout${padMainTop() ? " mt-8" : ""}`, escape(createComponent(Show, {
-    get when() {
-      return post();
-    },
-    children: (item) => [ssr(_tmpl$211, "view-transition-name:" + escape(toTransitionName(item().title || item().slug), true), escape(item().title) || escape(item().slug)), createComponent(Datetime, {
+    when: post,
+    children: (item) => [ssr(_tmpl$212, "view-transition-name:" + escape(toTransitionName(item().title || item().slug), true), escape(item().title) || escape(item().slug)), createComponent(Datetime, {
       get ctx() {
         return ctx();
       },
@@ -3599,14 +3603,10 @@ var PostPage = (p3) => {
         })));
       }
     }), ssr(_tmpl$45, ssrAttribute("class", escape(APP_PROSE_POST, true), false), item().content_html ?? ""), createComponent(Show, {
-      get when() {
-        return prevPost() || nextPost();
-      },
+      when: prevPost || nextPost,
       get children() {
         return ssr(_tmpl$55, escape(createComponent(Show, {
-          get when() {
-            return prevPost();
-          },
+          when: prevPost,
           children: (prev) => createComponent(LinkButton, {
             get href() {
               return pageUrl(ctx().request_id, prev().url_path);
@@ -3617,9 +3617,7 @@ var PostPage = (p3) => {
             }
           })
         })), escape(createComponent(Show, {
-          get when() {
-            return nextPost();
-          },
+          when: nextPost,
           children: (next) => createComponent(LinkButton, {
             get href() {
               return pageUrl(ctx().request_id, next().url_path);
@@ -3655,7 +3653,7 @@ function readPagination(qs, config, total) {
 function paginationHref(base, targetPage) {
   const normalized = base.replace(/\/+$/, "");
   if (targetPage <= 1) return `${normalized}/index.html`;
-  return `${normalized}/index.p${targetPage}.html?page=${targetPage}`;
+  return `${normalized}/index.p${targetPage}.html`;
 }
 
 // src/assets/icons/IconArrowLeft.svg
@@ -3663,12 +3661,12 @@ var IconArrowLeft_default = '<svg  xmlns="http://www.w3.org/2000/svg"  width="24
 
 // src/components/Pagination.tsx
 var _tmpl$21 = ['<nav class="mt-auto mb-8 flex justify-center gap-4" role="navigation" aria-label="Pagination Navigation">', "", " / ", "", "</nav>"];
-var _tmpl$212 = ['<div data-vt-swap="pagination">', "</div>"];
+var _tmpl$213 = ['<div data-vt-swap="pagination">', "</div>"];
 var Pagination = (props) => {
   const t2 = () => useTranslations(props.ctx.lang);
   const prevHref = () => props.pageNo > 1 ? paginationHref(props.basePath, props.pageNo - 1) : void 0;
   const nextHref = () => props.pageNo < props.pageCount ? paginationHref(props.basePath, props.pageNo + 1) : void 0;
-  return ssr(_tmpl$212, escape(createComponent(Show, {
+  return ssr(_tmpl$213, escape(createComponent(Show, {
     get when() {
       return props.pageCount > 1;
     },
@@ -3723,7 +3721,7 @@ var PostsListPage = (p3) => {
   const cfg = () => getPaperConfig(ctx());
   const t2 = () => useTranslations(ctx().lang);
   const all = () => everkm.posts(ctx().request_id, {
-    dir: "/posts/",
+    dir: POSTS_CONTENT_DIR,
     recursive: true,
     order_by: "date",
     order_direction: "desc",
@@ -3731,7 +3729,7 @@ var PostsListPage = (p3) => {
   });
   const pagination = () => readPagination(ctx().qs ?? {}, ctx().config ?? {}, all().total);
   const items = () => everkm.posts(ctx().request_id, {
-    dir: "/posts/",
+    dir: POSTS_CONTENT_DIR,
     recursive: true,
     order_by: "date",
     order_direction: "desc",
@@ -3783,7 +3781,7 @@ var PostsListPage = (p3) => {
     get pageCount() {
       return pagination().pageCount;
     },
-    basePath: "/posts"
+    basePath: POSTS_PATH
   }), createComponent(Footer, {
     get ctx() {
       return ctx();
@@ -3804,7 +3802,7 @@ var TagsIndexPage = (p3) => {
   const cfg = () => getPaperConfig(ctx());
   const t2 = () => useTranslations(ctx().lang);
   const tags = () => everkm.posts_tag_list(ctx().request_id, {
-    dir: "/posts/",
+    dir: POSTS_CONTENT_DIR,
     recursive: true,
     draft: false
   });
@@ -3866,7 +3864,7 @@ var TagPostsPage = (p3) => {
   };
   const tagName = () => decodeURIComponent(tagSlug());
   const all = () => everkm.posts(ctx().request_id, {
-    dir: "/posts/",
+    dir: POSTS_CONTENT_DIR,
     recursive: true,
     tags: [tagName()],
     order_by: "date",
@@ -3875,7 +3873,7 @@ var TagPostsPage = (p3) => {
   });
   const pagination = () => readPagination(ctx().qs ?? {}, ctx().config ?? {}, all().total);
   const items = () => everkm.posts(ctx().request_id, {
-    dir: "/posts/",
+    dir: POSTS_CONTENT_DIR,
     recursive: true,
     tags: [tagName()],
     order_by: "date",
@@ -3961,7 +3959,7 @@ function postDate(post) {
 
 // src/pages/archives.tsx
 var _tmpl$39 = ['<div><span class="text-2xl font-bold">', '</span><sup class="text-muted-foreground text-sm">', "</sup>", "</div>"];
-var _tmpl$213 = ['<div class="flex flex-col sm:flex-row"><div class="mt-6 min-w-36 text-lg sm:my-6"><span class="font-bold">', '</span><sup class="text-muted-foreground text-xs">', "</sup></div><ul>", "</ul></div>"];
+var _tmpl$214 = ['<div class="flex flex-col sm:flex-row"><div class="mt-6 min-w-36 text-lg sm:my-6"><span class="font-bold">', '</span><sup class="text-muted-foreground text-xs">', "</sup></div><ul>", "</ul></div>"];
 function groupByYearMonth(posts) {
   var _a;
   const byYear = {};
@@ -3983,7 +3981,7 @@ var ArchivesPage = (p3) => {
   const t2 = () => useTranslations(ctx().lang);
   const monthName = (month) => (0, import_dayjs3.default)().month(month - 1).format("MMMM");
   const posts = () => everkm.posts(ctx().request_id, {
-    dir: "/posts/",
+    dir: POSTS_CONTENT_DIR,
     recursive: true,
     order_by: "date",
     order_direction: "desc",
@@ -4024,7 +4022,7 @@ var ArchivesPage = (p3) => {
             each: months,
             children: (month) => {
               const monthPosts = [...grouped()[year][month]].sort((a, b2) => postTimestampSeconds(b2) - postTimestampSeconds(a));
-              return ssr(_tmpl$213, escape(monthName(Number(month))), escape(monthPosts.length), escape(createComponent(For, {
+              return ssr(_tmpl$214, escape(monthName(Number(month))), escape(monthPosts.length), escape(createComponent(For, {
                 each: monthPosts,
                 children: (post) => createComponent(Card, {
                   get ctx() {
@@ -4128,10 +4126,26 @@ function renderPageBody(pageKey, props) {
       throw new Error(`Page ${pageKey} not found (compName=${props.tpl_path})`);
   }
 }
+function resolveLayoutTitle(pageKey, props, cfg) {
+  const siteName = cfg.site.name;
+  if (pageKey === "home") {
+    return siteName;
+  }
+  if (pageKey === "about") {
+    const aboutPath = cfg.about ?? "/about.md";
+    const aboutMeta = everkm.post_meta(props.request_id, {
+      path: aboutPath,
+      allow_missing: true
+    });
+    const aboutTitle = aboutMeta?.title;
+    return aboutTitle ? `${aboutTitle} | ${siteName}` : void 0;
+  }
+  return void 0;
+}
 async function renderPage(compName, props) {
   const pageKey = resolvePageKey(compName, props.tpl_path, props.post);
   const cfg = getPaperConfig(props);
-  const title = pageKey === "home" ? cfg.site.name : void 0;
+  const title = resolveLayoutTitle(pageKey, props, cfg);
   const html = await renderToStringAsync(() => createComponent(RootLayout, {
     context: props,
     title,

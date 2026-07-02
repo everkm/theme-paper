@@ -14,8 +14,8 @@ Install Paper Theme via everkm-publish and set it in your site's `everkm.yaml`.
 
 ```text
 your-site/
-├── home.md           # Hero content for virtual homepage
-├── about.md          # About page (virtual template)
+├── _home.md          # Hero content for virtual homepage
+├── _about.md         # About page (virtual template)
 └── posts/
     └── *.md          # Blog posts
 ```
