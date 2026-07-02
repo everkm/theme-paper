@@ -7,4 +7,6 @@ description: Welcome to the Paper Theme demo site.
 
 This hero section content comes from `_home.md`. The site homepage URL is `/index.html` (virtual template).
 
+The about page content comes from `_about.md`. The about page URL is `/about/` (virtual template).
+
 Browse all posts, explore tags, or read the about page from the navigation header.
