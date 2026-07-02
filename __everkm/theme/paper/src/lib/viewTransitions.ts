@@ -91,7 +91,15 @@ function swapVtRegion(
   const current = document.querySelector(`[data-vt-swap="${key}"]`);
 
   if (next && current) {
-    current.replaceWith(next.cloneNode(true));
+    const cloned = next.cloneNode(true) as HTMLElement;
+    if (key === "header") {
+      const liveSearch = current.querySelector("#header-in-search");
+      const clonedSearch = cloned.querySelector("#header-in-search");
+      if (liveSearch && clonedSearch) {
+        clonedSearch.replaceWith(liveSearch);
+      }
+    }
+    current.replaceWith(cloned);
     return;
   }
   if (next && !current && anchor) {

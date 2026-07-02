@@ -12,7 +12,6 @@ export interface PaperFeatures {
   light_and_dark_mode?: boolean;
   show_archives?: boolean;
   show_back_button?: boolean;
-  search?: "pagefind" | false;
   view_transitions?: boolean;
   edit_post?: { enabled?: boolean; url?: string };
 }
@@ -51,7 +50,6 @@ const DEFAULTS: PaperConfig = {
     light_and_dark_mode: true,
     show_archives: true,
     show_back_button: true,
-    search: "pagefind",
     view_transitions: true,
     edit_post: { enabled: false },
   },

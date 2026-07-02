@@ -6,6 +6,12 @@ config:
     - name: everkm
       url: https://everkm.com
 
+  algolia_search:
+    app_id: 1N74YC70XF
+    api_key: 95bb37e3122ee9cb57a8ee0abbd14409
+    index_name: paper
+    site: theme-paper
+
   copyright:
     text: everkm
     link: https://everkm.com

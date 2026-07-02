@@ -10,6 +10,6 @@ Paper Theme includes:
 
 1. **Dark mode** — toggled via the header button, persisted in `localStorage`
 2. **View Transitions** — smooth in-site navigation without full page reloads
-3. **Pagefind search** — client-mounted search UI on `/search/index.html`
+3. **Algolia search** — header search overlay via `plugin-in-search` when `algolia_search` is configured
 
 These features are progressive enhancements; the site remains fully usable without JavaScript.

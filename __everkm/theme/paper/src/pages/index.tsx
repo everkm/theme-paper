@@ -2,6 +2,7 @@ import { renderToStringAsync } from "solid-js/web";
 import { RootLayout } from "../layout/RootLayout";
 import { resolvePageKey } from "../lib/normalizeTplPath";
 import { getPaperConfig } from "../lib/config";
+import { configValue } from "../lib/configValue";
 import { HomePage } from "./home";
 import { AboutPage } from "./about";
 import { PostPage } from "./post";
@@ -9,7 +10,6 @@ import { PostsListPage } from "./posts-list";
 import { TagsIndexPage } from "./tags-index";
 import { TagPostsPage } from "./tag-posts";
 import { ArchivesPage } from "./archives";
-import { SearchPage } from "./search";
 
 function renderPageBody(pageKey: string, props: PageContext) {
   switch (pageKey) {
@@ -27,8 +27,6 @@ function renderPageBody(pageKey: string, props: PageContext) {
       return <TagPostsPage props={props} />;
     case "archives":
       return <ArchivesPage props={props} />;
-    case "search":
-      return <SearchPage props={props} />;
     default:
       throw new Error(`Page ${pageKey} not found (compName=${props.tpl_path})`);
   }
@@ -68,11 +66,23 @@ async function renderPage(compName: string, props: PageContext) {
 
   const cssPaper =
     everkm.assets(props.request_id, { type: "css", section: "paper" }) || "";
+  const cssSearch = configValue(props.config, "algolia_search")
+    ? everkm.assets(props.request_id, {
+        type: "css",
+        section: "plugin-in-search",
+      }) || ""
+    : "";
   const jsPaper =
     everkm.assets(props.request_id, { type: "js", section: "paper" }) || "";
+  const jsSearch = configValue(props.config, "algolia_search")
+    ? everkm.assets(props.request_id, {
+        type: "js",
+        section: "plugin-in-search",
+      }) || ""
+    : "";
 
-  const withCss = html.replace(/<\/head>/i, `${cssPaper}</head>`);
-  const withJs = withCss.replace(/<\/body>/i, `${jsPaper}</body>`);
+  const withCss = html.replace(/<\/head>/i, `${cssPaper}${cssSearch}</head>`);
+  const withJs = withCss.replace(/<\/body>/i, `${jsPaper}${jsSearch}</body>`);
   return `<!DOCTYPE html>${withJs}`;
 }
 

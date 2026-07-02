@@ -29,7 +29,6 @@ function pageKeySegment(pageKey?: string): string {
     "posts-list": "posts",
     "tags-index": "tags",
     archives: "archives",
-    search: "search",
     about: "about",
   };
   return pageKey ? map[pageKey] ?? "" : "";
@@ -92,7 +91,6 @@ export function buildBreadcrumbSegments(
     tags: t.nav.tags,
     about: t.nav.about,
     archives: t.nav.archives,
-    search: t.nav.search,
   };
 
   const labels: string[] = [];

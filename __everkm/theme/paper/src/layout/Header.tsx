@@ -8,10 +8,10 @@ import { Icon } from "../components/Icon";
 import IconMenuDeep from "../assets/icons/IconMenuDeep.svg";
 import IconX from "../assets/icons/IconX.svg";
 import IconArchive from "../assets/icons/IconArchive.svg";
-import IconSearch from "../assets/icons/IconSearch.svg";
 import IconSunHigh from "../assets/icons/IconSunHigh.svg";
 import IconMoon from "../assets/icons/IconMoon.svg";
 import IconUnderline from "../assets/icons/IconUnderline.svg";
+import { configValue } from "../lib/configValue";
 
 type HeaderProps = {
   ctx: PageContext;
@@ -64,6 +64,43 @@ export const Header: Component<HeaderProps> = (props) => {
               id="menu-items"
               class="[&>li>a]:hover:text-accent mt-4 hidden w-44 grid-cols-2 place-content-center gap-2 sm:mt-0 sm:flex sm:w-auto sm:gap-x-5 sm:gap-y-0 sm:[&>li]:h-8 [&>li>a]:block [&>li>a]:px-4 [&>li>a]:py-3 [&>li>a]:text-center [&>li>a]:font-medium sm:[&>li>a]:px-2 sm:[&>li>a]:py-1"
             >
+              <Show when={configValue(props.ctx.config, "algolia_search")}>
+                <li class="col-span-2 flex items-center justify-center sm:col-span-1">
+                  <div id="header-in-search">
+                    <x-in-search
+                      app-id={String(
+                        configValue(
+                          props.ctx.config,
+                          "algolia_search/app_id",
+                          "",
+                        ),
+                      )}
+                      api-key={String(
+                        configValue(
+                          props.ctx.config,
+                          "algolia_search/api_key",
+                          "",
+                        ),
+                      )}
+                      index={String(
+                        configValue(
+                          props.ctx.config,
+                          "algolia_search/index_name",
+                          "",
+                        ),
+                      )}
+                      site={String(
+                        configValue(
+                          props.ctx.config,
+                          "algolia_search/site",
+                          "",
+                        ),
+                      )}
+                      only-button="false"
+                    />
+                  </div>
+                </li>
+              </Show>
               <li class="col-span-2">
                 <a
                   href={pageUrl(props.ctx.request_id, POSTS_INDEX_URL)}
@@ -116,36 +153,11 @@ export const Header: Component<HeaderProps> = (props) => {
                   </LinkButton>
                 </li>
               </Show>
-              <Show when={cfg().features?.search !== false}>
-                <li class="col-span-1 flex items-center justify-center">
-                  <LinkButton
-                    href={pageUrl(props.ctx.request_id, "/search/index.html")}
-                    data-nav-path="/search"
-                    data-nav-icon=""
-                    class={`focus-outline relative size-8 ${isActive("/search") ? "max-sm:underline max-sm:decoration-wavy max-sm:decoration-2 max-sm:underline-offset-8" : ""}`}
-                    title={t().nav.search}
-                    aria-label={t().nav.search}
-                  >
-                    <Icon
-                      svg={IconSearch}
-                      class="absolute top-1/2 left-1/2 size-6 -translate-x-1/2 -translate-y-1/2"
-                    />
-                    <span class="sr-only">{t().nav.search}</span>
-                    <span
-                      data-nav-active-icon
-                      aria-hidden="true"
-                      class={`pointer-events-none absolute bottom-0 left-1/2 w-6 -translate-x-1/2 scale-125 max-sm:inset-s-2 max-sm:translate-x-0 ${isActive("/search") ? "" : "hidden"}`}
-                    >
-                      <Icon svg={IconUnderline} class="w-6" />
-                    </span>
-                  </LinkButton>
-                </li>
-              </Show>
               <Show when={cfg().features?.light_and_dark_mode !== false}>
-                <li class="col-span-1 flex items-center justify-center">
+                <li class="col-span-2 flex items-center justify-center sm:col-span-1">
                   <button
                     id="theme-btn"
-                    class="focus-outline hover:[&>svg]:stroke-accent relative size-12 p-4 sm:size-8"
+                    class="focus-outline hover:[&>svg]:stroke-accent relative flex size-8 items-center justify-center"
                     title={t().a11y.toggleTheme}
                     aria-label="auto"
                     aria-live="polite"

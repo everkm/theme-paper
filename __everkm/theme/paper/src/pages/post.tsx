@@ -51,7 +51,6 @@ export const PostPage: Component<PostPageProps> = (p) => {
       <main
         id="main-content"
         data-layout="post"
-        data-pagefind-body=""
         class={`app-layout${padMainTop() ? " mt-8" : ""}`}
       >
         <Show when={post}>

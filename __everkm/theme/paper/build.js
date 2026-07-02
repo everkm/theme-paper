@@ -121,6 +121,10 @@ const entryPoints = [
     in: "src/entries/browser.ts",
     out: "paper",
   },
+  {
+    in: "src/lib/plugins/in_search/index.ts",
+    out: "plugin-in-search",
+  },
 ];
 
 // JSRender 入口点配置（产物 everkm-render.js，供 everkm-publish 调用）

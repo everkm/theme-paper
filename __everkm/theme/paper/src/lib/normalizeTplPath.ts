@@ -23,7 +23,6 @@ export function resolvePageKey(
   if (key === "posts") return "posts-list";
   if (key === "tags") return "tags-index";
   if (key === "archives") return "archives";
-  if (key === "search") return "search";
   if (key.startsWith("tags/")) return "tag-posts";
 
   if (post) return "post";

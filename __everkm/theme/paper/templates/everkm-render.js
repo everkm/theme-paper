@@ -2600,7 +2600,6 @@ var DEFAULTS = {
     light_and_dark_mode: true,
     show_archives: true,
     show_back_button: true,
-    search: "pagefind",
     view_transitions: true,
     edit_post: { enabled: false }
   },
@@ -2632,7 +2631,6 @@ function resolvePageKey(compName, tplPath, post) {
   if (key === "posts") return "posts-list";
   if (key === "tags") return "tags-index";
   if (key === "archives") return "archives";
-  if (key === "search") return "search";
   if (key.startsWith("tags/")) return "tag-posts";
   if (post) return "post";
   if (compName === "post") return "post";
@@ -2719,6 +2717,18 @@ var RootLayout = (props) => {
     }
   })));
 };
+
+// src/lib/configValue.ts
+function configValue(config, path, defaultValue) {
+  if (!config) return defaultValue;
+  const keys = path.split("/").filter(Boolean);
+  let val = config;
+  for (const key of keys) {
+    if (val == null || typeof val !== "object") return defaultValue;
+    val = val[key];
+  }
+  return val ?? defaultValue;
+}
 
 // src/lib/i18n/lang/en.ts
 var en = {
@@ -2861,9 +2871,6 @@ var IconX_default = '<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  heigh
 // src/assets/icons/IconArchive.svg
 var IconArchive_default = '<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-archive"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 4m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" /><path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" /><path d="M10 12l4 0" /></svg>';
 
-// src/assets/icons/IconSearch.svg
-var IconSearch_default = '<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-search"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>';
-
 // src/assets/icons/IconSunHigh.svg
 var IconSunHigh_default = '<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-sun-high"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14.828 14.828a4 4 0 1 0 -5.656 -5.656a4 4 0 0 0 5.656 5.656z" /><path d="M6.343 17.657l-1.414 1.414" /><path d="M6.343 6.343l-1.414 -1.414" /><path d="M17.657 6.343l1.414 -1.414" /><path d="M17.657 17.657l1.414 1.414" /><path d="M4 12h-2" /><path d="M12 4v-2" /><path d="M20 12h2" /><path d="M12 20v2" /></svg>';
 
@@ -2875,31 +2882,37 @@ var IconUnderline_default = '<svg viewBox="0 0 181 35" fill="none" xmlns="http:/
 
 // src/layout/Header.tsx
 var _tmpl$5 = ['<a id="skip-to-content" href="#main-content" class="bg-background text-accent absolute inset-s-16 -top-full z-50 px-3 py-2 backdrop-blur-lg transition-all focus:top-4">', "</a>"];
-var _tmpl$22 = ['<span class="sm:sr-only">', "</span>"];
-var _tmpl$32 = ['<span data-nav-active-icon aria-hidden="true" class="', '">', "</span>"];
-var _tmpl$42 = ['<li class="col-span-2">', "</li>"];
-var _tmpl$52 = ['<span class="sr-only">', "</span>"];
-var _tmpl$6 = ['<li class="col-span-1 flex items-center justify-center">', "</li>"];
-var _tmpl$7 = ['<li class="col-span-1 flex items-center justify-center"><button id="theme-btn" class="focus-outline hover:[&amp;>svg]:stroke-accent relative size-12 p-4 sm:size-8"', ' aria-label="auto" aria-live="polite" type="button">', "", "</button></li>"];
-var _tmpl$8 = ['<header class="app-layout flex flex-col items-center justify-between sm:flex-row" data-vt-swap="header"><div class="border-border bg-background relative flex w-full items-baseline justify-between border-b py-4 sm:items-center sm:py-6"><a', ' class="absolute py-1 text-xl leading-8 font-semibold whitespace-nowrap sm:static sm:my-auto sm:text-2xl sm:leading-none">', '</a><nav id="nav-menu" class="flex w-full flex-col items-center sm:ms-2 sm:flex-row sm:justify-end sm:space-x-4 sm:py-0"><button id="menu-btn" class="focus-outline self-end p-2 sm:hidden"', ' aria-expanded="false" aria-controls="menu-items"', ' type="button">', "", '</button><ul id="menu-items" class="[&amp;>li>a]:hover:text-accent mt-4 hidden w-44 grid-cols-2 place-content-center gap-2 sm:mt-0 sm:flex sm:w-auto sm:gap-x-5 sm:gap-y-0 sm:[&amp;>li]:h-8 [&amp;>li>a]:block [&amp;>li>a]:px-4 [&amp;>li>a]:py-3 [&amp;>li>a]:text-center [&amp;>li>a]:font-medium sm:[&amp;>li>a]:px-2 sm:[&amp;>li>a]:py-1"><li class="col-span-2"><a', ">", '</a></li><li class="col-span-2"><a', ' data-nav-path="/tags"', ">", '</a></li><li class="col-span-2"><a', ' data-nav-path="/about"', ">", "</a></li>", "", "", "</ul></nav></div></header>"];
+var _tmpl$22 = ['<li class="col-span-2 flex items-center justify-center sm:col-span-1"><div id="header-in-search"><x-in-search', ' only-button="false"></x-in-search></div></li>'];
+var _tmpl$32 = ['<span class="sm:sr-only">', "</span>"];
+var _tmpl$42 = ['<span data-nav-active-icon aria-hidden="true" class="', '">', "</span>"];
+var _tmpl$52 = ['<li class="col-span-2">', "</li>"];
+var _tmpl$6 = ['<li class="col-span-2 flex items-center justify-center sm:col-span-1"><button id="theme-btn" class="focus-outline hover:[&amp;>svg]:stroke-accent relative flex size-8 items-center justify-center"', ' aria-label="auto" aria-live="polite" type="button">', "", "</button></li>"];
+var _tmpl$7 = ['<header class="app-layout flex flex-col items-center justify-between sm:flex-row" data-vt-swap="header"><div class="border-border bg-background relative flex w-full items-baseline justify-between border-b py-4 sm:items-center sm:py-6"><a', ' class="absolute py-1 text-xl leading-8 font-semibold whitespace-nowrap sm:static sm:my-auto sm:text-2xl sm:leading-none">', '</a><nav id="nav-menu" class="flex w-full flex-col items-center sm:ms-2 sm:flex-row sm:justify-end sm:space-x-4 sm:py-0"><button id="menu-btn" class="focus-outline self-end p-2 sm:hidden"', ' aria-expanded="false" aria-controls="menu-items"', ' type="button">', "", '</button><ul id="menu-items" class="[&amp;>li>a]:hover:text-accent mt-4 hidden w-44 grid-cols-2 place-content-center gap-2 sm:mt-0 sm:flex sm:w-auto sm:gap-x-5 sm:gap-y-0 sm:[&amp;>li]:h-8 [&amp;>li>a]:block [&amp;>li>a]:px-4 [&amp;>li>a]:py-3 [&amp;>li>a]:text-center [&amp;>li>a]:font-medium sm:[&amp;>li>a]:px-2 sm:[&amp;>li>a]:py-1">', '<li class="col-span-2"><a', ">", '</a></li><li class="col-span-2"><a', ' data-nav-path="/tags"', ">", '</a></li><li class="col-span-2"><a', ' data-nav-path="/about"', ">", "</a></li>", "", "</ul></nav></div></header>"];
 var Header = (props) => {
   const cfg = () => getPaperConfig(props.ctx);
   const t2 = () => useTranslations(props.ctx.lang);
   const path = () => currentPagePath(props.ctx);
   const isActive = (target) => isActivePath(path(), target);
-  return [ssr(_tmpl$5, escape(t2().a11y.skipToContent)), ssr(_tmpl$8, ssrAttribute("href", escape(pageUrl(props.ctx.request_id, "/index.html"), true), false), escape(cfg().site.name), ssrAttribute("aria-label", escape(t2().a11y.openMenu, true), false), ssrAttribute("data-label-open", escape(t2().a11y.openMenu, true), false) + ssrAttribute("data-label-close", escape(t2().a11y.closeMenu, true), false), escape(createComponent(Icon, {
+  return [ssr(_tmpl$5, escape(t2().a11y.skipToContent)), ssr(_tmpl$7, ssrAttribute("href", escape(pageUrl(props.ctx.request_id, "/index.html"), true), false), escape(cfg().site.name), ssrAttribute("aria-label", escape(t2().a11y.openMenu, true), false), ssrAttribute("data-label-open", escape(t2().a11y.openMenu, true), false) + ssrAttribute("data-label-close", escape(t2().a11y.closeMenu, true), false), escape(createComponent(Icon, {
     svg: IconX_default,
     "class": "hidden",
     id: "close-icon"
   })), escape(createComponent(Icon, {
     svg: IconMenuDeep_default,
     id: "menu-icon"
+  })), escape(createComponent(Show, {
+    get when() {
+      return configValue(props.ctx.config, "algolia_search");
+    },
+    get children() {
+      return ssr(_tmpl$22, ssrAttribute("app-id", escape(String(configValue(props.ctx.config, "algolia_search/app_id", "")), true), false) + ssrAttribute("api-key", escape(String(configValue(props.ctx.config, "algolia_search/api_key", "")), true), false) + ssrAttribute("index", escape(String(configValue(props.ctx.config, "algolia_search/index_name", "")), true), false) + ssrAttribute("site", escape(String(configValue(props.ctx.config, "algolia_search/site", "")), true), false));
+    }
   })), ssrAttribute("href", escape(pageUrl(props.ctx.request_id, POSTS_INDEX_URL), true), false) + ssrAttribute("data-nav-path", escape(POSTS_PATH, true), false) + ssrAttribute("class", isActive(POSTS_PATH) ? "active-nav" : "", false), escape(t2().nav.posts), ssrAttribute("href", escape(pageUrl(props.ctx.request_id, "/tags/index.html"), true), false), ssrAttribute("class", isActive("/tags") ? "active-nav" : "", false), escape(t2().nav.tags), ssrAttribute("href", escape(pageUrl(props.ctx.request_id, "/about/"), true), false), ssrAttribute("class", isActive("/about") ? "active-nav" : "", false), escape(t2().nav.about), escape(createComponent(Show, {
     get when() {
       return cfg().features?.show_archives !== false;
     },
     get children() {
-      return ssr(_tmpl$42, escape(createComponent(LinkButton, {
+      return ssr(_tmpl$52, escape(createComponent(LinkButton, {
         get href() {
           return pageUrl(props.ctx.request_id, "/archives/index.html");
         },
@@ -2918,38 +2931,7 @@ var Header = (props) => {
           return [createComponent(Icon, {
             svg: IconArchive_default,
             "class": "hidden sm:absolute sm:top-1/2 sm:left-1/2 sm:block sm:size-6 sm:-translate-x-1/2 sm:-translate-y-1/2"
-          }), ssr(_tmpl$22, escape(t2().nav.archives)), ssr(_tmpl$32, `pointer-events-none scale-125 max-sm:hidden sm:absolute sm:bottom-0 sm:left-1/2 sm:w-6 sm:-translate-x-1/2 ${isActive("/archives") ? "" : "hidden"}`, escape(createComponent(Icon, {
-            svg: IconUnderline_default,
-            "class": "w-6"
-          })))];
-        }
-      })));
-    }
-  })), escape(createComponent(Show, {
-    get when() {
-      return cfg().features?.search !== false;
-    },
-    get children() {
-      return ssr(_tmpl$6, escape(createComponent(LinkButton, {
-        get href() {
-          return pageUrl(props.ctx.request_id, "/search/index.html");
-        },
-        "data-nav-path": "/search",
-        "data-nav-icon": "",
-        get ["class"]() {
-          return `focus-outline relative size-8 ${isActive("/search") ? "max-sm:underline max-sm:decoration-wavy max-sm:decoration-2 max-sm:underline-offset-8" : ""}`;
-        },
-        get title() {
-          return t2().nav.search;
-        },
-        get ["aria-label"]() {
-          return t2().nav.search;
-        },
-        get children() {
-          return [createComponent(Icon, {
-            svg: IconSearch_default,
-            "class": "absolute top-1/2 left-1/2 size-6 -translate-x-1/2 -translate-y-1/2"
-          }), ssr(_tmpl$52, escape(t2().nav.search)), ssr(_tmpl$32, `pointer-events-none absolute bottom-0 left-1/2 w-6 -translate-x-1/2 scale-125 max-sm:inset-s-2 max-sm:translate-x-0 ${isActive("/search") ? "" : "hidden"}`, escape(createComponent(Icon, {
+          }), ssr(_tmpl$32, escape(t2().nav.archives)), ssr(_tmpl$42, `pointer-events-none scale-125 max-sm:hidden sm:absolute sm:bottom-0 sm:left-1/2 sm:w-6 sm:-translate-x-1/2 ${isActive("/archives") ? "" : "hidden"}`, escape(createComponent(Icon, {
             svg: IconUnderline_default,
             "class": "w-6"
           })))];
@@ -2961,7 +2943,7 @@ var Header = (props) => {
       return cfg().features?.light_and_dark_mode !== false;
     },
     get children() {
-      return ssr(_tmpl$7, ssrAttribute("title", escape(t2().a11y.toggleTheme, true), false), escape(createComponent(Icon, {
+      return ssr(_tmpl$6, ssrAttribute("title", escape(t2().a11y.toggleTheme, true), false), escape(createComponent(Icon, {
         svg: IconMoon_default,
         "class": "absolute top-[50%] left-[50%] translate-[-50%] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90"
       })), escape(createComponent(Icon, {
@@ -3014,7 +2996,7 @@ function getSocialIcon(name) {
 }
 
 // src/components/Socials.tsx
-var _tmpl$9 = ['<div class="flex flex-wrap items-center gap-4">', "</div>"];
+var _tmpl$8 = ['<div class="flex flex-wrap items-center gap-4">', "</div>"];
 var _tmpl$23 = ["<a", ' target="_blank" rel="noopener noreferrer"', ">", "</a>"];
 var Socials = (props) => {
   return createComponent(Show, {
@@ -3022,7 +3004,7 @@ var Socials = (props) => {
       return props.socials.length > 0;
     },
     get children() {
-      return ssr(_tmpl$9, escape(createComponent(For, {
+      return ssr(_tmpl$8, escape(createComponent(For, {
         get each() {
           return props.socials;
         },
@@ -3039,11 +3021,11 @@ var Socials = (props) => {
 };
 
 // src/components/Footer.tsx
-var _tmpl$10 = ['<footer class="', '"><div class="flex flex-col items-center justify-between border-t border-muted py-6 sm:flex-row-reverse sm:py-4">', '<div class="my-2 flex flex-col items-center whitespace-nowrap sm:flex-row"><span>', " &#169; ", '</span><span class="hidden sm:inline">&nbsp;|&nbsp;</span><span>', "</span></div></div></footer>"];
+var _tmpl$9 = ['<footer class="', '"><div class="flex flex-col items-center justify-between border-t border-muted py-6 sm:flex-row-reverse sm:py-4">', '<div class="my-2 flex flex-col items-center whitespace-nowrap sm:flex-row"><span>', " &#169; ", '</span><span class="hidden sm:inline">&nbsp;|&nbsp;</span><span>', "</span></div></div></footer>"];
 var Footer = (props) => {
   const t2 = () => useTranslations(props.ctx.lang);
   const year = (/* @__PURE__ */ new Date()).getFullYear();
-  return ssr(_tmpl$10, `app-layout ${props.noMarginTop ? "" : "mt-auto"}`, escape(createComponent(Socials, {
+  return ssr(_tmpl$9, `app-layout ${props.noMarginTop ? "" : "mt-auto"}`, escape(createComponent(Socials, {
     get ctx() {
       return props.ctx;
     },
@@ -3068,7 +3050,7 @@ var import_timezone = __toESM(require_timezone(), 1);
 var IconCalendar_default = '<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-calendar-week"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z" /><path d="M16 3v4" /><path d="M8 3v4" /><path d="M4 11h16" /><path d="M7 14h.013" /><path d="M10.01 14h.005" /><path d="M13.01 14h.005" /><path d="M16.015 14h.005" /><path d="M13.015 17h.005" /><path d="M7.01 17h.005" /><path d="M10.01 17h.005" /></svg>';
 
 // src/components/Datetime.tsx
-var _tmpl$11 = ["<span", ">", ":</span>"];
+var _tmpl$10 = ["<span", ">", ":</span>"];
 var _tmpl$24 = ['<div class="', '">', "", "<time", ">", "</time></div>"];
 import_dayjs.default.extend(import_utc.default);
 import_dayjs.default.extend(import_timezone.default);
@@ -3090,13 +3072,13 @@ var Datetime = (props) => {
       return isModified();
     },
     get children() {
-      return ssr(_tmpl$11, ssrAttribute("class", size() === "lg" ? "text-sm sm:text-base" : "text-sm", false), escape(t2().post.updatedAt));
+      return ssr(_tmpl$10, ssrAttribute("class", size() === "lg" ? "text-sm sm:text-base" : "text-sm", false), escape(t2().post.updatedAt));
     }
   })), ssrAttribute("class", size() === "lg" ? "text-sm sm:text-base" : "text-sm", false) + ssrAttribute("datetime", escape(datetime().toISOString(), true), false), escape(datetime().format("D MMM, YYYY")));
 };
 
 // src/components/Card.tsx
-var _tmpl$12 = ['<h3 style="', '">', "</h3>"];
+var _tmpl$11 = ['<h3 style="', '">', "</h3>"];
 var _tmpl$25 = ['<h2 style="', '">', "</h2>"];
 var _tmpl$33 = ['<li class="my-6"><a', ' class="text-accent inline-block text-lg font-medium decoration-dashed underline-offset-4 hover:underline focus-visible:no-underline focus-visible:underline-offset-0">', "</a>", "<p>", "</p></li>"];
 var Card = (props) => {
@@ -3107,7 +3089,7 @@ var Card = (props) => {
       "view-transition-name": toTransitionName(props.post.title)
     };
     if (variant() === "h3") {
-      return ssr(_tmpl$12, ssrStyle(style), escape(p3.children));
+      return ssr(_tmpl$11, ssrStyle(style), escape(p3.children));
     }
     return ssr(_tmpl$25, ssrStyle(style), escape(p3.children));
   };
@@ -3132,7 +3114,7 @@ var Card = (props) => {
 var IconArrowRight_default = '<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M13 18l6 -6" /><path d="M13 6l6 6" /></svg>';
 
 // src/pages/home.tsx
-var _tmpl$13 = ["<p>", "</p>"];
+var _tmpl$12 = ["<p>", "</p>"];
 var _tmpl$26 = ['<div class="', '">', "</div>"];
 var _tmpl$34 = ['<div class="mt-4 flex max-sm:flex-col sm:items-center"><div class="me-2 mb-1 whitespace-nowrap sm:mb-0">', ":</div>", "</div>"];
 var _tmpl$43 = ['<section id="featured" class="', '"><h2 class="text-2xl font-semibold tracking-wide">', "</h2><ul>", "</ul></section>"];
@@ -3175,7 +3157,7 @@ var HomePage = (p3) => {
       return !!cfg().site.description;
     },
     get children() {
-      return ssr(_tmpl$13, escape(cfg().site.description));
+      return ssr(_tmpl$12, escape(cfg().site.description));
     }
   })), escape(createComponent(Show, {
     when: !!heroHtml,
@@ -3271,7 +3253,6 @@ function pageKeySegment(pageKey) {
     "posts-list": "posts",
     "tags-index": "tags",
     archives: "archives",
-    search: "search",
     about: "about"
   };
   return pageKey ? map[pageKey] ?? "" : "";
@@ -3314,8 +3295,7 @@ function buildBreadcrumbSegments(ctx, t2, pageKey) {
     posts: t2.nav.posts,
     tags: t2.nav.tags,
     about: t2.nav.about,
-    archives: t2.nav.archives,
-    search: t2.nav.search
+    archives: t2.nav.archives
   };
   const labels = [];
   if (raw[0] === "posts") {
@@ -3379,7 +3359,7 @@ function buildBreadcrumbSegments(ctx, t2, pageKey) {
 var IconChevronLeft_default = '<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-left"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 6l-6 6l6 6" /></svg>\n';
 
 // src/components/BackButton.tsx
-var _tmpl$14 = ['<span aria-hidden="true">', "</span>"];
+var _tmpl$13 = ['<span aria-hidden="true">', "</span>"];
 var _tmpl$27 = ["<span>", "</span>"];
 var _tmpl$35 = ['<div class="app-layout flex items-center justify-start">', "</div>"];
 function chevronMarkup() {
@@ -3401,13 +3381,13 @@ var BackButton = (props) => {
       return linkClass();
     },
     get children() {
-      return [ssr(_tmpl$14, chevronMarkup()), ssr(_tmpl$27, escape(t2().post.goBack))];
+      return [ssr(_tmpl$13, chevronMarkup()), ssr(_tmpl$27, escape(t2().post.goBack))];
     }
   })));
 };
 
 // src/components/Breadcrumb.tsx
-var _tmpl$15 = ['<nav class="app-layout mt-8 mb-4" aria-label="breadcrumb"><ul class="font-light flex flex-wrap items-center gap-x-1 [&amp;>li:not(:last-child)>a]:hover:opacity-100"><li class="inline-flex items-center gap-x-1"><a', ' class="opacity-80">', '</a><span aria-hidden="true" class="opacity-80">&raquo;</span></li>', "</ul></nav>"];
+var _tmpl$14 = ['<nav class="app-layout mt-8 mb-4" aria-label="breadcrumb"><ul class="font-light flex flex-wrap items-center gap-x-1 [&amp;>li:not(:last-child)>a]:hover:opacity-100"><li class="inline-flex items-center gap-x-1"><a', ' class="opacity-80">', '</a><span aria-hidden="true" class="opacity-80">&raquo;</span></li>', "</ul></nav>"];
 var _tmpl$28 = ["<a", ' class="capitalize opacity-70">', "</a>"];
 var _tmpl$36 = '<span aria-hidden="true" class="opacity-70">&raquo;</span>';
 var _tmpl$44 = ['<li class="inline-flex items-center gap-x-1">', "</li>"];
@@ -3422,7 +3402,7 @@ var Breadcrumb = (props) => {
       return show();
     },
     get children() {
-      return ssr(_tmpl$15, ssrAttribute("href", escape(pageUrl(props.ctx.request_id, "/index.html"), true), false), escape(t2().nav.home), escape(createComponent(For, {
+      return ssr(_tmpl$14, ssrAttribute("href", escape(pageUrl(props.ctx.request_id, "/index.html"), true), false), escape(t2().nav.home), escape(createComponent(For, {
         get each() {
           return segments();
         },
@@ -3443,11 +3423,11 @@ var Breadcrumb = (props) => {
 };
 
 // src/components/PageChrome.tsx
-var _tmpl$16 = ['<div data-vt-swap="page-chrome">', "", "</div>"];
+var _tmpl$15 = ['<div data-vt-swap="page-chrome">', "", "</div>"];
 var PageChrome = (props) => {
   const hasBreadcrumb = () => shouldShowBreadcrumb(props.ctx, props.pageKey);
   const hasBack = () => !!props.showBack;
-  return ssr(_tmpl$16, escape(createComponent(Show, {
+  return ssr(_tmpl$15, escape(createComponent(Show, {
     get when() {
       return hasBreadcrumb();
     },
@@ -3479,7 +3459,7 @@ var PageChrome = (props) => {
 };
 
 // src/components/Main.tsx
-var _tmpl$17 = ['<p class="text-muted-foreground mt-2 mb-6 italic">', "</p>"];
+var _tmpl$16 = ['<p class="text-muted-foreground mt-2 mb-6 italic">', "</p>"];
 var _tmpl$29 = ['<main id="main-content"', '><h1 class="text-2xl font-semibold sm:text-3xl">', "</h1>", "", "</main>"];
 var Main = (props) => {
   const [local] = splitProps(props, ["pageTitle", "pageDesc", "layout", "ctx", "pageKey", "class", "children"]);
@@ -3496,13 +3476,13 @@ var Main = (props) => {
       return local.pageDesc;
     },
     get children() {
-      return ssr(_tmpl$17, escape(local.pageDesc));
+      return ssr(_tmpl$16, escape(local.pageDesc));
     }
   })), escape(local.children));
 };
 
 // src/pages/about.tsx
-var _tmpl$18 = ['<p class="text-muted-foreground italic">', "</p>"];
+var _tmpl$17 = ['<p class="text-muted-foreground italic">', "</p>"];
 var _tmpl$210 = ["<div>", "</div>"];
 var AboutPage = (p3) => {
   const ctx = () => p3.props;
@@ -3537,7 +3517,7 @@ var AboutPage = (p3) => {
           return aboutDoc?.content_html;
         },
         get fallback() {
-          return ssr(_tmpl$18, escape(t2().pages.aboutEmpty));
+          return ssr(_tmpl$17, escape(t2().pages.aboutEmpty));
         },
         children: (html) => ssr(_tmpl$210, html())
       });
@@ -3553,12 +3533,12 @@ var AboutPage = (p3) => {
 };
 
 // src/components/Tag.tsx
-var _tmpl$19 = ["<li><a", ' class="text-accent decoration-dashed underline-offset-4 hover:underline">#', "", "</a></li>"];
+var _tmpl$18 = ["<li><a", ' class="text-accent decoration-dashed underline-offset-4 hover:underline">#', "", "</a></li>"];
 var _tmpl$211 = ['<sup class="text-muted-foreground ms-1 text-xs">', "</sup>"];
 var Tag = (props) => {
   const slug = () => encodeURIComponent(props.tag);
   const href = () => pageUrl(props.ctx.request_id, `/tags/${slug()}/index.html`);
-  return ssr(_tmpl$19, ssrAttribute("href", escape(href(), true), false), escape(props.tag), props.count != null && ssr(_tmpl$211, escape(props.count)));
+  return ssr(_tmpl$18, ssrAttribute("href", escape(href(), true), false), escape(props.tag), props.count != null && ssr(_tmpl$211, escape(props.count)));
 };
 
 // src/lib/postDetail.ts
@@ -3577,7 +3557,7 @@ function resolvePostDetail(ctx) {
 }
 
 // src/pages/post.tsx
-var _tmpl$20 = ['<main id="main-content" data-layout="post" data-pagefind-body class="', '">', "</main>"];
+var _tmpl$19 = ['<main id="main-content" data-layout="post" class="', '">', "</main>"];
 var _tmpl$212 = ['<h1 style="', '" class="text-accent inline-block text-2xl font-bold sm:text-3xl">', "</h1>"];
 var _tmpl$37 = ['<div class="my-4 flex flex-wrap gap-2"><span class="text-muted-foreground italic">', ':</span><ul class="flex flex-wrap gap-2">', "</ul></div>"];
 var _tmpl$45 = ['<article id="article"', ">", "</article>"];
@@ -3618,7 +3598,7 @@ var PostPage = (p3) => {
     get showBack() {
       return showBack();
     }
-  }), ssr(_tmpl$20, `app-layout${padMainTop() ? " mt-8" : ""}`, escape(createComponent(Show, {
+  }), ssr(_tmpl$19, `app-layout${padMainTop() ? " mt-8" : ""}`, escape(createComponent(Show, {
     when: post,
     children: (item) => [ssr(_tmpl$212, "view-transition-name:" + escape(toTransitionName(item().title || item().slug), true), escape(item().title) || escape(item().slug)), createComponent(Datetime, {
       get ctx() {
@@ -3707,7 +3687,7 @@ function paginationHref(base, targetPage) {
 var IconArrowLeft_default = '<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-left"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M5 12l6 6" /><path d="M5 12l6 -6" /></svg>';
 
 // src/components/Pagination.tsx
-var _tmpl$21 = ['<nav class="mt-auto mb-8 flex justify-center gap-4" role="navigation" aria-label="Pagination Navigation">', "", " / ", "", "</nav>"];
+var _tmpl$20 = ['<nav class="mt-auto mb-8 flex justify-center gap-4" role="navigation" aria-label="Pagination Navigation">', "", " / ", "", "</nav>"];
 var _tmpl$213 = ['<div data-vt-swap="pagination">', "</div>"];
 var Pagination = (props) => {
   const t2 = () => useTranslations(props.ctx.lang);
@@ -3718,7 +3698,7 @@ var Pagination = (props) => {
       return props.pageCount > 1;
     },
     get children() {
-      return ssr(_tmpl$21, escape(createComponent(LinkButton, {
+      return ssr(_tmpl$20, escape(createComponent(LinkButton, {
         get href() {
           return prevHref();
         },
@@ -3762,7 +3742,7 @@ var Pagination = (props) => {
 };
 
 // src/pages/posts-list.tsx
-var _tmpl$30 = ["<ul>", "</ul>"];
+var _tmpl$21 = ["<ul>", "</ul>"];
 var PostsListPage = (p3) => {
   const ctx = () => p3.props;
   const cfg = () => getPaperConfig(ctx());
@@ -3806,7 +3786,7 @@ var PostsListPage = (p3) => {
     },
     layout: "posts-list",
     get children() {
-      return ssr(_tmpl$30, escape(createComponent(For, {
+      return ssr(_tmpl$21, escape(createComponent(For, {
         get each() {
           return items();
         },
@@ -3843,7 +3823,7 @@ var PostsListPage = (p3) => {
 };
 
 // src/pages/tags-index.tsx
-var _tmpl$31 = ['<ul class="flex flex-wrap gap-6">', "</ul>"];
+var _tmpl$30 = ['<ul class="flex flex-wrap gap-6">', "</ul>"];
 var TagsIndexPage = (p3) => {
   const ctx = () => p3.props;
   const cfg = () => getPaperConfig(ctx());
@@ -3876,7 +3856,7 @@ var TagsIndexPage = (p3) => {
     },
     layout: "tags-index",
     get children() {
-      return ssr(_tmpl$31, escape(createComponent(For, {
+      return ssr(_tmpl$30, escape(createComponent(For, {
         get each() {
           return tagEntries();
         },
@@ -3900,7 +3880,7 @@ var TagsIndexPage = (p3) => {
 };
 
 // src/pages/tag-posts.tsx
-var _tmpl$38 = ["<ul>", "</ul>"];
+var _tmpl$31 = ["<ul>", "</ul>"];
 var TagPostsPage = (p3) => {
   const ctx = () => p3.props;
   const cfg = () => getPaperConfig(ctx());
@@ -3952,7 +3932,7 @@ var TagPostsPage = (p3) => {
     },
     layout: "tag-posts",
     get children() {
-      return ssr(_tmpl$38, escape(createComponent(For, {
+      return ssr(_tmpl$31, escape(createComponent(For, {
         get each() {
           return items();
         },
@@ -4005,7 +3985,7 @@ function postDate(post) {
 }
 
 // src/pages/archives.tsx
-var _tmpl$39 = ['<div><span class="text-2xl font-bold">', '</span><sup class="text-muted-foreground text-sm">', "</sup>", "</div>"];
+var _tmpl$38 = ['<div><span class="text-2xl font-bold">', '</span><sup class="text-muted-foreground text-sm">', "</sup>", "</div>"];
 var _tmpl$214 = ['<div class="flex flex-col sm:flex-row"><div class="mt-6 min-w-36 text-lg sm:my-6"><span class="font-bold">', '</span><sup class="text-muted-foreground text-xs">', "</sup></div><ul>", "</ul></div>"];
 function groupByYearMonth(posts) {
   var _a;
@@ -4065,7 +4045,7 @@ var ArchivesPage = (p3) => {
         children: (year) => {
           const months = Object.keys(grouped()[year]).sort((a, b2) => Number(b2) - Number(a));
           const yearCount = months.reduce((sum, m3) => sum + grouped()[year][m3].length, 0);
-          return ssr(_tmpl$39, escape(year), escape(yearCount), escape(createComponent(For, {
+          return ssr(_tmpl$38, escape(year), escape(yearCount), escape(createComponent(For, {
             each: months,
             children: (month) => {
               const monthPosts = [...grouped()[year][month]].sort((a, b2) => postTimestampSeconds(b2) - postTimestampSeconds(a));
@@ -4082,47 +4062,6 @@ var ArchivesPage = (p3) => {
           })));
         }
       });
-    }
-  }), createComponent(Footer, {
-    get ctx() {
-      return ctx();
-    },
-    get config() {
-      return cfg();
-    }
-  })];
-};
-
-// src/pages/search.tsx
-var _tmpl$40 = ['<div id="pagefind-search" data-client-mount="pagefind" data-vt-persist', "></div>"];
-var SearchPage = (p3) => {
-  const ctx = () => p3.props;
-  const cfg = () => getPaperConfig(ctx());
-  const t2 = () => useTranslations(ctx().lang);
-  const bundlePath = () => pageUrl(ctx().request_id, "/pagefind/").replace(/\/?$/, "/");
-  return [createComponent(Header, {
-    get ctx() {
-      return ctx();
-    }
-  }), createComponent(PageChrome, {
-    get ctx() {
-      return ctx();
-    },
-    pageKey: "search"
-  }), createComponent(Main, {
-    get ctx() {
-      return ctx();
-    },
-    pageKey: "search",
-    get pageTitle() {
-      return t2().pages.searchTitle;
-    },
-    get pageDesc() {
-      return t2().pages.searchDesc;
-    },
-    layout: "search",
-    get children() {
-      return ssr(_tmpl$40, ssrAttribute("data-bundle-path", escape(bundlePath(), true), false) + ssrAttribute("data-backurl", escape(pageUrl(ctx().request_id, "/search/index.html"), true), false));
     }
   }), createComponent(Footer, {
     get ctx() {
@@ -4165,10 +4104,6 @@ function renderPageBody(pageKey, props) {
       return createComponent(ArchivesPage, {
         props
       });
-    case "search":
-      return createComponent(SearchPage, {
-        props
-      });
     default:
       throw new Error(`Page ${pageKey} not found (compName=${props.tpl_path})`);
   }
@@ -4204,12 +4139,20 @@ async function renderPage(compName, props) {
     type: "css",
     section: "paper"
   }) || "";
+  const cssSearch = configValue(props.config, "algolia_search") ? everkm.assets(props.request_id, {
+    type: "css",
+    section: "plugin-in-search"
+  }) || "" : "";
   const jsPaper = everkm.assets(props.request_id, {
     type: "js",
     section: "paper"
   }) || "";
-  const withCss = html.replace(/<\/head>/i, `${cssPaper}</head>`);
-  const withJs = withCss.replace(/<\/body>/i, `${jsPaper}</body>`);
+  const jsSearch = configValue(props.config, "algolia_search") ? everkm.assets(props.request_id, {
+    type: "js",
+    section: "plugin-in-search"
+  }) || "" : "";
+  const withCss = html.replace(/<\/head>/i, `${cssPaper}${cssSearch}</head>`);
+  const withJs = withCss.replace(/<\/body>/i, `${jsPaper}${jsSearch}</body>`);
   return `<!DOCTYPE html>${withJs}`;
 }
 

@@ -45,7 +45,7 @@ export function hello(name) {
 | --- | --- |
 | Dark mode | ✅ |
 | View Transitions | ✅ |
-| Pagefind search | ✅ |
+| Algolia search | ✅ (with `algolia_search` config) |
 
 - Unordered list item
 - Another item with **bold** and _italic_

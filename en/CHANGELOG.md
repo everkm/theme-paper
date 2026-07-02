@@ -24,7 +24,7 @@ This changelog is for end users. Keep the wording user-friendly and avoid exposi
   - Virtual homepage with hero section, featured posts, and recent posts
 
 - **Virtual pages**
-  - Homepage (`/index.html`), posts list, tags index, tag posts, archives, search, and about page
+  - Homepage (`/index.html`), posts list, tags index, tag posts, archives, and about page
   - Paginated posts list and tag pages
 
 - **Posts**
@@ -36,7 +36,7 @@ This changelog is for end users. Keep the wording user-friendly and avoid exposi
   - Dark mode toggle with localStorage persistence
   - View Transitions for smooth in-site navigation
   - View Transitions restore scroll position on navigation (top of page, or hash target)
-  - Pagefind client-side search on `/search/index.html`
+  - Algolia full-text search in the header via `plugin-in-search` (when `algolia_search` is configured)
   - Optional archives button and back button on post pages
 
 - **Rendering**

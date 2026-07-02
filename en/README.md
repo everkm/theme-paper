@@ -117,7 +117,6 @@ tags:
 | `features.light_and_dark_mode` | boolean | `true` | Enable light / dark mode toggle in the header |
 | `features.show_archives` | boolean | `true` | Show the archives icon in the header navigation |
 | `features.show_back_button` | boolean | `true` | Show a back button on post detail pages |
-| `features.search` | string \| false | `"pagefind"` | Search provider; set to `"pagefind"` or `false` to disable |
 | `features.view_transitions` | boolean | `true` | Enable in-site View Transitions navigation |
 | `features.edit_post.enabled` | boolean | `false` | Show an edit link on post pages |
 | `features.edit_post.url` | string | — | Edit link URL template |
@@ -130,11 +129,32 @@ config:
     light_and_dark_mode: true
     show_archives: true
     show_back_button: true
-    search: pagefind
     view_transitions: true
     edit_post:
       enabled: false
 ```
+
+---
+
+## Search `algolia_search`
+
+When configured, the Algolia full-text search component appears in the header (requires `plugin-in-search` build artifacts).
+
+```yaml
+config:
+  algolia_search:
+    app_id: YOUR_APP_ID
+    api_key: YOUR_SEARCH_API_KEY
+    index_name: your_index
+    site: your-site-id
+```
+
+| Field | Description |
+|------|------|
+| `app_id` | Algolia Application ID |
+| `api_key` | Algolia Search-Only API Key |
+| `index_name` | Index name |
+| `site` | Site identifier (used internally by the plugin) |
 
 ---
 
@@ -246,7 +266,6 @@ Paper provides these virtual pages (no corresponding Markdown file required):
 | `/tags/index.html` | Tags index | All tags |
 | `/tags/{tag}/index.html` | Tag posts | Posts filtered by tag |
 | `/archives/index.html` | Archives | Posts grouped by year and month |
-| `/search/index.html` | Search | Pagefind search UI |
 | `/about/` | About | About page from `config.about` |
 
 ---
