@@ -20,6 +20,8 @@
   --muted: #e6e6e6;
   --muted-foreground: #6b7280;
   --border: #ece9e9;
+  --shiki-light: #323232;
+  --shiki-light-bg: #f6f8fa;
 }
 
 /* Dark theme values */
@@ -31,4 +33,6 @@
   --muted: #343f60;
   --muted-foreground: #afb9ca;
   --border: #ab4b08;
+  --shiki-dark: #c0c5ce;
+  --shiki-dark-bg: #2b303b;
 }

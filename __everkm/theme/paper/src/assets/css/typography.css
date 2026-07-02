@@ -3,7 +3,10 @@
 @layer base {
   /* ===== Override default Tailwind Typography styles ===== */
   .app-prose {
-    @apply prose max-w-none prose-pre:bg-(--shiki-light-bg) dark:prose-pre:bg-(--shiki-dark-bg);
+    /* Typography defaults use light-on-dark pre colors; override for readable fenced blocks */
+    --tw-prose-pre-code: var(--foreground);
+    --tw-prose-pre-bg: var(--shiki-light-bg);
+    @apply prose max-w-none prose-pre:bg-(--shiki-light-bg) prose-pre:p-0 dark:prose-pre:bg-(--shiki-dark-bg);
 
     h1,
     h2,
@@ -79,14 +82,18 @@
       @apply flex-[1_0_100%] bg-inherit p-0;
     }
 
-    /* Fenced / syntect blocks (everkm-publish) when not Shiki `.astro-code` */
+    /* Fenced code blocks (prose `pre` + inner `code` both ship padding — keep it on `code` only) */
     pre:not(.astro-code) {
-      @apply outline-border overflow-x-auto border;
-      /* background + token colors: code-highlight.css (light/dark) */
+      @apply outline-border overflow-x-auto border bg-transparent p-0;
+      /* token colors when code_highlight.server: code-highlight.css */
     }
 
     pre:not(.astro-code) > code {
-      @apply block w-full p-4 wrap-break-word before:content-none after:content-none;
+      @apply text-foreground block w-full bg-(--shiki-light-bg) p-4 wrap-break-word before:content-none after:content-none;
+    }
+
+    &:where([data-theme="dark"], [data-theme="dark"] *) pre:not(.astro-code) > code {
+      @apply bg-(--shiki-dark-bg);
     }
 
     blockquote {
