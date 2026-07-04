@@ -9,8 +9,18 @@ config:
   algolia_search:
     app_id: 1N74YC70XF
     api_key: 95bb37e3122ee9cb57a8ee0abbd14409
-    index_name: paper
+    index_name: yilog
     site: theme-paper
+    channel: www
+
+    # 配置推送
+    push_on_export: true
+    url_base: https://paper.theme.everkm.com/  # 导出后 push 拼页面绝对 URL
+    body_selector: "#article-main"      # 正文 CSS 选择器，默认 .markdown-body
+    languages:                          # reset 时写入索引语言
+      - zh
+      - en
+
 
   copyright:
     text: everkm
