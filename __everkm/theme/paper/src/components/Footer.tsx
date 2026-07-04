@@ -1,6 +1,5 @@
 import { Component, For, Show } from "solid-js";
 import { useTranslations } from "../lib/i18n";
-import { pageUrl } from "../lib/url";
 import { Socials } from "./Socials";
 import type { PaperConfig } from "../lib/config";
 

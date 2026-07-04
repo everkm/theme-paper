@@ -1,6 +1,7 @@
 import { Component, Show } from "solid-js";
 import { useTranslations } from "../lib/i18n";
 import { paginationHref } from "../lib/pagination";
+import { pageUrl } from "../lib/url";
 import { LinkButton } from "./LinkButton";
 import { Icon } from "./Icon";
 import IconArrowLeft from "../assets/icons/IconArrowLeft.svg";
@@ -17,11 +18,17 @@ export const Pagination: Component<PaginationProps> = (props) => {
   const t = () => useTranslations(props.ctx.lang);
   const prevHref = () =>
     props.pageNo > 1
-      ? paginationHref(props.basePath, props.pageNo - 1)
+      ? pageUrl(
+          props.ctx.request_id,
+          paginationHref(props.basePath, props.pageNo - 1),
+        )
       : undefined;
   const nextHref = () =>
     props.pageNo < props.pageCount
-      ? paginationHref(props.basePath, props.pageNo + 1)
+      ? pageUrl(
+          props.ctx.request_id,
+          paginationHref(props.basePath, props.pageNo + 1),
+        )
       : undefined;
 
   return (

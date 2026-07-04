@@ -1,6 +1,6 @@
 import { ParentComponent, Show } from "solid-js";
 import { getPaperConfig } from "../lib/config";
-import { pageUrl } from "../lib/url";
+import { assetUrl } from "../lib/url";
 
 const FOUC_SCRIPT = `(function () {
   const stored = localStorage.getItem("theme");
@@ -56,7 +56,7 @@ export const RootLayout: ParentComponent<RootLayoutProps> = (props) => {
         <link
           rel="icon"
           type="image/svg+xml"
-          href={pageUrl(ctx().request_id, "/assets/favicon.svg")}
+          href={assetUrl(ctx().request_id, "/assets/favicon.svg")}
         />
         <meta name="theme-color" content="" />
         <script innerHTML={FOUC_SCRIPT} />

@@ -2682,6 +2682,24 @@ function pageUrl(requestId, path) {
   const normalized = path.startsWith("/") ? path : `/${path}`;
   return `${base}${normalized}`;
 }
+function pageNoFromCtx(ctx) {
+  const fromTpl = (ctx.tpl_path ?? "").match(/\.p(\d+)\.html$/i);
+  if (fromTpl) return parseInt(fromTpl[1], 10) || 1;
+  const fromQs = parseInt(String(ctx.qs?.page ?? "1"), 10);
+  return Number.isFinite(fromQs) && fromQs > 0 ? fromQs : 1;
+}
+function currentPageUrl(ctx) {
+  const tplPath = ctx.tpl_path ?? "";
+  const pageNo = pageNoFromCtx(ctx);
+  if (pageNo > 1 || /\.p\d+\.html$/i.test(tplPath)) {
+    const path = tplPath.startsWith("/") ? tplPath : `/${tplPath}`;
+    return pageUrl(ctx.request_id, path);
+  }
+  return ctx.page_path;
+}
+function assetUrl(requestId, path) {
+  return everkm.asset_base_url(requestId, { url: path });
+}
 
 // src/layout/RootLayout.tsx
 var _tmpl$ = ['<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>', '</title><meta name="title"', '><meta name="description"', '><meta name="generator" content="', '"><meta name="theme" content="', '"><link rel="icon" type="image/svg+xml"', '><meta name="theme-color" content><script>(function () {\n  const stored = localStorage.getItem("theme");\n  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;\n  const theme = stored ?? (prefersDark ? "dark" : "light");\n  const root = document.documentElement;\n  root.setAttribute("data-theme", theme);\n  root.classList.toggle("dark", theme === "dark");\n  window.__theme = { value: theme };\n})();</script><script>', "</script></head>"];
@@ -2701,7 +2719,7 @@ var RootLayout = (props) => {
   const customBodyEndHtml = () => ctx().config?.body_end_html || "";
   return ssr(_tmpl$3, ssrAttribute("lang", escape(lang(), true), false) + ssrAttribute("dir", escape(dir(), true), false), createComponent(NoHydration, {
     get children() {
-      return ssr(_tmpl$, escape(pageTitle()), ssrAttribute("content", escape(pageTitle(), true), false), ssrAttribute("content", escape(metaDesc(), true), false), `everkm-publish@v${escape(ctx().everkm_publish_version, true)}`, `${escape(ctx().theme_name, true)}@${escape(ctx().theme_version, true)}`, ssrAttribute("href", escape(pageUrl(ctx().request_id, "/assets/favicon.svg"), true), false), `
+      return ssr(_tmpl$, escape(pageTitle()), ssrAttribute("content", escape(pageTitle(), true), false), ssrAttribute("content", escape(metaDesc(), true), false), `everkm-publish@v${escape(ctx().everkm_publish_version, true)}`, `${escape(ctx().theme_name, true)}@${escape(ctx().theme_version, true)}`, ssrAttribute("href", escape(assetUrl(ctx().request_id, "/assets/favicon.svg"), true), false), `
           window.__everkm_lang = ${JSON.stringify(lang())};
           window.__everkm_base_url = ${JSON.stringify(baseUrl() + "/")};
           window.__everkm_features_view_transitions = ${JSON.stringify(cfg().features?.view_transitions !== false)};
@@ -3083,7 +3101,7 @@ var _tmpl$25 = ['<h2 style="', '">', "</h2>"];
 var _tmpl$33 = ['<li class="my-6"><a', ' class="text-accent inline-block text-lg font-medium decoration-dashed underline-offset-4 hover:underline focus-visible:no-underline focus-visible:underline-offset-0">', "</a>", "<p>", "</p></li>"];
 var Card = (props) => {
   const variant = () => props.variant ?? "h2";
-  const href = () => pageUrl(props.ctx.request_id, props.post.url_path);
+  const href = () => props.post.url_path;
   const TitleTag = (p3) => {
     const style = {
       "view-transition-name": toTransitionName(props.post.title)
@@ -3242,7 +3260,7 @@ function decodeSegment(value) {
     return value;
   }
 }
-function pageNoFromCtx(ctx) {
+function pageNoFromCtx2(ctx) {
   const fromTpl = (ctx.tpl_path ?? "").match(/\.p(\d+)\.html$/i);
   if (fromTpl) return parseInt(fromTpl[1], 10) || 1;
   const fromQs = parseInt(String(ctx.qs?.page ?? "1"), 10);
@@ -3274,7 +3292,7 @@ function logicalSegments(ctx, pageKey) {
   const key = logicalPathKey(ctx, pageKey);
   if (!key || key === "home") return [];
   const parts = key.split("/").filter(Boolean);
-  const pageNo = pageNoFromCtx(ctx);
+  const pageNo = pageNoFromCtx2(ctx);
   if (parts[0] === "posts") {
     return ["posts", String(pageNo)];
   }
@@ -3468,7 +3486,7 @@ var Main = (props) => {
     if (!local.ctx) return void 0;
     const cfg = getPaperConfig(local.ctx);
     if (cfg.features?.show_back_button === false) return void 0;
-    return pageUrl(local.ctx.request_id, local.ctx.page_path);
+    return currentPageUrl(local.ctx);
   };
   const mainClass = () => ["app-layout pb-4", hasBreadcrumb() ? "" : "mt-8", local.class ?? ""].filter(Boolean).join(" ");
   return ssr(_tmpl$29, ssrAttribute("data-layout", escape(local.layout, true) ?? "page", false) + ssrAttribute("data-backurl", escape(backUrl(), true), false) + ssrAttribute("class", escape(mainClass(), true), false), escape(local.pageTitle), escape(createComponent(Show, {
@@ -3636,7 +3654,7 @@ var PostPage = (p3) => {
           when: prevPost,
           children: (prev) => createComponent(LinkButton, {
             get href() {
-              return pageUrl(ctx().request_id, prev().url_path);
+              return prev().url_path;
             },
             "class": "text-accent flex w-full gap-1 decoration-dashed underline-offset-4 hover:opacity-75 hover:underline",
             get children() {
@@ -3647,7 +3665,7 @@ var PostPage = (p3) => {
           when: nextPost,
           children: (next) => createComponent(LinkButton, {
             get href() {
-              return pageUrl(ctx().request_id, next().url_path);
+              return next().url_path;
             },
             "class": "text-accent flex w-full justify-end gap-1 text-end decoration-dashed underline-offset-4 hover:opacity-75 hover:underline sm:col-start-2",
             get children() {
@@ -3691,8 +3709,8 @@ var _tmpl$20 = ['<nav class="mt-auto mb-8 flex justify-center gap-4" role="navig
 var _tmpl$213 = ['<div data-vt-swap="pagination">', "</div>"];
 var Pagination = (props) => {
   const t2 = () => useTranslations(props.ctx.lang);
-  const prevHref = () => props.pageNo > 1 ? paginationHref(props.basePath, props.pageNo - 1) : void 0;
-  const nextHref = () => props.pageNo < props.pageCount ? paginationHref(props.basePath, props.pageNo + 1) : void 0;
+  const prevHref = () => props.pageNo > 1 ? pageUrl(props.ctx.request_id, paginationHref(props.basePath, props.pageNo - 1)) : void 0;
+  const nextHref = () => props.pageNo < props.pageCount ? pageUrl(props.ctx.request_id, paginationHref(props.basePath, props.pageNo + 1)) : void 0;
   return ssr(_tmpl$213, escape(createComponent(Show, {
     get when() {
       return props.pageCount > 1;

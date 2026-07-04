@@ -75,6 +75,25 @@ export function pageUrl(requestId: string, path: string): string {
   return `${base}${normalized}`;
 }
 
+function pageNoFromCtx(ctx: PageContext): number {
+  const fromTpl = (ctx.tpl_path ?? "").match(/\.p(\d+)\.html$/i);
+  if (fromTpl) return parseInt(fromTpl[1], 10) || 1;
+  const fromQs = parseInt(String(ctx.qs?.page ?? "1"), 10);
+  return Number.isFinite(fromQs) && fromQs > 0 ? fromQs : 1;
+}
+
+/** Published URL for the current page (data-backurl, canonical). */
+export function currentPageUrl(ctx: PageContext): string {
+  const tplPath = ctx.tpl_path ?? "";
+  const pageNo = pageNoFromCtx(ctx);
+
+  if (pageNo > 1 || /\.p\d+\.html$/i.test(tplPath)) {
+    const path = tplPath.startsWith("/") ? tplPath : `/${tplPath}`;
+    return pageUrl(ctx.request_id, path);
+  }
+  return ctx.page_path;
+}
+
 export function assetUrl(requestId: string, path: string): string {
   return everkm.asset_base_url(requestId, { url: path });
 }

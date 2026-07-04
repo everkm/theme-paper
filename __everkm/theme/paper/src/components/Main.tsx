@@ -1,7 +1,7 @@
 import { Component, ParentComponent, Show, splitProps } from "solid-js";
 import { shouldShowBreadcrumb } from "../lib/breadcrumb";
 import { getPaperConfig } from "../lib/config";
-import { pageUrl } from "../lib/url";
+import { currentPageUrl } from "../lib/url";
 
 type MainProps = {
   pageTitle: string;
@@ -33,7 +33,7 @@ export const Main: ParentComponent<MainProps> = (props) => {
     if (!local.ctx) return undefined;
     const cfg = getPaperConfig(local.ctx);
     if (cfg.features?.show_back_button === false) return undefined;
-    return pageUrl(local.ctx.request_id, local.ctx.page_path);
+    return currentPageUrl(local.ctx);
   };
 
   const mainClass = () =>

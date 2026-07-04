@@ -2,7 +2,6 @@ import { Component, For, Show } from "solid-js";
 import { getPaperConfig } from "../lib/config";
 import { useTranslations } from "../lib/i18n";
 import { toTransitionName } from "../lib/toTransitionName";
-import { pageUrl } from "../lib/url";
 import { Header } from "../layout/Header";
 import { Footer } from "../components/Footer";
 import { PageChrome } from "../components/PageChrome";
@@ -95,7 +94,7 @@ export const PostPage: Component<PostPageProps> = (p) => {
                   <Show when={prevPost}>
                     {(prev) => (
                       <LinkButton
-                        href={pageUrl(ctx().request_id, prev().url_path)}
+                        href={prev().url_path}
                         class="text-accent flex w-full gap-1 decoration-dashed underline-offset-4 hover:opacity-75 hover:underline"
                       >
                         <span>← {prev().title}</span>
@@ -105,7 +104,7 @@ export const PostPage: Component<PostPageProps> = (p) => {
                   <Show when={nextPost}>
                     {(next) => (
                       <LinkButton
-                        href={pageUrl(ctx().request_id, next().url_path)}
+                        href={next().url_path}
                         class="text-accent flex w-full justify-end gap-1 text-end decoration-dashed underline-offset-4 hover:opacity-75 hover:underline sm:col-start-2"
                       >
                         <span>{next().title} →</span>
