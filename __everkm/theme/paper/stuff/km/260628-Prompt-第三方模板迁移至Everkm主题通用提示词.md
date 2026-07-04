@@ -14,6 +14,8 @@
 | 0.2 | 260628 | 补充：虚拟模板页 fallback、分页 URL 与 JsRender compName 归一化 |
 | 0.3 | 260628 | home 虚拟 index.html + home.md；default_template 详情；featured tag；客户端交互块与 VT |
 | 0.4 | 260630 | 补充 theme-paper 实践：服务端代码高亮、定义列表/脚注样式与 youlog 对齐、browser 启动链排错 |
+| 0.5 | 260704 | 补充站内链接与 `base_url` 分工：PostItem 直用 vs 模板手拼路径用 `pageUrl` |
+| 0.6 | 260704 | §K 明确按 URL **来源** 区分；`page_path` 直用；禁止前缀猜测；返回按钮用 `location.pathname` |
 
 ---
 
@@ -236,6 +238,75 @@ everkm-publish 渲染的正文 HTML **不是** Shiki `.astro-code`，而是带�
 - 修改 `viewTransitions.ts` 等入口时 **勿漏 import**（曾误删 `installTheme` 导致脚注脚本从未运行）
 - 排错：浏览器控制台看 `pageerror`；Playwright/手动查 `document.querySelectorAll('.footnote-back-button').length`
 
+### K. 站内链接与 `base_url`（关键）
+
+按 URL **来源** 决定是否加 `base_url`。**禁止**用路径前缀启发式判断（例如「已含 `/zh` 就不再拼」）——真实页面路径可能与站点前缀偶然相同，导致误判。
+
+| 来源 | 是否加 `base_url` | 做法 |
+|------|-------------------|------|
+| **服务端已解析的 URL** | ❌ 否 | 字段原样用于 `href` |
+| **模板手拼的逻辑路径** | ✅ 是 | `pageUrl(requestId, path)` |
+| **浏览器端动态拼接** | ✅ 是 | `window.location.pathname` 或 `__everkm_base_url` |
+
+#### K.1 服务端 URL — 直接用
+
+| 字段 / 来源 | 说明 |
+|-------------|------|
+| `post.url_path` | 文章链接、上下篇、canonical |
+| `resource.url` | 相册、附件 |
+| `content_html` 内链 | Markdown 已解析 |
+| **`ctx.page_path`** | **当前页的发布 URL**（`data-backurl` 等非分页场景） |
+
+```tsx
+// ✅ PostItem
+<a href={post.url_path}>{post.title}</a>
+
+// ✅ PageContext（存档、关于等已映射页）
+data-backurl={ctx.page_path}
+
+// ❌ 勿再包 pageUrl
+<a href={pageUrl(requestId, post.url_path)} />
+data-backurl={pageUrl(requestId, ctx.page_path)}
+```
+
+#### K.2 模板手拼路径 — 用 `pageUrl`
+
+仅在模板 **自己写出** 逻辑路径时使用：
+
+- Header / Footer 导航（`"/index.html"`、`"/tags/index.html"`）
+- 标签链接（`` `/tags/${tag}/index.html` ``）
+- 分页（`paginationHref(basePath, n)` 后再 `pageUrl`）
+- **分页虚拟页**：`page_path` 可能被 ekmp 规范为第 1 页，须用 **`tpl_path`（含 `.pN`）+ `pageUrl`**
+
+```ts
+// currentPageUrl 示意
+if (pageNo > 1 || /\.p\d+\.html$/i.test(tpl_path)) {
+  return pageUrl(requestId, tpl_path); // 模板逻辑路径
+}
+return ctx.page_path; // 服务端 URL，直用
+```
+
+#### K.3 返回按钮（客户端）
+
+- 离开列表/首页 **进入文章前**：`sessionStorage.backUrl = window.location.pathname`（浏览器当前 URL，非 SSR 猜测）
+- 文章页（`data-layout="post"`）**不写入** `sessionStorage`，保留上一页记录
+- SSR 默认 `href` 可回落首页；有历史时由 `updateBackButton()` 覆盖
+
+#### K.4 客户端其它动态链接
+
+`RootLayout` 注入 `window.__everkm_base_url`；client bundle **不要**再调 `everkm.base_url`。
+
+#### K.5 资源 URL（`assetUrl`）
+
+走 `everkm.media` / `everkm.asset_base_url`，与页面链接规则并列。
+
+#### K.6 评审速查
+
+- [ ] `pageUrl(.*url_path` — **0 处**
+- [ ] `pageUrl(.*page_path` — **0 处**（分页例外见 K.2 `tpl_path`）
+- [ ] 无「路径已含某前缀则跳过 `pageUrl`」类启发式
+- [ ] 手拼 `href="/tags/…"` — 已改为 `pageUrl`
+
 ## 输出格式要求
 
 1. **先方案、后编码**：除非用户明确说「开始编码」，否则只讨论方案。
@@ -267,6 +338,7 @@ everkm-publish 渲染的正文 HTML **不是** Shiki `.astro-code`，而是带�
 | C10 | home 虚拟 index.html + home.md Hero | ✅ | |
 | C11 | `code_highlight.server` 时 syntect 主题 CSS 并入主 bundle | 视情况 | |
 | C12 | 定义列表/脚注样式对齐参考框架 `markdown2.css` + footnote widget | 视情况 | |
+| C13 | PostItem 链接直用；手拼路径用 `pageUrl` / 客户端用 `__everkm_base_url` | ✅ | |
 
 ---
 
@@ -287,6 +359,7 @@ everkm-publish 渲染的正文 HTML **不是** Shiki `.astro-code`，而是带�
 - [ ] **R11** 启用 `code_highlight.server` 时，light/dark syntect CSS 已 scope 进 `.app-prose pre:not(.astro-code)`，且不与 Shiki/行内 code 冲突
 - [ ] **R12** 脚注/定义列表在 `everkm-markdown` 示例页目测通过（横排对齐、分隔线颜色、有引用处显示 `⤴`）
 - [ ] **R13** `bootClient()` 无控制台报错；换页后 client widget 重新挂载
+- [ ] **R14** PostItem `url_path` / `resource.url` 未重复包 `pageUrl`；导航、标签、分页等手拼链接已包 `base_url`
 
 ---
 
@@ -335,3 +408,15 @@ everkm-publish 渲染的正文 HTML **不是** Shiki `.astro-code`，而是带�
 | 脚注 `[n]` 与正文上下叠放 | flex + SSR 空白文本节点；或 prose `p` 大 margin | 改 grid；`p { margin: 0 !important }`；JS 删空白节点 |
 | 脚注无 `⤴` | 正文无 `[^id]` 引用，或 `bootClient` 中途报错 | 补引用；查控制台 `installTheme is not defined` 等 |
 | 脚注区与 footer 线重叠 | 末条脚注无下边距 / footer 用 accent 色 `border` | `margin-bottom` + footer `border-muted` |
+
+### 6.4 站内链接（theme-story / theme-paper 实践）
+
+| 场景 | 写法 |
+|------|------|
+| 文章卡片 `href` | `post.url_path`（服务端） |
+| 上下篇 | `prevPost.url_path` / `nextPost.url_path` |
+| `data-backurl`（存档等） | `ctx.page_path` 或 `currentPageUrl(ctx)` |
+| Header 首页 | `pageUrl(ctx.request_id, "/index.html")`（手拼） |
+| 标签云 | `pageUrl(ctx.request_id, \`/tags/${tag}/index.html\`)` |
+| 分页 | `pageUrl(ctx.request_id, paginationHref(basePath, n))` |
+| 返回按钮写入 | `window.location.pathname`（点击进文章前） |
