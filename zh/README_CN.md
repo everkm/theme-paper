@@ -3,7 +3,7 @@ id: 1784862019958
 title: 主题配置
 slug: readme
 created_at: 2026-06-28T00:00:00Z
-updated_at: 2026-07-24T10:31:14+08:00
+updated_at: 2026-07-24T22:00:03+08:00
 tags:
   - featured
 ---
@@ -31,6 +31,7 @@ config:
   socials: [ ... ]        # 社交链接（首页首屏与页脚）
   share_links: [ ... ]    # 文章页分享链接
   copyright: { ... }      # 页脚版权
+  body_end_html: "..."    # 页面尾部追加的 HTML
 
 folders:
   "/":
@@ -290,6 +291,22 @@ config:
     text: everkm
     link: https://everkm.com
 ```
+
+---
+
+## 页面尾部 HTML `body_end_html`
+
+可在每个页面 `</body>` 前追加自定义 HTML 片段，便于接入统计脚本、在线客服等第三方组件。
+
+```yaml
+config:
+  body_end_html: |
+    <script defer src="https://example.com/analytics.js"></script>
+```
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `body_end_html` | string | 追加到 `<body>` 末尾的 HTML；支持多行（YAML `|`） |
 
 ---
 

@@ -3,7 +3,7 @@ id: 1784862019953
 title: Theme Configuration
 slug: readme
 created_at: 2026-06-28T00:00:00Z
-updated_at: 2026-07-24T10:31:14+08:00
+updated_at: 2026-07-24T22:00:03+08:00
 tags:
   - featured
 ---
@@ -31,6 +31,7 @@ config:
   socials: [ ... ]        # Social links (homepage hero & footer)
   share_links: [ ... ]    # Share links on post pages
   copyright: { ... }      # Footer copyright
+  body_end_html: "..."    # HTML appended at end of body
 
 folders:
   "/":
@@ -290,6 +291,22 @@ config:
     text: everkm
     link: https://everkm.com
 ```
+
+---
+
+## Body End HTML `body_end_html`
+
+Append custom HTML before each page's `</body>`, for analytics scripts, live chat widgets, and other third-party integrations.
+
+```yaml
+config:
+  body_end_html: |
+    <script defer src="https://example.com/analytics.js"></script>
+```
+
+| Field | Type | Description |
+|--------|------|------|
+| `body_end_html` | string | HTML appended at the end of `<body>`; supports multiline YAML block scalars |
 
 ---
 

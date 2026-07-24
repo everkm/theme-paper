@@ -36,3 +36,7 @@ config:
   copyright:
     text: everkm
     link: https://everkm.com
+
+
+  body_end_html:
+    <script defer src="https://aa.daobox.cc/script.js" data-website-id="5ecbd8ed-dbe8-4a15-a63d-c4122b8fed30"></script>

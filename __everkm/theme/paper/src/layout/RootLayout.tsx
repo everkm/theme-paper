@@ -35,7 +35,7 @@ export const RootLayout: ParentComponent<RootLayoutProps> = (props) => {
   const baseUrl = () => everkm.base_url(ctx().request_id);
   const lang = () => ctx().lang || cfg().site.lang || "en";
   const dir = () => cfg().site.dir ?? "ltr";
-  const customBodyEndHtml = () => (ctx().config?.body_end_html as string) || "";
+  const customBodyEndHtml = () => cfg().body_end_html || "";
 
   return (
     <html lang={lang()} dir={dir()} class="overflow-y-scroll scroll-smooth">

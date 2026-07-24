@@ -41,6 +41,8 @@ export interface PaperConfig {
   socials?: { name: string; url: string }[];
   share_links?: { name: string; url: string }[];
   copyright?: { text?: string; link?: string };
+  /** Custom HTML appended before `</body>` on every page. */
+  body_end_html?: string;
 }
 
 const DEFAULTS: PaperConfig = {
