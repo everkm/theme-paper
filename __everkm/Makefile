@@ -65,8 +65,10 @@ export-all: print-ekmp
 # 		$(EKMP) theme pack \
 # 		--dev-dir ./ 
 
+# 演示站 / 本地全量导出：先现编译主题（JSRender + 静态资源），再 export。
+# 不依赖仓库里已提交的 templates/everkm-render.js，便于正式发版前预览。
 .PHONY: dist
-dist: 
+dist:
 	cd theme/paper && $(MAKE) build
 	$(MAKE) export-all
 

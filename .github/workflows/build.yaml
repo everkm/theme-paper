@@ -48,12 +48,19 @@ jobs:
           cd theme/paper
           make fe-install
 
-      - name: dist pages
+      # Demo site preview: always rebuild theme from this tag's sources,
+      # then export — do not rely on a previously committed everkm-render.js.
+      - name: Build theme (JSRender + assets)
+        if: startsWith(github.ref, 'refs/tags/pages@v')
+        run: |
+          cd __everkm/theme/paper && make build
+
+      - name: Export demo site
         if: startsWith(github.ref, 'refs/tags/pages@v')
         env:
           ALGOLIA_ADMIN_KEY: ${{ secrets.ALGOLIA_ADMIN_KEY }}
         run: |
-          cd __everkm && make dist
+          cd __everkm && make export-all
 
       - uses: stefanzweifel/git-auto-commit-action@v5
         if: startsWith(github.ref, 'refs/tags/pages@v')

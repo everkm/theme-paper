@@ -1,6 +1,6 @@
 # Paper 主题发布交接
 
-本文档说明如何将 `theme-paper` 正式发版，并同步到主题索引仓库 `everkm/themes`。
+本文档说明如何将 `theme-paper` 正式发版、同步主题索引，以及如何用演示站预览未正式发布的主题改动。
 
 ## 前置条件
 
@@ -88,25 +88,67 @@ https://github.com/everkm/themes/actions/runs/<run_id>
 | 打 tag | `make tag TAG=vX.Y.Z` | 强制打 tag 并推送，触发主题构建 |
 | 晋升正式版 | `make set-latest` | 用 Changelog 晋升为 latest Release |
 | 更新索引 | `make push-index-themes` | 触发 `everkm/themes` 收录本主题 |
+| 预览演示站 | `make tag TAG=pages@vX.Y.Z.N` | 现编译主题并导出，force 推到 `pages` |
 
 以上均在 `__everkm/` 下执行。
 
-## 可选：演示站（pages）发布
+## 演示站（pages）预览发布
 
-若需发布演示站静态产物到 `pages` 分支，使用：
+用途：在主题 **尚未** `v*` 正式发版前，把当前分支上的主题改动导出到演示站（如 [paper.theme.everkm.com](https://paper.theme.everkm.com)），便于预览。
+
+与主题 zip 发版（`v*`）**无关**，不要混用。
+
+### 版本号
+
+演示站 tag 使用 **四位** 版本号：`pages@vX.Y.Z.N`
+
+| 段 | 含义 |
+|----|------|
+| `X.Y.Z` | 与**即将发布**的主题版本一致（对应 `everkm-theme.yaml` / `package.json` 的 `version`，正式发版 tag 为 `vX.Y.Z`） |
+| `N` | 该主题版本下的演示站构建序号，从 `0` 起递增（同一次待发版周期内多次预览则 `0` → `1` → `2` …） |
+
+示例：即将发 `v0.1.3` 时，演示站依次为 `pages@v0.1.3.0`、`pages@v0.1.3.1` …
+
+### 流程
+
+```bash
+# 1. 确认在要预览的提交上（通常是已推送的 master），工作区干净
+git checkout master
+git pull github master
+git status
+
+# 2. 打演示站 tag 并推送（四位；前三位 = 即将发布的主题版本）
+cd __everkm
+make tag TAG=pages@v0.1.3.0
+```
+
+CI（`pages@v*`）会按顺序：
+
+1. **现编译主题**：`cd __everkm/theme/paper && make build`  
+   - 重新生成 `templates/everkm-render.js` 与客户端静态资源  
+   - **不**直接使用仓库里上次提交的旧 `everkm-render.js`
+2. **导出站点**：`make export-all`（`--theme-dev`，基于刚编译的本地主题）
+3. 将 `__everkm/dist/` **force 推**到 `pages` 分支
+
+本地等价命令：
 
 ```bash
 cd __everkm
-make tag TAG=pages@v0.1.1
+make dist   # = make build（主题）+ make export-all
 ```
 
-- 触发同一工作流中的 `pages@v*` 分支逻辑
-- 导出站点并 force 推到 `pages` 分支
-- **与主题 zip 发版无关**，不要与 `v*` 发版步骤混淆
+### 注意
+
+1. **tag 落在哪次提交，演示站就是哪次提交的产物。**  
+   若在 detached HEAD / 旧 tag 上执行 `make tag TAG=pages@…`，会把演示站覆盖成旧版本（即使之前已发布过更新的 `pages@v*`）。
+2. **后推送的 `pages@v*` 会覆盖先推送的。** 演示站始终以最近一次成功的 pages 构建为准，与 tag 号大小无关。
+3. 需要预览未推送的本地改动时：先 commit（并 push 到 `github`），再在该提交上打 `pages@vX.Y.Z.N`。
+4. 演示站使用 CI 安装的 `everkm-publish`（见 `__everkm/package.json`），与本地 `DEBUG=` 自定义二进制可能不一致。
 
 ## 常见注意点
 
-1. **顺序**：先推代码 → 再 `v*` tag → 等 CI 出 prerelease → `set-latest` → `push-index-themes`
+1. **正式发版顺序**：先推代码 → 再 `v*` tag → 等 CI 出 prerelease → `set-latest` → `push-index-themes`
 2. **Changelog 必填**：`set-latest` 强依赖 `en/CHANGELOG.md` 与 `zh/CHANGELOG.md` 中均存在 `## vX.Y.Z` 且内容非空
 3. **重打 tag**：`make tag` 使用 `-f`，适合修包后覆盖同一版本；覆盖后需重新等 CI，再视情况执行 `set-latest`
 4. **权限**：`gh` 需能读写本仓库 Release，以及触发 `everkm/themes` 的 workflow_dispatch
+5. **预览 vs 发版**：想看未发版主题效果 → `pages@vX.Y.Z.N`（四位）；要给用户装的主题包 → `vX.Y.Z`（三位）+ `set-latest` + `push-index-themes`
