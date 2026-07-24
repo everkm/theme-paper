@@ -3,7 +3,7 @@ id: 1784862019953
 title: Theme Configuration
 slug: readme
 created_at: 2026-06-28T00:00:00Z
-updated_at: 2026-07-24T22:00:03+08:00
+updated_at: 2026-07-25T07:32:07+08:00
 tags:
   - featured
 ---
@@ -285,12 +285,19 @@ config:
 
 ## Copyright `copyright`
 
+Footer copyright line, rendered as `©year text`. If `link` is set, the text becomes a hyperlink. When `text` is omitted, falls back to `site.name`.
+
 ```yaml
 config:
   copyright:
     text: everkm
     link: https://everkm.com
 ```
+
+| Field | Type | Description |
+|--------|------|------|
+| `copyright.text` | string | Copyright owner name; falls back to `site.name` if omitted |
+| `copyright.link` | string | Optional URL for the copyright name |
 
 ---
 

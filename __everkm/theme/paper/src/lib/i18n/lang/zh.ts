@@ -32,10 +32,6 @@ export const zh: UIStrings = {
     recentPosts: "最近文章",
     allPosts: "全部文章",
   },
-  footer: {
-    copyright: "版权所有",
-    allRightsReserved: "保留所有权利。",
-  },
   pages: {
     tagTitle: "标签",
     tagDesc: "包含该标签的全部文章",

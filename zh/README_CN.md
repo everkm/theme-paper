@@ -3,7 +3,7 @@ id: 1784862019958
 title: 主题配置
 slug: readme
 created_at: 2026-06-28T00:00:00Z
-updated_at: 2026-07-24T22:00:03+08:00
+updated_at: 2026-07-25T07:32:07+08:00
 tags:
   - featured
 ---
@@ -285,12 +285,19 @@ config:
 
 ## 版权 `copyright`
 
+页脚版权行，显示为 `©年份 文本`；若配置了 `link`，文本会渲染为链接。未设置 `text` 时回退为 `site.name`。
+
 ```yaml
 config:
   copyright:
     text: everkm
     link: https://everkm.com
 ```
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `copyright.text` | string | 版权归属名称；省略时使用 `site.name` |
+| `copyright.link` | string | 可选，版权名称的链接地址 |
 
 ---
 

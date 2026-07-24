@@ -1,5 +1,4 @@
-import { Component, For, Show } from "solid-js";
-import { useTranslations } from "../lib/i18n";
+import { Component, Show } from "solid-js";
 import { Socials } from "./Socials";
 import type { PaperConfig } from "../lib/config";
 
@@ -10,23 +9,38 @@ type FooterProps = {
 };
 
 export const Footer: Component<FooterProps> = (props) => {
-  const t = () => useTranslations(props.ctx.lang);
   const year = new Date().getFullYear();
+  const hasSocials = () => (props.config.socials?.length ?? 0) > 0;
+  const copyrightText = () =>
+    props.config.copyright?.text || props.config.site.name;
+  const copyrightLink = () => props.config.copyright?.link;
 
   return (
     <footer
       class={`app-layout border-t border-muted ${props.noMarginTop ? "" : "mt-auto"}`}
     >
-      <div class="flex flex-col items-center justify-between gap-3 py-4 sm:flex-row-reverse sm:gap-4">
+      <div
+        class={`flex flex-col items-center gap-3 py-4 sm:gap-4 ${
+          hasSocials()
+            ? "justify-between sm:flex-row-reverse"
+            : "justify-center"
+        }`}
+      >
         <Socials ctx={props.ctx} socials={props.config.socials ?? []} />
-        <div class="flex flex-wrap items-center justify-center whitespace-nowrap text-sm">
-          <span>
-            {t().footer.copyright} &#169;{year}
-          </span>
-          <span class="mx-1.5 text-muted-foreground" aria-hidden="true">
-            |
-          </span>
-          <span>{t().footer.allRightsReserved}</span>
+        <div class="whitespace-nowrap text-sm text-muted-foreground">
+          <span>&#169;{year}</span>
+          <Show when={copyrightText()}>
+            <span class="ml-1.5">
+              <Show when={copyrightLink()} fallback={copyrightText()}>
+                <a
+                  href={copyrightLink()}
+                  class="text-foreground hover:underline decoration-dashed underline-offset-4"
+                >
+                  {copyrightText()}
+                </a>
+              </Show>
+            </span>
+          </Show>
         </div>
       </div>
     </footer>
