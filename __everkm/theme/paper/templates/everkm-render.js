@@ -2891,7 +2891,7 @@ var POSTS_INDEX_URL = `${POSTS_PATH}/index.html`;
 
 // src/lib/proseClasses.ts
 var APP_PROSE = "app-prose max-w-app w-full prose-pre:bg-[var(--shiki-light-bg)] dark:prose-pre:bg-[var(--shiki-dark-bg)]";
-var APP_PROSE_POST = `${APP_PROSE} mt-8`;
+var APP_PROSE_POST = `${APP_PROSE} mt-6`;
 
 // src/components/LinkButton.tsx
 var _tmpl$4 = ["<span", ">", "</span>"];
@@ -3230,7 +3230,7 @@ var Datetime = (props) => {
   return ssr(_tmpl$24, `text-muted-foreground flex items-center gap-x-2 ${escape(props.class, true) ?? ""}`, escape(createComponent(Icon, {
     svg: IconCalendar_default,
     get ["class"]() {
-      return `inline-block size-6 min-w-5.5 ${size() === "sm" ? "scale-90" : ""}`;
+      return `inline-block ${size() === "sm" ? "size-4 min-w-4" : "size-5 min-w-5"}`;
     }
   })), escape(createComponent(Show, {
     get when() {
@@ -3536,7 +3536,7 @@ function chevronMarkup() {
 }
 var BackButton = (props) => {
   const t2 = () => useTranslations(props.ctx.lang);
-  const linkClass = () => ["focus-outline hover:text-foreground/75 -ms-2 mb-2", props.omitTopMargin ? "" : "mt-8"].filter(Boolean).join(" ");
+  const linkClass = () => ["text-muted-foreground focus-outline hover:text-foreground -ms-2 mb-4", props.omitTopMargin ? "" : "mt-8"].filter(Boolean).join(" ");
   return ssr(_tmpl$35, escape(createComponent(LinkButton, {
     id: "back-button",
     accentHover: false,
@@ -3730,11 +3730,12 @@ function resolvePostDetail(ctx) {
 var _tmpl$20 = ['<main id="main-content" data-layout="post" class="', '">', "</main>"];
 var _tmpl$212 = ['<div class="mt-auto"><nav class="app-layout mt-8 flex flex-col gap-6 border-t border-muted pt-4 pb-4 sm:flex-row sm:justify-between sm:gap-6">', "", "</nav></div>"];
 var _tmpl$37 = ['<div data-vt-swap="post-nav">', "</div>"];
-var _tmpl$45 = ['<h1 style="', '" class="text-accent inline-block text-2xl font-bold sm:text-3xl">', "</h1>"];
-var _tmpl$55 = ['<div class="my-4 flex flex-wrap gap-2"><span class="text-muted-foreground italic">', ':</span><ul class="flex flex-wrap gap-2">', "</ul></div>"];
-var _tmpl$63 = ['<article id="article"', ">", "</article>"];
-var _tmpl$72 = ['<span class="flex min-w-0 flex-col gap-0.5"><span class="text-muted-foreground text-xs tracking-wide">', '</span><span class="flex gap-1.5 decoration-dashed underline-offset-4 group-hover/nav:underline"><span class="shrink-0" aria-hidden="true">\u2190</span><span class="min-w-0 break-words">', "</span></span></span>"];
-var _tmpl$82 = ['<span class="flex min-w-0 flex-col items-end gap-0.5"><span class="text-muted-foreground text-xs tracking-wide">', '</span><span class="flex gap-1.5 text-end decoration-dashed underline-offset-4 group-hover/nav:underline"><span class="min-w-0 break-words">', '</span><span class="shrink-0" aria-hidden="true">\u2192</span></span></span>'];
+var _tmpl$45 = ['<h1 style="', '" class="text-foreground inline-block text-3xl font-bold tracking-tight sm:text-4xl">', "</h1>"];
+var _tmpl$55 = ['<div class="flex flex-wrap items-center gap-x-2 gap-y-1"><span>', ':</span><ul class="flex flex-wrap gap-x-2 gap-y-1">', "</ul></div>"];
+var _tmpl$63 = ['<div class="text-muted-foreground mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm">', "", "</div>"];
+var _tmpl$72 = ['<article id="article"', ">", "</article>"];
+var _tmpl$82 = ['<span class="flex min-w-0 flex-col gap-0.5"><span class="text-muted-foreground text-xs tracking-wide">', '</span><span class="flex gap-1.5 decoration-dashed underline-offset-4 group-hover/nav:underline"><span class="shrink-0" aria-hidden="true">\u2190</span><span class="min-w-0 break-words">', "</span></span></span>"];
+var _tmpl$92 = ['<span class="flex min-w-0 flex-col items-end gap-0.5"><span class="text-muted-foreground text-xs tracking-wide">', '</span><span class="flex gap-1.5 text-end decoration-dashed underline-offset-4 group-hover/nav:underline"><span class="min-w-0 break-words">', '</span><span class="shrink-0" aria-hidden="true">\u2192</span></span></span>'];
 var PostPage = (p3) => {
   const ctx = () => p3.props;
   const cfg = () => getPaperConfig(ctx());
@@ -3771,7 +3772,7 @@ var PostPage = (p3) => {
     }
   }), ssr(_tmpl$20, `app-layout${padMainTop() ? " mt-8" : ""}`, escape(createComponent(Show, {
     when: post,
-    children: (item) => [ssr(_tmpl$45, "view-transition-name:" + escape(toTransitionName(item().title || item().slug), true), escape(item().title) || escape(item().slug)), createComponent(Datetime, {
+    children: (item) => [ssr(_tmpl$45, "view-transition-name:" + escape(toTransitionName(item().title || item().slug), true), escape(item().title) || escape(item().slug)), ssr(_tmpl$63, escape(createComponent(Datetime, {
       get ctx() {
         return ctx();
       },
@@ -3781,9 +3782,8 @@ var PostPage = (p3) => {
       get updatedAt() {
         return item().updated_at;
       },
-      size: "lg",
-      "class": "my-2"
-    }), createComponent(Show, {
+      size: "sm"
+    })), escape(createComponent(Show, {
       get when() {
         return (item().tags?.length ?? 0) > 0;
       },
@@ -3800,7 +3800,7 @@ var PostPage = (p3) => {
           })
         })));
       }
-    }), ssr(_tmpl$63, ssrAttribute("class", escape(APP_PROSE_POST, true), false), item().content_html ?? "")]
+    }))), ssr(_tmpl$72, ssrAttribute("class", escape(APP_PROSE_POST, true), false), item().content_html ?? "")]
   }))), ssr(_tmpl$37, escape(createComponent(Show, {
     when: prevPost || nextPost,
     get children() {
@@ -3812,7 +3812,7 @@ var PostPage = (p3) => {
           },
           "class": "group/nav text-accent max-w-full items-start no-underline sm:max-w-[48%]",
           get children() {
-            return ssr(_tmpl$72, escape(t2().post.previousPost), escape(prev().title));
+            return ssr(_tmpl$82, escape(t2().post.previousPost), escape(prev().title));
           }
         })
       })), escape(createComponent(Show, {
@@ -3823,7 +3823,7 @@ var PostPage = (p3) => {
           },
           "class": "group/nav text-accent ml-auto max-w-full items-end no-underline sm:max-w-[48%]",
           get children() {
-            return ssr(_tmpl$82, escape(t2().post.nextPost), escape(next().title));
+            return ssr(_tmpl$92, escape(t2().post.nextPost), escape(next().title));
           }
         })
       })));

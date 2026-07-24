@@ -61,29 +61,28 @@ export const PostPage: Component<PostPageProps> = (p) => {
                     item().title || item().slug,
                   ),
                 }}
-                class="text-accent inline-block text-2xl font-bold sm:text-3xl"
+                class="text-foreground inline-block text-3xl font-bold tracking-tight sm:text-4xl"
               >
                 {item().title || item().slug}
               </h1>
-              <Datetime
-                ctx={ctx()}
-                date={item().date}
-                updatedAt={item().updated_at}
-                size="lg"
-                class="my-2"
-              />
-              <Show when={(item().tags?.length ?? 0) > 0}>
-                <div class="my-4 flex flex-wrap gap-2">
-                  <span class="text-muted-foreground italic">
-                    {t().post.tagLabel}:
-                  </span>
-                  <ul class="flex flex-wrap gap-2">
-                    <For each={item().tags ?? []}>
-                      {(tag) => <Tag ctx={ctx()} tag={tag} />}
-                    </For>
-                  </ul>
-                </div>
-              </Show>
+              <div class="text-muted-foreground mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm">
+                <Datetime
+                  ctx={ctx()}
+                  date={item().date}
+                  updatedAt={item().updated_at}
+                  size="sm"
+                />
+                <Show when={(item().tags?.length ?? 0) > 0}>
+                  <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+                    <span>{t().post.tagLabel}:</span>
+                    <ul class="flex flex-wrap gap-x-2 gap-y-1">
+                      <For each={item().tags ?? []}>
+                        {(tag) => <Tag ctx={ctx()} tag={tag} />}
+                      </For>
+                    </ul>
+                  </div>
+                </Show>
+              </div>
               <article
                 id="article"
                 class={APP_PROSE_POST}

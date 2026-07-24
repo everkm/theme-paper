@@ -27,7 +27,7 @@ export const BackButton: Component<BackButtonProps> = (props) => {
   const t = () => useTranslations(props.ctx.lang);
   const linkClass = () =>
     [
-      "focus-outline hover:text-foreground/75 -ms-2 mb-2",
+      "text-muted-foreground focus-outline hover:text-foreground -ms-2 mb-4",
       props.omitTopMargin ? "" : "mt-8",
     ]
       .filter(Boolean)

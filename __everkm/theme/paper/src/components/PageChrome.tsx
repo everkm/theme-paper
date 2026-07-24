@@ -11,7 +11,7 @@ type PageChromeProps = {
 
 /**
  * Breadcrumb + back button outside #main-content (Astro Paper layout).
- * Spacing: only the first visible row gets mt-8; breadcrumb mb-1, back mb-2.
+ * Spacing: only the first visible row gets mt-8; back button uses mb-4 before title.
  */
 export const PageChrome: Component<PageChromeProps> = (props) => {
   const hasBreadcrumb = () =>

@@ -36,7 +36,7 @@ export const Datetime: Component<DatetimeProps> = (props) => {
     >
       <Icon
         svg={IconCalendar}
-        class={`inline-block size-6 min-w-5.5 ${size() === "sm" ? "scale-90" : ""}`}
+        class={`inline-block ${size() === "sm" ? "size-4 min-w-4" : "size-5 min-w-5"}`}
       />
       <Show when={isModified()}>
         <span class={size() === "lg" ? "text-sm sm:text-base" : "text-sm"}>
