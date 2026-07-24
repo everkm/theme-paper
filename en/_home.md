@@ -1,7 +1,9 @@
 ---
+id: 1784862019957
+created_at: 2026-07-24T10:31:14+08:00
 title: Mingalaba
 description: Welcome to the Paper Theme demo site.
-updated_at: 2026-07-24T10:31:14+08:00
+updated_at: 2026-07-24T11:00:19+08:00
 ---
 
 **Paper Theme** is a minimal blog theme for [Everkm Publish](https://publish.everkm.com), migrated from [Astro Paper](https://github.com/satnaing/astro-paper).

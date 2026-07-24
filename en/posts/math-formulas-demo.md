@@ -1,4 +1,5 @@
 ---
+id: 1782950885136
 title: "Math Formulas Demo"
 description: Server-side math rendering with Typst.
 created_at: 2026-06-21T10:30:00Z

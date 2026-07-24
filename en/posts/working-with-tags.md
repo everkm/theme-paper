@@ -1,4 +1,5 @@
 ---
+id: 1782950885127
 title: "Working with Tags"
 description: Organize posts with tags in Paper Theme.
 created_at: 2026-06-23T11:00:00Z

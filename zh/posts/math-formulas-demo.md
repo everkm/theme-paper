@@ -1,4 +1,5 @@
 ---
+id: 1783174070040
 title: "数学公式演示"
 description: 使用 Typst 的服务端数学渲染。
 created_at: 2026-06-21T10:30:00Z

@@ -1,7 +1,9 @@
 ---
+id: 1784862019961
+created_at: 2026-07-24T10:27:58+08:00
 title: Mingalaba
 description: 欢迎来到 Paper 主题演示站点。
-updated_at: 2026-07-24T10:27:58+08:00
+updated_at: 2026-07-24T11:00:19+08:00
 ---
 
 **Paper 主题** 是面向 [Everkm Publish](https://publish.everkm.com) 的极简博客主题，从 [Astro Paper](https://github.com/satnaing/astro-paper) 迁移而来。

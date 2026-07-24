@@ -1,4 +1,5 @@
 ---
+id: 1784862019957
 title: 更新日志
 slug: changelog
 created_at: 2026-06-28T00:00:00Z

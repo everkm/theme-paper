@@ -1,4 +1,5 @@
 ---
+id: 1782950885122
 title: "Front Matter and Metadata"
 description: How to configure post metadata in Paper Theme.
 created_at: 2026-06-24T09:00:00Z

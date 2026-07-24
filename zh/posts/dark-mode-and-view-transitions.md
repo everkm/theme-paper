@@ -1,4 +1,5 @@
 ---
+id: 1784862019959
 title: "深色模式与 View Transitions"
 description: Paper 主题的客户端增强功能。
 created_at: 2026-06-26T10:00:00Z

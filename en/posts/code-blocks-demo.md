@@ -1,4 +1,5 @@
 ---
+id: 1782950885132
 title: "Code Blocks Demo"
 description: Server-side syntax highlighting in Paper Theme.
 created_at: 2026-06-22T16:00:00Z

@@ -1,4 +1,5 @@
 ---
+id: 1783174064340
 title: "Front Matter 与元数据"
 description: 如何在 Paper 主题中配置文章元数据。
 created_at: 2026-06-24T09:00:00Z

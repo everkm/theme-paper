@@ -29,6 +29,12 @@ work: print-ekmp
 		--lang=$${EVERKM_LANG:-zh} \
 		--listen=0.0.0.0:9081
 
+autofix: print-ekmp
+	@RUST_BACKTRACE=0 EVERKM_LOG=everkm_publish=debug,tpls=debug,info \
+		$(EKMP) lint --auto-fix ../zh/
+	@RUST_BACKTRACE=0 EVERKM_LOG=everkm_publish=debug,tpls=debug,info \
+		$(EKMP) lint --auto-fix ../en/
+
 export-all: print-ekmp
 	make clean-dist
 	@EVERKM_LOG=info,everkm_publish=info \

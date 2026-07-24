@@ -1,4 +1,5 @@
 ---
+id: 1784862019955
 title: "Dark Mode and View Transitions"
 description: Client-side enhancements in Paper Theme.
 created_at: 2026-06-26T10:00:00Z

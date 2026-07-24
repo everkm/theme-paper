@@ -1,4 +1,5 @@
 ---
+id: 1784862019956
 title: "Getting Started with Paper"
 description: How to use Paper Theme with everkm-publish.
 created_at: 2026-06-27T10:00:00Z

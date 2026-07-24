@@ -1,4 +1,5 @@
 ---
+id: 1782950885143
 title: "Archives and Pagination"
 description: Browse posts by date or page through lists.
 created_at: 2026-06-20T08:00:00Z

@@ -54,9 +54,9 @@ make set-latest
 
 该命令会：
 
-- 读取 `zh/CHANGELOG.md` 中对应版本说明（缺少条目会中止）
+- 读取 `en/CHANGELOG.md` 与 `zh/CHANGELOG.md` 中对应版本说明（任一缺少条目会中止）
 - 将最新（或指定）Release 从 prerelease 改为正式版，并设为 **latest**
-- Release notes 以 Changelog 内容为准
+- Release notes 格式：官方网站 → 英文内容 → `---` 分割线 → 中文内容
 
 成功时输出类似：
 
@@ -107,6 +107,6 @@ make tag TAG=pages@v0.1.1
 ## 常见注意点
 
 1. **顺序**：先推代码 → 再 `v*` tag → 等 CI 出 prerelease → `set-latest` → `push-index-themes`
-2. **Changelog 必填**：`set-latest` 强依赖 `zh/CHANGELOG.md` 中存在 `## vX.Y.Z` 且内容非空
+2. **Changelog 必填**：`set-latest` 强依赖 `en/CHANGELOG.md` 与 `zh/CHANGELOG.md` 中均存在 `## vX.Y.Z` 且内容非空
 3. **重打 tag**：`make tag` 使用 `-f`，适合修包后覆盖同一版本；覆盖后需重新等 CI，再视情况执行 `set-latest`
 4. **权限**：`gh` 需能读写本仓库 Release，以及触发 `everkm/themes` 的 workflow_dispatch

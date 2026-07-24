@@ -1,4 +1,5 @@
 ---
+id: 1784862019953
 title: Theme Configuration
 slug: readme
 created_at: 2026-06-28T00:00:00Z
