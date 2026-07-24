@@ -26,7 +26,7 @@ export const zh: UIStrings = {
     page: "页",
   },
   home: {
-    socialLinks: "社交链接",
+    socialLinks: "我的链接",
     featured: "精选",
     recentPosts: "最近文章",
     allPosts: "全部文章",

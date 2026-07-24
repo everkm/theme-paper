@@ -24,7 +24,7 @@ export const en = {
     page: "Page",
   },
   home: {
-    socialLinks: "Social Links",
+    socialLinks: "My Links",
     featured: "Featured",
     recentPosts: "Recent Posts",
     allPosts: "All Posts",

@@ -2721,7 +2721,7 @@ var RootLayout = (props) => {
   const baseUrl = () => everkm.base_url(ctx().request_id);
   const lang = () => ctx().lang || cfg().site.lang || "en";
   const dir = () => cfg().site.dir ?? "ltr";
-  const customBodyEndHtml = () => ctx().config?.body_end_html || "";
+  const customBodyEndHtml = () => cfg().body_end_html || "";
   return ssr(_tmpl$3, ssrAttribute("lang", escape(lang(), true), false) + ssrAttribute("dir", escape(dir(), true), false), createComponent(NoHydration, {
     get children() {
       return ssr(_tmpl$, escape(pageTitle()), ssrAttribute("content", escape(pageTitle(), true), false), ssrAttribute("content", escape(metaDesc(), true), false), `everkm-publish@v${escape(ctx().everkm_publish_version, true)}`, `${escape(ctx().theme_name, true)}@${escape(ctx().theme_version, true)}`, ssrAttribute("href", escape(assetUrl(ctx().request_id, "/assets/favicon.svg"), true), false), `
@@ -2780,7 +2780,7 @@ var en = {
     page: "Page"
   },
   home: {
-    socialLinks: "Social Links",
+    socialLinks: "My Links",
     featured: "Featured",
     recentPosts: "Recent Posts",
     allPosts: "All Posts"
@@ -2839,7 +2839,7 @@ var zh = {
     page: "\u9875"
   },
   home: {
-    socialLinks: "\u793E\u4EA4\u94FE\u63A5",
+    socialLinks: "\u6211\u7684\u94FE\u63A5",
     featured: "\u7CBE\u9009",
     recentPosts: "\u6700\u8FD1\u6587\u7AE0",
     allPosts: "\u5168\u90E8\u6587\u7AE0"
@@ -3281,12 +3281,12 @@ var Card = (props) => {
 var IconArrowRight_default = '<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M13 18l6 -6" /><path d="M13 6l6 6" /></svg>';
 
 // src/pages/home.tsx
-var _tmpl$13 = ["<p>", "</p>"];
-var _tmpl$26 = ['<div class="', '">', "</div>"];
-var _tmpl$34 = ['<div class="mt-4 flex max-sm:flex-col sm:items-center"><div class="me-2 mb-1 whitespace-nowrap sm:mb-0">', ":</div>", "</div>"];
+var _tmpl$13 = ["<div", ">", "</div>"];
+var _tmpl$26 = ['<div class="', '"><div class="me-2 mb-1 whitespace-nowrap sm:mb-0">', ":</div>", "</div>"];
+var _tmpl$34 = ['<section id="hero" class="border-border border-b pt-8 pb-6">', "", "</section>"];
 var _tmpl$43 = ['<section id="featured" class="', '"><h2 class="text-2xl font-semibold tracking-wide">', "</h2><ul>", "</ul></section>"];
 var _tmpl$53 = ['<section id="recent-posts" class="pt-12 pb-6"><h2 class="text-2xl font-semibold tracking-wide">', "</h2><ul>", "</ul></section>"];
-var _tmpl$62 = ['<main id="main-content" data-layout="home"', ' class="app-layout"><section id="hero" class="border-border border-b pt-8 pb-6"><h1 class="mb-4 inline-block text-4xl font-bold sm:mb-8 sm:text-5xl">', "</h1>", "", "", "</section>", "", '<div class="my-8 text-center">', "</div></main>"];
+var _tmpl$62 = ['<main id="main-content" data-layout="home"', ' class="app-layout">', "", "", '<div class="my-8 text-center">', "</div></main>"];
 var HomePage = (p3) => {
   const ctx = () => p3.props;
   const cfg = () => getPaperConfig(ctx());
@@ -3320,29 +3320,29 @@ var HomePage = (p3) => {
     get ctx() {
       return ctx();
     }
-  }), ssr(_tmpl$62, ssrAttribute("data-home-path", escape(pageUrl(ctx().request_id, "/index.html"), true), false), escape(cfg().site.name), escape(createComponent(Show, {
+  }), ssr(_tmpl$62, ssrAttribute("data-home-path", escape(pageUrl(ctx().request_id, "/index.html"), true), false), escape(createComponent(Show, {
     get when() {
-      return !!cfg().site.description;
+      return !!heroHtml || (cfg().socials?.length ?? 0) > 0;
     },
     get children() {
-      return ssr(_tmpl$13, escape(cfg().site.description));
-    }
-  })), escape(createComponent(Show, {
-    when: !!heroHtml,
-    get children() {
-      return ssr(_tmpl$26, `${escape(APP_PROSE, true)} mt-4`, heroHtml);
-    }
-  })), escape(createComponent(Show, {
-    get when() {
-      return (cfg().socials?.length ?? 0) > 0;
-    },
-    get children() {
-      return ssr(_tmpl$34, escape(t2().home.socialLinks), escape(createComponent(Socials, {
-        get ctx() {
-          return ctx();
+      return ssr(_tmpl$34, escape(createComponent(Show, {
+        when: !!heroHtml,
+        get children() {
+          return ssr(_tmpl$13, ssrAttribute("class", escape(APP_PROSE, true), false), heroHtml);
+        }
+      })), escape(createComponent(Show, {
+        get when() {
+          return (cfg().socials?.length ?? 0) > 0;
         },
-        get socials() {
-          return cfg().socials ?? [];
+        get children() {
+          return ssr(_tmpl$26, `flex max-sm:flex-col sm:items-center ${heroHtml ? "mt-4" : ""}`, escape(t2().home.socialLinks), escape(createComponent(Socials, {
+            get ctx() {
+              return ctx();
+            },
+            get socials() {
+              return cfg().socials ?? [];
+            }
+          })));
         }
       })));
     }

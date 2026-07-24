@@ -60,25 +60,27 @@ export const HomePage: Component<HomePageProps> = (p) => {
         data-home-path={pageUrl(ctx().request_id, "/index.html")}
         class="app-layout"
       >
-        <section id="hero" class="border-border border-b pt-8 pb-6">
-          <h1 class="mb-4 inline-block text-4xl font-bold sm:mb-8 sm:text-5xl">
-            {cfg().site.name}
-          </h1>
-          <Show when={!!cfg().site.description}>
-            <p>{cfg().site.description}</p>
-          </Show>
-          <Show when={!!heroHtml}>
-            <div class={`${APP_PROSE} mt-4`} innerHTML={heroHtml} />
-          </Show>
-          <Show when={(cfg().socials?.length ?? 0) > 0}>
-            <div class="mt-4 flex max-sm:flex-col sm:items-center">
-              <div class="me-2 mb-1 whitespace-nowrap sm:mb-0">
-                {t().home.socialLinks}:
+        <Show
+          when={
+            !!heroHtml || (cfg().socials?.length ?? 0) > 0
+          }
+        >
+          <section id="hero" class="border-border border-b pt-8 pb-6">
+            <Show when={!!heroHtml}>
+              <div class={APP_PROSE} innerHTML={heroHtml} />
+            </Show>
+            <Show when={(cfg().socials?.length ?? 0) > 0}>
+              <div
+                class={`flex max-sm:flex-col sm:items-center ${heroHtml ? "mt-4" : ""}`}
+              >
+                <div class="me-2 mb-1 whitespace-nowrap sm:mb-0">
+                  {t().home.socialLinks}:
+                </div>
+                <Socials ctx={ctx()} socials={cfg().socials ?? []} />
               </div>
-              <Socials ctx={ctx()} socials={cfg().socials ?? []} />
-            </div>
-          </Show>
-        </section>
+            </Show>
+          </section>
+        </Show>
 
         <Show when={featured().length > 0}>
           <section
