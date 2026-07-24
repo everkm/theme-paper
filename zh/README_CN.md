@@ -2,6 +2,7 @@
 title: 主题配置
 slug: readme
 created_at: 2026-06-28T00:00:00Z
+updated_at: 2026-07-24T10:24:20+08:00
 tags:
   - featured
 ---
@@ -20,9 +21,10 @@ Paper 是面向 [everkm-publish](https://publish.everkm.com) 的极简博客主�
 config:
   site: { ... }           # 站点基本信息
   home: '[[_home]]'       # 首页首屏内容
-  about: '[[_about]]'     # 关于页内容
+  about: '[[_about]]'     # 关于页内容，或绝对 URL
   posts: { ... }          # 文章列表分页与精选标签
   features: { ... }       # 功能开关
+  header_nav: [ ... ]     # 顶栏额外链接（默认在「关于」后，可 at_before）
   code_highlight: { ... } # 服务端代码高亮
   math_render: { ... }    # 服务端数学渲染
   socials: [ ... ]        # 社交链接（首页首屏与页脚）
@@ -70,7 +72,7 @@ Paper 使用**虚拟模板**实现首页与关于页。首屏与关于页正文�
 | 字段 | 默认值 | 说明 |
 |--------|---------|-------------|
 | `home` | `[[_home]]` | 首页首屏 Markdown 路径（通过内链解析） |
-| `about` | `[[_about]]` | 关于页 Markdown 路径 |
+| `about` | `[[_about]]` | 关于页 Markdown 路径；也可设为绝对 URL（见下） |
 
 示例内容结构：
 
@@ -86,6 +88,43 @@ zh/
 
 {.NOTE}
 **不要**在根目录创建 `index.md`。若 `/index.html` 解析到某篇 Markdown，会按普通文章详情页渲染，而非虚拟首页。
+
+### `about` 使用绝对链接
+
+若「关于」指向站外页面，可将 `about` 设为 `http(s)://` 绝对地址。顶栏「关于」会直接打开该链接（新窗口，且不走页面过渡），本地 `/about/` 虚拟页将不再加载 Markdown 正文。
+
+```yaml
+config:
+  about: https://example.com/about
+```
+
+---
+
+## 顶栏链接 `header_nav`
+
+在顶栏追加自定义链接：
+
+| 字段 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `title` | string | — | 显示文案 |
+| `url` | string | — | 链接地址；`http(s)://` 为外链，相对路径按站点根解析 |
+| `new_window` | boolean | 外链为 `true` | 是否新窗口打开 |
+| `at_before` | boolean | `false` | `true` 时排在内置导航（文章/标签/关于）之前；`false` 时排在「关于」之后、「归档」之前 |
+
+外链会带上 `data-no-vt`（以及默认的 `target="_blank"`），避免被 View Transition 拦截。
+
+```yaml
+config:
+  header_nav:
+    - title: 毓知
+      url: https://everkm.cn/
+      at_before: true
+    - title: GitHub
+      url: https://github.com/everkm/theme-paper
+    - title: 文档
+      url: https://publish.everkm.com
+      new_window: true
+```
 
 ---
 

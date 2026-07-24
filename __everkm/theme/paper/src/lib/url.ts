@@ -75,6 +75,11 @@ export function pageUrl(requestId: string, path: string): string {
   return `${base}${normalized}`;
 }
 
+/** Absolute http(s) or protocol-relative URL (header external links). */
+export function isAbsoluteUrl(url: string): boolean {
+  return /^https?:\/\//i.test(url) || url.startsWith("//");
+}
+
 function pageNoFromCtx(ctx: PageContext): number {
   const fromTpl = (ctx.tpl_path ?? "").match(/\.p(\d+)\.html$/i);
   if (fromTpl) return parseInt(fromTpl[1], 10) || 1;

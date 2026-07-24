@@ -1,6 +1,7 @@
 import { Component, Show } from "solid-js";
 import { getPaperConfig } from "../lib/config";
 import { useTranslations } from "../lib/i18n";
+import { isAbsoluteUrl } from "../lib/url";
 import { Header } from "../layout/Header";
 import { Footer } from "../components/Footer";
 import { PageChrome } from "../components/PageChrome";
@@ -16,12 +17,15 @@ export const AboutPage: Component<AboutPageProps> = (p) => {
   const cfg = () => getPaperConfig(ctx());
   const t = () => useTranslations(ctx().lang);
   const aboutPath = cfg().about ?? "/about.md";
+  const aboutIsExternal = isAbsoluteUrl(aboutPath);
 
-  const aboutDoc = everkm.post_detail(p.props.request_id, {
-    path: aboutPath,
-    allow_missing: true,
-    lazy_img: true,
-  });
+  const aboutDoc = aboutIsExternal
+    ? null
+    : everkm.post_detail(p.props.request_id, {
+        path: aboutPath,
+        allow_missing: true,
+        lazy_img: true,
+      });
   const pageTitle = aboutDoc?.title ?? t().nav.about;
 
   return (

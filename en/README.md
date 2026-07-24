@@ -2,6 +2,7 @@
 title: Theme Configuration
 slug: readme
 created_at: 2026-06-28T00:00:00Z
+updated_at: 2026-07-24T10:24:20+08:00
 tags:
   - featured
 ---
@@ -20,9 +21,10 @@ Paper is a minimal blog theme for [everkm-publish](https://publish.everkm.com), 
 config:
   site: { ... }           # Site basic info
   home: '[[_home]]'       # Homepage hero content
-  about: '[[_about]]'     # About page content
+  about: '[[_about]]'     # About page content, or an absolute URL
   posts: { ... }          # Post list pagination and featured tag
   features: { ... }       # Feature toggles
+  header_nav: [ ... ]     # Extra header links (after About by default; optional at_before)
   code_highlight: { ... } # Server-side code highlighting
   math_render: { ... }    # Server-side math rendering
   socials: [ ... ]        # Social links (homepage hero & footer)
@@ -70,7 +72,7 @@ Paper uses **virtual templates** for the homepage and about page. Hero and about
 | Field | Default | Description |
 |--------|---------|-------------|
 | `home` | `[[_home]]` | Path to homepage hero Markdown (resolved via inner link) |
-| `about` | `[[_about]]` | Path to about page Markdown |
+| `about` | `[[_about]]` | Path to about page Markdown; may also be an absolute URL (see below) |
 
 Example content layout:
 
@@ -86,6 +88,43 @@ en/
 
 {.NOTE}
 Do **not** create a root `index.md`. If `/index.html` resolves to a Markdown file, it renders as a regular post detail page instead of the virtual homepage.
+
+### Absolute `about` URL
+
+To point About to an external page, set `about` to an `http(s)://` URL. The header About link opens that URL (new tab, skipping view transitions), and the local `/about/` virtual page no longer loads Markdown content.
+
+```yaml
+config:
+  about: https://example.com/about
+```
+
+---
+
+## Header Links `header_nav`
+
+Add custom links in the top nav:
+
+| Field | Type | Default | Description |
+|------|------|--------|------|
+| `title` | string | — | Link label |
+| `url` | string | — | Destination; `http(s)://` is treated as external; relative paths resolve from the site root |
+| `new_window` | boolean | `true` for absolute URLs | Open in a new tab |
+| `at_before` | boolean | `false` | When `true`, place before built-in nav (Posts/Tags/About); when `false`, place after About and before Archives |
+
+External links include `data-no-vt` (and `target="_blank"` by default) so view transitions do not intercept them.
+
+```yaml
+config:
+  header_nav:
+    - title: Everkm
+      url: https://everkm.com
+      at_before: true
+    - title: GitHub
+      url: https://github.com/everkm/theme-paper
+    - title: Docs
+      url: https://publish.everkm.com
+      new_window: true
+```
 
 ---
 

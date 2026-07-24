@@ -3,6 +3,7 @@ import { RootLayout } from "../layout/RootLayout";
 import { resolvePageKey } from "../lib/normalizeTplPath";
 import { getPaperConfig } from "../lib/config";
 import { configValue } from "../lib/configValue";
+import { isAbsoluteUrl } from "../lib/url";
 import { HomePage } from "./home";
 import { AboutPage } from "./about";
 import { PostPage } from "./post";
@@ -43,6 +44,7 @@ function resolveLayoutTitle(
   }
   if (pageKey === "about") {
     const aboutPath = cfg.about ?? "/about.md";
+    if (isAbsoluteUrl(aboutPath)) return undefined;
     const aboutMeta = everkm.post_meta(props.request_id, {
       path: aboutPath,
       allow_missing: true,

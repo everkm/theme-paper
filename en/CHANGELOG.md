@@ -2,7 +2,7 @@
 title: Changelog
 slug: changelog
 created_at: 2026-06-28T00:00:00Z
-updated_at: 2026-07-24T08:44:33+08:00
+updated_at: 2026-07-24T10:24:20+08:00
 tags:
   - featured
 ---
@@ -20,10 +20,13 @@ This changelog is for end users. Keep the wording user-friendly and avoid exposi
 **Fixes**
 
 - Content image lazy loading: images now load when they enter the viewport (including above the fold), instead of staying on placeholders
+- Hovering one header nav item no longer turns the other items accent-colored
 
 **Improvements**
 
 - Better style compatibility on older browsers and embedded webviews
+- Header supports custom `header_nav` links (after About by default; use `at_before` to place earlier)
+- `about` can be an absolute URL; external links open in a new tab and skip view transitions
 
 ## v0.1.0 (2026-06-28)
 

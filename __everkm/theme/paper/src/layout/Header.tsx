@@ -1,8 +1,13 @@
-import { Component, Show } from "solid-js";
-import { getPaperConfig } from "../lib/config";
+import { Component, For, Show } from "solid-js";
+import { getPaperConfig, type HeaderNavItem } from "../lib/config";
 import { POSTS_INDEX_URL, POSTS_PATH } from "../lib/postsPath";
 import { useTranslations } from "../lib/i18n";
-import { currentPagePath, isActivePath, pageUrl } from "../lib/url";
+import {
+  currentPagePath,
+  isAbsoluteUrl,
+  isActivePath,
+  pageUrl,
+} from "../lib/url";
 import { LinkButton } from "../components/LinkButton";
 import { Icon } from "../components/Icon";
 import IconMenuDeep from "../assets/icons/IconMenuDeep.svg";
@@ -17,11 +22,67 @@ type HeaderProps = {
   ctx: PageContext;
 };
 
+/** Attrs so view transitions do not intercept the click. */
+function externalLinkAttrs(newWindow: boolean) {
+  return {
+    "data-no-vt": "",
+    ...(newWindow
+      ? { target: "_blank" as const, rel: "noopener" }
+      : {}),
+  };
+}
+
+function resolveNavHref(
+  requestId: string,
+  url: string,
+): { href: string; absolute: boolean } {
+  if (isAbsoluteUrl(url)) return { href: url, absolute: true };
+  return { href: pageUrl(requestId, url), absolute: false };
+}
+
 export const Header: Component<HeaderProps> = (props) => {
   const cfg = () => getPaperConfig(props.ctx);
   const t = () => useTranslations(props.ctx.lang);
   const path = () => currentPagePath(props.ctx);
   const isActive = (target: string) => isActivePath(path(), target);
+
+  const aboutCfg = () => cfg().about ?? "/about.md";
+  const aboutLink = () => {
+    const raw = aboutCfg();
+    if (isAbsoluteUrl(raw)) {
+      return {
+        href: raw,
+        external: true as const,
+        newWindow: false,
+      };
+    }
+    return {
+      href: pageUrl(props.ctx.request_id, "/about/"),
+      external: false as const,
+      newWindow: false,
+    };
+  };
+
+  const headerNavItems = () => cfg().header_nav ?? [];
+  const headerNavBefore = () =>
+    headerNavItems().filter((item) => item.at_before === true);
+  const headerNavAfter = () =>
+    headerNavItems().filter((item) => item.at_before !== true);
+
+  const navItemAttrs = (item: HeaderNavItem) => {
+    const { href, absolute } = resolveNavHref(props.ctx.request_id, item.url);
+    const newWindow = item.new_window ?? absolute;
+    return {
+      href,
+      ...(absolute || newWindow ? externalLinkAttrs(newWindow) : {}),
+    };
+  };
+
+  const renderNavItem = (item: HeaderNavItem) => (
+    <li class="col-span-2">
+      <a {...navItemAttrs(item)}>{item.title}</a>
+    </li>
+  );
 
   return (
     <>
@@ -101,6 +162,7 @@ export const Header: Component<HeaderProps> = (props) => {
                   </div>
                 </li>
               </Show>
+              <For each={headerNavBefore()}>{renderNavItem}</For>
               <li class="col-span-2">
                 <a
                   href={pageUrl(props.ctx.request_id, POSTS_INDEX_URL)}
@@ -120,14 +182,24 @@ export const Header: Component<HeaderProps> = (props) => {
                 </a>
               </li>
               <li class="col-span-2">
-                <a
-                  href={pageUrl(props.ctx.request_id, "/about/")}
-                  data-nav-path="/about"
-                  class={isActive("/about") ? "active-nav" : ""}
+                <Show
+                  when={aboutLink().external}
+                  fallback={
+                    <a
+                      href={aboutLink().href}
+                      data-nav-path="/about"
+                      class={isActive("/about") ? "active-nav" : ""}
+                    >
+                      {t().nav.about}
+                    </a>
+                  }
                 >
-                  {t().nav.about}
-                </a>
+                  <a href={aboutLink().href} {...externalLinkAttrs(true)}>
+                    {t().nav.about}
+                  </a>
+                </Show>
               </li>
+              <For each={headerNavAfter()}>{renderNavItem}</For>
               <Show when={cfg().features?.show_archives !== false}>
                 <li class="col-span-2">
                   <LinkButton

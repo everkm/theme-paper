@@ -16,9 +16,20 @@ export interface PaperFeatures {
   edit_post?: { enabled?: boolean; url?: string };
 }
 
+/** Extra top-nav items (default: after About; `at_before` places before Posts). */
+export interface HeaderNavItem {
+  title: string;
+  url: string;
+  /** Open in new tab; defaults to true for absolute URLs. */
+  new_window?: boolean;
+  /** Place before built-in nav (Posts/Tags/About); default false → after About. */
+  at_before?: boolean;
+}
+
 export interface PaperConfig {
   site: PaperSiteConfig;
   home?: string;
+  /** Markdown path / inner link, or absolute URL for the About nav item. */
   about?: string;
   posts?: {
     per_page?: number;
@@ -26,6 +37,7 @@ export interface PaperConfig {
     featured_tag?: string;
   };
   features?: PaperFeatures;
+  header_nav?: HeaderNavItem[];
   socials?: { name: string; url: string }[];
   share_links?: { name: string; url: string }[];
   copyright?: { text?: string; link?: string };
@@ -53,6 +65,7 @@ const DEFAULTS: PaperConfig = {
     view_transitions: true,
     edit_post: { enabled: false },
   },
+  header_nav: [],
   socials: [],
   share_links: [],
 };
@@ -65,6 +78,7 @@ export function getPaperConfig(ctx: PageContext): PaperConfig {
     site: { ...DEFAULTS.site, ...raw.site },
     posts: { ...DEFAULTS.posts, ...raw.posts },
     features: { ...DEFAULTS.features, ...raw.features },
+    header_nav: raw.header_nav ?? DEFAULTS.header_nav,
     socials: raw.socials ?? DEFAULTS.socials,
     share_links: raw.share_links ?? DEFAULTS.share_links,
   };

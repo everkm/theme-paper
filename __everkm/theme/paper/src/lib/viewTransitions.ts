@@ -14,6 +14,7 @@ import { PAPER_PAGE_SWAP } from "./events";
 function shouldIntercept(anchor: HTMLAnchorElement): boolean {
   if (anchor.target === "_blank") return false;
   if (anchor.hasAttribute("download")) return false;
+  if (anchor.hasAttribute("data-no-vt")) return false;
   const href = anchor.getAttribute("href");
   if (!href || href.startsWith("#") || href.startsWith("mailto:")) return false;
   try {
