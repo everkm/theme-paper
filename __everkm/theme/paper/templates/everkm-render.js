@@ -3243,26 +3243,28 @@ var Datetime = (props) => {
 };
 
 // src/components/Card.tsx
-var _tmpl$12 = ['<h3 style="', '">', "</h3>"];
-var _tmpl$25 = ['<h2 style="', '">', "</h2>"];
-var _tmpl$33 = ['<li class="my-6"><a', ' class="text-accent inline-block text-lg font-medium decoration-dashed underline-offset-4 hover:underline focus-visible:no-underline focus-visible:underline-offset-0">', "</a>", "<p>", "</p></li>"];
+var _tmpl$12 = ['<h3 style="', '"', ">", "</h3>"];
+var _tmpl$25 = ['<h2 style="', '"', ">", "</h2>"];
+var _tmpl$33 = ['<li class="my-8"><a', ' class="text-accent text-lg font-medium decoration-dashed underline-offset-4 hover:underline focus-visible:no-underline focus-visible:underline-offset-0">', "</a>", '<p class="text-foreground/80 mt-3 text-sm leading-relaxed">', "</p></li>"];
 var Card = (props) => {
   const variant = () => props.variant ?? "h2";
   const href = () => props.post.url_path;
+  const titleClass = "line-clamp-2 sm:line-clamp-none";
   const TitleTag = (p3) => {
     const style = {
       "view-transition-name": toTransitionName(props.post.title)
     };
     if (variant() === "h3") {
-      return ssr(_tmpl$12, ssrStyle(style), escape(p3.children));
+      return ssr(_tmpl$12, ssrStyle(style), ssrAttribute("class", escape(titleClass, true), false), escape(p3.children));
     }
-    return ssr(_tmpl$25, ssrStyle(style), escape(p3.children));
+    return ssr(_tmpl$25, ssrStyle(style), ssrAttribute("class", escape(titleClass, true), false), escape(p3.children));
   };
   return ssr(_tmpl$33, ssrAttribute("href", escape(href(), true), false), escape(createComponent(TitleTag, {
     get children() {
       return props.post.title;
     }
   })), escape(createComponent(Datetime, {
+    "class": "mt-1.5",
     get ctx() {
       return props.ctx;
     },
@@ -3730,12 +3732,12 @@ function resolvePostDetail(ctx) {
 var _tmpl$20 = ['<main id="main-content" data-layout="post" class="', '">', "</main>"];
 var _tmpl$212 = ['<div class="mt-auto"><nav class="app-layout mt-8 flex flex-col gap-6 border-t border-muted pt-4 pb-4 sm:flex-row sm:justify-between sm:gap-6">', "", "</nav></div>"];
 var _tmpl$37 = ['<div data-vt-swap="post-nav">', "</div>"];
-var _tmpl$45 = ['<h1 style="', '" class="text-foreground inline-block text-3xl font-bold tracking-tight sm:text-4xl">', "</h1>"];
+var _tmpl$45 = ['<h1 style="', '" class="text-foreground inline-block text-[1.8em] font-bold tracking-tight">', "</h1>"];
 var _tmpl$55 = ['<div class="flex flex-wrap items-center gap-x-2 gap-y-1"><span>', ':</span><ul class="flex flex-wrap gap-x-2 gap-y-1">', "</ul></div>"];
 var _tmpl$63 = ['<div class="text-muted-foreground mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm">', "", "</div>"];
 var _tmpl$72 = ['<article id="article"', ">", "</article>"];
-var _tmpl$82 = ['<span class="flex min-w-0 flex-col gap-0.5"><span class="text-muted-foreground text-xs tracking-wide">', '</span><span class="flex gap-1.5 decoration-dashed underline-offset-4 group-hover/nav:underline"><span class="shrink-0" aria-hidden="true">\u2190</span><span class="min-w-0 break-words">', "</span></span></span>"];
-var _tmpl$92 = ['<span class="flex min-w-0 flex-col items-end gap-0.5"><span class="text-muted-foreground text-xs tracking-wide">', '</span><span class="flex gap-1.5 text-end decoration-dashed underline-offset-4 group-hover/nav:underline"><span class="min-w-0 break-words">', '</span><span class="shrink-0" aria-hidden="true">\u2192</span></span></span>'];
+var _tmpl$82 = ['<span class="flex min-w-0 w-full flex-col gap-0.5 overflow-hidden"><span class="text-muted-foreground text-xs tracking-wide">', '</span><span class="flex min-w-0 gap-1.5 decoration-dashed underline-offset-4 group-hover/nav:underline"><span class="shrink-0" aria-hidden="true">\u2190</span><span class="min-w-0 truncate">', "</span></span></span>"];
+var _tmpl$92 = ['<span class="flex min-w-0 w-full flex-col items-end gap-0.5 overflow-hidden"><span class="text-muted-foreground text-xs tracking-wide">', '</span><span class="flex min-w-0 max-w-full gap-1.5 text-end decoration-dashed underline-offset-4 group-hover/nav:underline"><span class="min-w-0 truncate">', '</span><span class="shrink-0" aria-hidden="true">\u2192</span></span></span>'];
 var PostPage = (p3) => {
   const ctx = () => p3.props;
   const cfg = () => getPaperConfig(ctx());
@@ -3810,7 +3812,7 @@ var PostPage = (p3) => {
           get href() {
             return prev().url_path;
           },
-          "class": "group/nav text-accent max-w-full items-start no-underline sm:max-w-[48%]",
+          "class": "group/nav text-accent w-full max-w-full items-start no-underline sm:w-[48%] sm:max-w-[48%]",
           get children() {
             return ssr(_tmpl$82, escape(t2().post.previousPost), escape(prev().title));
           }
@@ -3821,7 +3823,7 @@ var PostPage = (p3) => {
           get href() {
             return next().url_path;
           },
-          "class": "group/nav text-accent ml-auto max-w-full items-end no-underline sm:max-w-[48%]",
+          "class": "group/nav text-accent ml-auto w-full max-w-full items-end no-underline sm:w-[48%] sm:max-w-[48%]",
           get children() {
             return ssr(_tmpl$92, escape(t2().post.nextPost), escape(next().title));
           }

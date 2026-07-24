@@ -61,7 +61,7 @@ export const PostPage: Component<PostPageProps> = (p) => {
                     item().title || item().slug,
                   ),
                 }}
-                class="text-foreground inline-block text-3xl font-bold tracking-tight sm:text-4xl"
+                class="text-foreground inline-block text-[1.8em] font-bold tracking-tight"
               >
                 {item().title || item().slug}
               </h1>
@@ -100,17 +100,17 @@ export const PostPage: Component<PostPageProps> = (p) => {
                 {(prev) => (
                   <LinkButton
                     href={prev().url_path}
-                    class="group/nav text-accent max-w-full items-start no-underline sm:max-w-[48%]"
+                    class="group/nav text-accent w-full max-w-full items-start no-underline sm:w-[48%] sm:max-w-[48%]"
                   >
-                    <span class="flex min-w-0 flex-col gap-0.5">
+                    <span class="flex min-w-0 w-full flex-col gap-0.5 overflow-hidden">
                       <span class="text-muted-foreground text-xs tracking-wide">
                         {t().post.previousPost}
                       </span>
-                      <span class="flex gap-1.5 decoration-dashed underline-offset-4 group-hover/nav:underline">
+                      <span class="flex min-w-0 gap-1.5 decoration-dashed underline-offset-4 group-hover/nav:underline">
                         <span class="shrink-0" aria-hidden="true">
                           ←
                         </span>
-                        <span class="min-w-0 break-words">{prev().title}</span>
+                        <span class="min-w-0 truncate">{prev().title}</span>
                       </span>
                     </span>
                   </LinkButton>
@@ -120,14 +120,14 @@ export const PostPage: Component<PostPageProps> = (p) => {
                 {(next) => (
                   <LinkButton
                     href={next().url_path}
-                    class="group/nav text-accent ml-auto max-w-full items-end no-underline sm:max-w-[48%]"
+                    class="group/nav text-accent ml-auto w-full max-w-full items-end no-underline sm:w-[48%] sm:max-w-[48%]"
                   >
-                    <span class="flex min-w-0 flex-col items-end gap-0.5">
+                    <span class="flex min-w-0 w-full flex-col items-end gap-0.5 overflow-hidden">
                       <span class="text-muted-foreground text-xs tracking-wide">
                         {t().post.nextPost}
                       </span>
-                      <span class="flex gap-1.5 text-end decoration-dashed underline-offset-4 group-hover/nav:underline">
-                        <span class="min-w-0 break-words">{next().title}</span>
+                      <span class="flex min-w-0 max-w-full gap-1.5 text-end decoration-dashed underline-offset-4 group-hover/nav:underline">
+                        <span class="min-w-0 truncate">{next().title}</span>
                         <span class="shrink-0" aria-hidden="true">
                           →
                         </span>

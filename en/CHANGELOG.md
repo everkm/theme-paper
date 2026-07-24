@@ -3,7 +3,7 @@ id: 1784862019952
 title: Changelog
 slug: changelog
 created_at: 2026-06-28T00:00:00Z
-updated_at: 2026-07-24T10:31:14+08:00
+updated_at: 2026-07-24T12:04:54+08:00
 tags:
   - featured
 ---
@@ -15,6 +15,14 @@ This changelog is for end users. Keep the wording user-friendly and avoid exposi
 - The date in parentheses after the version number is the release date
 - When no new version is specified, append entries under the latest version
 
+
+## v0.1.2 (2026-07-24)
+
+**Improvements**
+
+- Clearer card spacing and summary styles in post lists; titles clamp to two lines on narrow screens
+- More balanced post title size on article pages
+- Long previous / next post titles truncate to a single line to avoid layout overflow
 
 ## v0.1.1 (2026-07-24)
 
