@@ -14,14 +14,18 @@ export const Footer: Component<FooterProps> = (props) => {
   const year = new Date().getFullYear();
 
   return (
-    <footer class={`app-layout ${props.noMarginTop ? "" : "mt-auto"}`}>
-      <div class="flex flex-col items-center justify-between border-t border-muted py-6 sm:flex-row-reverse sm:py-4">
+    <footer
+      class={`app-layout border-t border-muted ${props.noMarginTop ? "" : "mt-auto"}`}
+    >
+      <div class="flex flex-col items-center justify-between gap-3 py-4 sm:flex-row-reverse sm:gap-4">
         <Socials ctx={props.ctx} socials={props.config.socials ?? []} />
-        <div class="my-2 flex flex-col items-center whitespace-nowrap text-sm sm:flex-row">
+        <div class="flex flex-wrap items-center justify-center whitespace-nowrap text-sm">
           <span>
-            {t().footer.copyright} &#169; {year}
+            {t().footer.copyright} &#169;{year}
           </span>
-          <span class="hidden sm:inline">&nbsp;|&nbsp;</span>
+          <span class="mx-1.5 text-muted-foreground" aria-hidden="true">
+            |
+          </span>
           <span>{t().footer.allRightsReserved}</span>
         </div>
       </div>

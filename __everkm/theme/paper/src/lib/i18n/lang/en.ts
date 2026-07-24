@@ -56,4 +56,8 @@ export const en = {
   },
 } as const;
 
-export type UIStrings = typeof en;
+type DeepStringify<T> = {
+  [K in keyof T]: T[K] extends string ? string : DeepStringify<T[K]>;
+};
+
+export type UIStrings = DeepStringify<typeof en>;

@@ -2807,10 +2807,76 @@ var en = {
   }
 };
 
+// src/lib/i18n/lang/zh.ts
+var zh = {
+  nav: {
+    home: "\u9996\u9875",
+    posts: "\u6587\u7AE0",
+    tags: "\u6807\u7B7E",
+    about: "\u5173\u4E8E",
+    archives: "\u5F52\u6863",
+    search: "\u641C\u7D22"
+  },
+  post: {
+    publishedAt: "\u53D1\u5E03\u4E8E",
+    updatedAt: "\u66F4\u65B0\u4E8E",
+    sharePostIntro: "\u5206\u4EAB\u672C\u6587\uFF1A",
+    tagLabel: "\u6807\u7B7E",
+    backToTop: "\u56DE\u5230\u9876\u90E8",
+    goBack: "\u8FD4\u56DE",
+    editPage: "\u7F16\u8F91\u9875\u9762",
+    previousPost: "\u4E0A\u4E00\u7BC7",
+    nextPost: "\u4E0B\u4E00\u7BC7"
+  },
+  pagination: {
+    prev: "\u4E0A\u4E00\u9875",
+    next: "\u4E0B\u4E00\u9875",
+    page: "\u9875"
+  },
+  home: {
+    socialLinks: "\u793E\u4EA4\u94FE\u63A5",
+    featured: "\u7CBE\u9009",
+    recentPosts: "\u6700\u8FD1\u6587\u7AE0",
+    allPosts: "\u5168\u90E8\u6587\u7AE0"
+  },
+  footer: {
+    copyright: "\u7248\u6743\u6240\u6709",
+    allRightsReserved: "\u4FDD\u7559\u6240\u6709\u6743\u5229\u3002"
+  },
+  pages: {
+    tagTitle: "\u6807\u7B7E",
+    tagDesc: "\u5305\u542B\u8BE5\u6807\u7B7E\u7684\u5168\u90E8\u6587\u7AE0",
+    tagsTitle: "\u6807\u7B7E",
+    tagsDesc: "\u6587\u7AE0\u4E2D\u4F7F\u7528\u7684\u5168\u90E8\u6807\u7B7E\u3002",
+    postsTitle: "\u6587\u7AE0",
+    postsDesc: "\u6211\u53D1\u5E03\u7684\u5168\u90E8\u6587\u7AE0\u3002",
+    archivesTitle: "\u5F52\u6863",
+    archivesDesc: "\u6211\u5F52\u6863\u7684\u5168\u90E8\u6587\u7AE0\u3002",
+    searchTitle: "\u641C\u7D22",
+    searchDesc: "\u641C\u7D22\u4EFB\u610F\u6587\u7AE0 \u2026",
+    aboutEmpty: "\u6682\u65E0\u5185\u5BB9\u3002"
+  },
+  a11y: {
+    skipToContent: "\u8DF3\u5230\u6B63\u6587",
+    openMenu: "\u6253\u5F00\u83DC\u5355",
+    closeMenu: "\u5173\u95ED\u83DC\u5355",
+    toggleTheme: "\u5207\u6362\u4E3B\u9898",
+    goToPreviousPage: "\u8F6C\u5230\u4E0A\u4E00\u9875",
+    goToNextPage: "\u8F6C\u5230\u4E0B\u4E00\u9875"
+  }
+};
+
 // src/lib/i18n/index.ts
-var catalogs = { en };
+var catalogs = { en, zh };
+function resolveLangKey(lang) {
+  const normalized = (lang || "en").toLowerCase().replace("_", "-");
+  if (normalized === "zh" || normalized.startsWith("zh-")) return "zh";
+  if (normalized === "en" || normalized.startsWith("en-")) return "en";
+  return normalized.split("-")[0] || "en";
+}
 function useTranslations(lang) {
-  return catalogs[lang || "en"] ?? en;
+  const key = resolveLangKey(lang);
+  return catalogs[key] ?? en;
 }
 
 // src/lib/postsPath.ts
@@ -3040,11 +3106,11 @@ var Socials = (props) => {
 };
 
 // src/components/Footer.tsx
-var _tmpl$9 = ['<footer class="', '"><div class="flex flex-col items-center justify-between border-t border-muted py-6 sm:flex-row-reverse sm:py-4">', '<div class="my-2 flex flex-col items-center whitespace-nowrap text-sm sm:flex-row"><span>', " &#169; ", '</span><span class="hidden sm:inline">&nbsp;|&nbsp;</span><span>', "</span></div></div></footer>"];
+var _tmpl$9 = ['<footer class="', '"><div class="flex flex-col items-center justify-between gap-3 py-4 sm:flex-row-reverse sm:gap-4">', '<div class="flex flex-wrap items-center justify-center whitespace-nowrap text-sm"><span>', " &#169;", '</span><span class="mx-1.5 text-muted-foreground" aria-hidden="true">|</span><span>', "</span></div></div></footer>"];
 var Footer = (props) => {
   const t2 = () => useTranslations(props.ctx.lang);
   const year = (/* @__PURE__ */ new Date()).getFullYear();
-  return ssr(_tmpl$9, `app-layout ${props.noMarginTop ? "" : "mt-auto"}`, escape(createComponent(Socials, {
+  return ssr(_tmpl$9, `app-layout border-t border-muted ${props.noMarginTop ? "" : "mt-auto"}`, escape(createComponent(Socials, {
     get ctx() {
       return props.ctx;
     },
@@ -3581,12 +3647,12 @@ function resolvePostDetail(ctx) {
 
 // src/pages/post.tsx
 var _tmpl$19 = ['<main id="main-content" data-layout="post" class="', '">', "</main>"];
-var _tmpl$212 = ['<h1 style="', '" class="text-accent inline-block text-2xl font-bold sm:text-3xl">', "</h1>"];
-var _tmpl$37 = ['<div class="my-4 flex flex-wrap gap-2"><span class="text-muted-foreground italic">', ':</span><ul class="flex flex-wrap gap-2">', "</ul></div>"];
-var _tmpl$45 = ['<article id="article"', ">", "</article>"];
-var _tmpl$55 = ['<nav class="my-8 grid grid-cols-1 gap-6 sm:grid-cols-2">', "", "</nav>"];
-var _tmpl$63 = ["<span>\u2190 ", "</span>"];
-var _tmpl$72 = ["<span>", " \u2192</span>"];
+var _tmpl$212 = ['<div class="mt-auto"><nav class="app-layout mt-8 flex flex-col gap-6 border-t border-muted pt-4 pb-4 sm:flex-row sm:justify-between sm:gap-6">', "", "</nav>", "</div>"];
+var _tmpl$37 = ['<h1 style="', '" class="text-accent inline-block text-2xl font-bold sm:text-3xl">', "</h1>"];
+var _tmpl$45 = ['<div class="my-4 flex flex-wrap gap-2"><span class="text-muted-foreground italic">', ':</span><ul class="flex flex-wrap gap-2">', "</ul></div>"];
+var _tmpl$55 = ['<article id="article"', ">", "</article>"];
+var _tmpl$63 = ['<span class="flex min-w-0 flex-col gap-0.5"><span class="text-muted-foreground text-xs tracking-wide">', '</span><span class="flex gap-1.5 decoration-dashed underline-offset-4 group-hover/nav:underline"><span class="shrink-0" aria-hidden="true">\u2190</span><span class="min-w-0 break-words">', "</span></span></span>"];
+var _tmpl$72 = ['<span class="flex min-w-0 flex-col items-end gap-0.5"><span class="text-muted-foreground text-xs tracking-wide">', '</span><span class="flex gap-1.5 text-end decoration-dashed underline-offset-4 group-hover/nav:underline"><span class="min-w-0 break-words">', '</span><span class="shrink-0" aria-hidden="true">\u2192</span></span></span>'];
 var PostPage = (p3) => {
   const ctx = () => p3.props;
   const cfg = () => getPaperConfig(ctx());
@@ -3623,7 +3689,7 @@ var PostPage = (p3) => {
     }
   }), ssr(_tmpl$19, `app-layout${padMainTop() ? " mt-8" : ""}`, escape(createComponent(Show, {
     when: post,
-    children: (item) => [ssr(_tmpl$212, "view-transition-name:" + escape(toTransitionName(item().title || item().slug), true), escape(item().title) || escape(item().slug)), createComponent(Datetime, {
+    children: (item) => [ssr(_tmpl$37, "view-transition-name:" + escape(toTransitionName(item().title || item().slug), true), escape(item().title) || escape(item().slug)), createComponent(Datetime, {
       get ctx() {
         return ctx();
       },
@@ -3640,7 +3706,7 @@ var PostPage = (p3) => {
         return (item().tags?.length ?? 0) > 0;
       },
       get children() {
-        return ssr(_tmpl$37, escape(t2().post.tagLabel), escape(createComponent(For, {
+        return ssr(_tmpl$45, escape(t2().post.tagLabel), escape(createComponent(For, {
           get each() {
             return item().tags ?? [];
           },
@@ -3652,40 +3718,51 @@ var PostPage = (p3) => {
           })
         })));
       }
-    }), ssr(_tmpl$45, ssrAttribute("class", escape(APP_PROSE_POST, true), false), item().content_html ?? ""), createComponent(Show, {
-      when: prevPost || nextPost,
-      get children() {
-        return ssr(_tmpl$55, escape(createComponent(Show, {
-          when: prevPost,
-          children: (prev) => createComponent(LinkButton, {
-            get href() {
-              return prev().url_path;
-            },
-            "class": "text-accent flex w-full gap-1 decoration-dashed underline-offset-4 hover:opacity-75 hover:underline",
-            get children() {
-              return ssr(_tmpl$63, escape(prev().title));
-            }
-          })
-        })), escape(createComponent(Show, {
-          when: nextPost,
-          children: (next) => createComponent(LinkButton, {
-            get href() {
-              return next().url_path;
-            },
-            "class": "text-accent flex w-full justify-end gap-1 text-end decoration-dashed underline-offset-4 hover:opacity-75 hover:underline sm:col-start-2",
-            get children() {
-              return ssr(_tmpl$72, escape(next().title));
-            }
-          })
-        })));
-      }
-    })]
-  }))), createComponent(Footer, {
-    get ctx() {
-      return ctx();
+    }), ssr(_tmpl$55, ssrAttribute("class", escape(APP_PROSE_POST, true), false), item().content_html ?? "")]
+  }))), createComponent(Show, {
+    when: prevPost || nextPost,
+    get fallback() {
+      return createComponent(Footer, {
+        get ctx() {
+          return ctx();
+        },
+        get config() {
+          return cfg();
+        }
+      });
     },
-    get config() {
-      return cfg();
+    get children() {
+      return ssr(_tmpl$212, escape(createComponent(Show, {
+        when: prevPost,
+        children: (prev) => createComponent(LinkButton, {
+          get href() {
+            return prev().url_path;
+          },
+          "class": "group/nav text-accent max-w-full items-start no-underline sm:max-w-[48%]",
+          get children() {
+            return ssr(_tmpl$63, escape(t2().post.previousPost), escape(prev().title));
+          }
+        })
+      })), escape(createComponent(Show, {
+        when: nextPost,
+        children: (next) => createComponent(LinkButton, {
+          get href() {
+            return next().url_path;
+          },
+          "class": "group/nav text-accent ml-auto max-w-full items-end no-underline sm:max-w-[48%]",
+          get children() {
+            return ssr(_tmpl$72, escape(t2().post.nextPost), escape(next().title));
+          }
+        })
+      })), escape(createComponent(Footer, {
+        get ctx() {
+          return ctx();
+        },
+        get config() {
+          return cfg();
+        },
+        noMarginTop: true
+      })));
     }
   })];
 };
