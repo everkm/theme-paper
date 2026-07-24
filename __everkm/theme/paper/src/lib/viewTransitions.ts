@@ -7,6 +7,7 @@ import { carryThemeColorTo, installTheme } from "./theme";
 import { installFootnoteBackButton } from "./footnote";
 import { updateActiveNav } from "./activeNav";
 import { syncBackUrlFromPage, updateBackButton } from "./backButton";
+import { installLazyImg } from "./widgets/image-lazy";
 
 import { PAPER_PAGE_SWAP } from "./events";
 
@@ -199,6 +200,7 @@ export function bootClient(): void {
   updateActiveNav();
   mountClientBlocks();
   installFootnoteBackButton("#article");
+  installLazyImg("#main-content");
   installViewTransitions();
   syncBackUrlFromPage();
   updateBackButton();

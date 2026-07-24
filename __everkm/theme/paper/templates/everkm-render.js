@@ -3147,7 +3147,8 @@ var HomePage = (p3) => {
   const homePath = cfg().home ?? "/home.md";
   const heroPost = everkm.post_detail(p3.props.request_id, {
     path: homePath,
-    allow_missing: true
+    allow_missing: true,
+    lazy_img: true
   });
   const heroHtml = heroPost?.content_html ?? "";
   const featured = () => everkm.posts(ctx().request_id, {
@@ -3509,7 +3510,8 @@ var AboutPage = (p3) => {
   const aboutPath = cfg().about ?? "/about.md";
   const aboutDoc = everkm.post_detail(p3.props.request_id, {
     path: aboutPath,
-    allow_missing: true
+    allow_missing: true,
+    lazy_img: true
   });
   const pageTitle = aboutDoc?.title ?? t2().nav.about;
   return [createComponent(Header, {
@@ -3561,14 +3563,16 @@ var Tag = (props) => {
 
 // src/lib/postDetail.ts
 function resolvePostDetail(ctx) {
+  const lazyArgs = { lazy_img: true };
   const meta = ctx.post;
   if (meta?.path) {
-    return everkm.post_detail(ctx.request_id, { path: meta.path }) ?? meta;
+    return everkm.post_detail(ctx.request_id, { path: meta.path, ...lazyArgs }) ?? meta;
   }
   const pagePath = ctx.page_path;
   if (pagePath?.endsWith(".html")) {
     return everkm.post_detail(ctx.request_id, {
-      path: pagePath.replace(/\.html$/, ".md")
+      path: pagePath.replace(/\.html$/, ".md"),
+      ...lazyArgs
     });
   }
   return meta;

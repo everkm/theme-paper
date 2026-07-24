@@ -2,6 +2,7 @@
 title: Changelog
 slug: changelog
 created_at: 2026-06-28T00:00:00Z
+updated_at: 2026-07-24T08:13:23+08:00
 tags:
   - featured
 ---
@@ -13,6 +14,12 @@ This changelog is for end users. Keep the wording user-friendly and avoid exposi
 - The date in parentheses after the version number is the release date
 - When no new version is specified, append entries under the latest version
 
+
+## v0.1.1 (2026-07-24)
+
+**Fixes**
+
+- Content image lazy loading: images now load when they enter the viewport (including above the fold), instead of staying on placeholders
 
 ## v0.1.0 (2026-06-28)
 

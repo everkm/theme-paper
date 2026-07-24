@@ -27,6 +27,7 @@ export const HomePage: Component<HomePageProps> = (p) => {
   const heroPost = everkm.post_detail(p.props.request_id, {
     path: homePath,
     allow_missing: true,
+    lazy_img: true,
   });
   const heroHtml = heroPost?.content_html ?? "";
 

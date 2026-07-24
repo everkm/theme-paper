@@ -20,6 +20,7 @@ export const AboutPage: Component<AboutPageProps> = (p) => {
   const aboutDoc = everkm.post_detail(p.props.request_id, {
     path: aboutPath,
     allow_missing: true,
+    lazy_img: true,
   });
   const pageTitle = aboutDoc?.title ?? t().nav.about;
 
