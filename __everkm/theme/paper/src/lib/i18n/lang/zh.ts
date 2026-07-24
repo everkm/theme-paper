@@ -12,6 +12,7 @@ export const zh: UIStrings = {
   post: {
     publishedAt: "发布于",
     updatedAt: "更新于",
+    dateFormat: "YYYY-MM-DD",
     sharePostIntro: "分享本文：",
     tagLabel: "标签",
     backToTop: "回到顶部",

@@ -446,6 +446,27 @@ var require_timezone = __commonJS({
   }
 });
 
+// node_modules/.pnpm/dayjs@1.11.18/node_modules/dayjs/locale/zh-cn.js
+var require_zh_cn = __commonJS({
+  "node_modules/.pnpm/dayjs@1.11.18/node_modules/dayjs/locale/zh-cn.js"(exports, module) {
+    !function(e, _3) {
+      "object" == typeof exports && "undefined" != typeof module ? module.exports = _3(require_dayjs_min()) : "function" == typeof define && define.amd ? define(["dayjs"], _3) : (e = "undefined" != typeof globalThis ? globalThis : e || self).dayjs_locale_zh_cn = _3(e.dayjs);
+    }(exports, function(e) {
+      "use strict";
+      function _3(e2) {
+        return e2 && "object" == typeof e2 && "default" in e2 ? e2 : { default: e2 };
+      }
+      var t2 = _3(e), d2 = { name: "zh-cn", weekdays: "\u661F\u671F\u65E5_\u661F\u671F\u4E00_\u661F\u671F\u4E8C_\u661F\u671F\u4E09_\u661F\u671F\u56DB_\u661F\u671F\u4E94_\u661F\u671F\u516D".split("_"), weekdaysShort: "\u5468\u65E5_\u5468\u4E00_\u5468\u4E8C_\u5468\u4E09_\u5468\u56DB_\u5468\u4E94_\u5468\u516D".split("_"), weekdaysMin: "\u65E5_\u4E00_\u4E8C_\u4E09_\u56DB_\u4E94_\u516D".split("_"), months: "\u4E00\u6708_\u4E8C\u6708_\u4E09\u6708_\u56DB\u6708_\u4E94\u6708_\u516D\u6708_\u4E03\u6708_\u516B\u6708_\u4E5D\u6708_\u5341\u6708_\u5341\u4E00\u6708_\u5341\u4E8C\u6708".split("_"), monthsShort: "1\u6708_2\u6708_3\u6708_4\u6708_5\u6708_6\u6708_7\u6708_8\u6708_9\u6708_10\u6708_11\u6708_12\u6708".split("_"), ordinal: function(e2, _4) {
+        return "W" === _4 ? e2 + "\u5468" : e2 + "\u65E5";
+      }, weekStart: 1, yearStart: 4, formats: { LT: "HH:mm", LTS: "HH:mm:ss", L: "YYYY/MM/DD", LL: "YYYY\u5E74M\u6708D\u65E5", LLL: "YYYY\u5E74M\u6708D\u65E5Ah\u70B9mm\u5206", LLLL: "YYYY\u5E74M\u6708D\u65E5ddddAh\u70B9mm\u5206", l: "YYYY/M/D", ll: "YYYY\u5E74M\u6708D\u65E5", lll: "YYYY\u5E74M\u6708D\u65E5 HH:mm", llll: "YYYY\u5E74M\u6708D\u65E5dddd HH:mm" }, relativeTime: { future: "%s\u5185", past: "%s\u524D", s: "\u51E0\u79D2", m: "1 \u5206\u949F", mm: "%d \u5206\u949F", h: "1 \u5C0F\u65F6", hh: "%d \u5C0F\u65F6", d: "1 \u5929", dd: "%d \u5929", M: "1 \u4E2A\u6708", MM: "%d \u4E2A\u6708", y: "1 \u5E74", yy: "%d \u5E74" }, meridiem: function(e2, _4) {
+        var t3 = 100 * e2 + _4;
+        return t3 < 600 ? "\u51CC\u6668" : t3 < 900 ? "\u65E9\u4E0A" : t3 < 1100 ? "\u4E0A\u5348" : t3 < 1300 ? "\u4E2D\u5348" : t3 < 1800 ? "\u4E0B\u5348" : "\u665A\u4E0A";
+      } };
+      return t2.default.locale(d2, null, true), d2;
+    });
+  }
+});
+
 // node_modules/.pnpm/solid-js@1.9.5/node_modules/solid-js/dist/server.js
 var $PROXY = Symbol("solid-proxy");
 var $TRACK = Symbol("solid-track");
@@ -2766,6 +2787,7 @@ var en = {
   post: {
     publishedAt: "Published at",
     updatedAt: "Updated",
+    dateFormat: "YYYY-MM-DD",
     sharePostIntro: "Share this post:",
     tagLabel: "Tags",
     backToTop: "Back to top",
@@ -2825,6 +2847,7 @@ var zh = {
   post: {
     publishedAt: "\u53D1\u5E03\u4E8E",
     updatedAt: "\u66F4\u65B0\u4E8E",
+    dateFormat: "YYYY-MM-DD",
     sharePostIntro: "\u5206\u4EAB\u672C\u6587\uFF1A",
     tagLabel: "\u6807\u7B7E",
     backToTop: "\u56DE\u5230\u9876\u90E8",
@@ -3211,6 +3234,14 @@ var import_dayjs = __toESM(require_dayjs_min(), 1);
 var import_utc = __toESM(require_utc(), 1);
 var import_timezone = __toESM(require_timezone(), 1);
 
+// src/lib/dayjsLocale.ts
+var import_zh_cn = __toESM(require_zh_cn(), 1);
+function dayjsLocale(lang) {
+  const key = resolveLangKey(lang);
+  if (key === "zh") return "zh-cn";
+  return "en";
+}
+
 // src/assets/icons/IconCalendar.svg
 var IconCalendar_default = '<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-calendar-week"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z" /><path d="M16 3v4" /><path d="M8 3v4" /><path d="M4 11h16" /><path d="M7 14h.013" /><path d="M10.01 14h.005" /><path d="M13.01 14h.005" /><path d="M16.015 14h.005" /><path d="M13.015 17h.005" /><path d="M7.01 17h.005" /><path d="M10.01 17h.005" /></svg>';
 
@@ -3225,7 +3256,7 @@ var Datetime = (props) => {
   const pub = () => props.date ?? 0;
   const mod = () => props.updatedAt ?? 0;
   const isModified = () => mod() > pub() && mod() > 0;
-  const datetime = () => import_dayjs.default.unix(isModified() ? mod() : pub()).tz(cfg().site.timezone ?? "UTC");
+  const datetime = () => import_dayjs.default.unix(isModified() ? mod() : pub()).tz(cfg().site.timezone ?? "UTC").locale(dayjsLocale(props.ctx.lang));
   const size = () => props.size ?? "sm";
   return ssr(_tmpl$24, `text-muted-foreground flex items-center gap-x-2 ${escape(props.class, true) ?? ""}`, escape(createComponent(Icon, {
     svg: IconCalendar_default,
@@ -3239,7 +3270,7 @@ var Datetime = (props) => {
     get children() {
       return ssr(_tmpl$11, ssrAttribute("class", size() === "lg" ? "text-sm sm:text-base" : "text-sm", false), escape(t2().post.updatedAt));
     }
-  })), ssrAttribute("class", size() === "lg" ? "text-sm sm:text-base" : "text-sm", false) + ssrAttribute("datetime", escape(datetime().toISOString(), true), false), escape(datetime().format("D MMM, YYYY")));
+  })), ssrAttribute("class", size() === "lg" ? "text-sm sm:text-base" : "text-sm", false) + ssrAttribute("datetime", escape(datetime().toISOString(), true), false), escape(datetime().format(t2().post.dateFormat)));
 };
 
 // src/components/Card.tsx
@@ -4180,7 +4211,7 @@ var ArchivesPage = (p3) => {
   const ctx = () => p3.props;
   const cfg = () => getPaperConfig(ctx());
   const t2 = () => useTranslations(ctx().lang);
-  const monthName = (month) => (0, import_dayjs3.default)().month(month - 1).format("MMMM");
+  const monthName = (month) => (0, import_dayjs3.default)().locale(dayjsLocale(ctx().lang)).month(month - 1).format("MMMM");
   const posts = () => everkm.posts(ctx().request_id, {
     dir: POSTS_CONTENT_DIR,
     recursive: true,

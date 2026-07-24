@@ -10,6 +10,7 @@ export const en = {
   post: {
     publishedAt: "Published at",
     updatedAt: "Updated",
+    dateFormat: "YYYY-MM-DD",
     sharePostIntro: "Share this post:",
     tagLabel: "Tags",
     backToTop: "Back to top",

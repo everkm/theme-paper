@@ -1,6 +1,7 @@
 import { Component, For } from "solid-js";
 import dayjs from "dayjs";
 import { getPaperConfig } from "../lib/config";
+import { dayjsLocale } from "../lib/dayjsLocale";
 import { POSTS_CONTENT_DIR } from "../lib/postsPath";
 import { postDate, postTimestampSeconds } from "../lib/postDate";
 import { useTranslations } from "../lib/i18n";
@@ -38,6 +39,7 @@ export const ArchivesPage: Component<ArchivesPageProps> = (p) => {
 
   const monthName = (month: number) =>
     dayjs()
+      .locale(dayjsLocale(ctx().lang))
       .month(month - 1)
       .format("MMMM");
 

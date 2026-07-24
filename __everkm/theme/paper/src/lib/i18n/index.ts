@@ -3,7 +3,7 @@ import { zh } from "./lang/zh";
 
 const catalogs: Record<string, UIStrings> = { en, zh };
 
-function resolveLangKey(lang?: string): string {
+export function resolveLangKey(lang?: string): string {
   const normalized = (lang || "en").toLowerCase().replace("_", "-");
   if (normalized === "zh" || normalized.startsWith("zh-")) return "zh";
   if (normalized === "en" || normalized.startsWith("en-")) return "en";

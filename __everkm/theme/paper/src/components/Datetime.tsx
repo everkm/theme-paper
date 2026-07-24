@@ -3,6 +3,7 @@ import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import { Component, Show } from "solid-js";
 import { useTranslations } from "../lib/i18n";
+import { dayjsLocale } from "../lib/dayjsLocale";
 import { getPaperConfig } from "../lib/config";
 import { Icon } from "./Icon";
 import IconCalendar from "../assets/icons/IconCalendar.svg";
@@ -27,7 +28,8 @@ export const Datetime: Component<DatetimeProps> = (props) => {
   const datetime = () =>
     dayjs
       .unix(isModified() ? mod() : pub())
-      .tz(cfg().site.timezone ?? "UTC");
+      .tz(cfg().site.timezone ?? "UTC")
+      .locale(dayjsLocale(props.ctx.lang));
   const size = () => props.size ?? "sm";
 
   return (
@@ -47,7 +49,7 @@ export const Datetime: Component<DatetimeProps> = (props) => {
         class={size() === "lg" ? "text-sm sm:text-base" : "text-sm"}
         datetime={datetime().toISOString()}
       >
-        {datetime().format("D MMM, YYYY")}
+        {datetime().format(t().post.dateFormat)}
       </time>
     </div>
   );
