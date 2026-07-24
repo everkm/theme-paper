@@ -2819,7 +2819,7 @@ var POSTS_PATH = "/posts";
 var POSTS_INDEX_URL = `${POSTS_PATH}/index.html`;
 
 // src/lib/proseClasses.ts
-var APP_PROSE = "app-prose max-w-app w-full prose-pre:bg-(--shiki-light-bg) dark:prose-pre:bg-(--shiki-dark-bg)";
+var APP_PROSE = "app-prose max-w-app w-full prose-pre:bg-[var(--shiki-light-bg)] dark:prose-pre:bg-[var(--shiki-dark-bg)]";
 var APP_PROSE_POST = `${APP_PROSE} mt-8`;
 
 // src/components/LinkButton.tsx
@@ -2899,7 +2899,7 @@ var IconMoon_default = '<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  he
 var IconUnderline_default = '<svg viewBox="0 0 181 35" fill="none" xmlns="http://www.w3.org/2000/svg">\n<path d="M92.1951 34.9707C81.4183 35.4458 74.5487 30.1331 70.9707 20.242C68.4805 13.3456 63.9436 10.5669 56.6016 10.682C40.7584 10.9124 25.3302 13.144 10.6177 19.1622C6.1381 20.9907 3.4762 18.6295 0.885762 16.1532C-1.26101 14.0799 0.671043 9.90465 4.77854 8.59448C11.591 6.42046 18.5036 4.07366 25.545 3.18102C38.1967 1.5829 50.9913 0.992615 63.7145 0.0423814C70.7416 -0.475928 74.9781 3.82887 78.3557 9.17033C79.658 11.2148 80.3164 13.6912 81.2324 15.9804C84.0947 23.1359 85.3255 24.5324 92.968 23.2942C105.705 21.2498 118.286 18.2119 130.952 15.6492C145.664 12.6545 160.377 9.60229 175.147 6.86677C176.921 6.53563 179.039 8.13373 181 8.8248C179.97 10.3077 179.254 12.6257 177.88 13.1152C169.851 16.0091 161.765 18.8455 153.521 20.9907C136.762 25.3531 119.903 29.298 103.058 33.3005C99.5085 34.15 95.816 34.4379 92.1951 34.985V34.9707Z" fill="currentColor"/>\n</svg>\n';
 
 // src/layout/Header.tsx
-var _tmpl$5 = ['<a id="skip-to-content" href="#main-content" class="bg-background text-accent absolute inset-s-16 -top-full z-50 px-3 py-2 backdrop-blur-lg transition-all focus:top-4">', "</a>"];
+var _tmpl$5 = ['<a id="skip-to-content" href="#main-content" class="bg-background text-accent absolute start-16 -top-full z-50 px-3 py-2 backdrop-blur-lg transition-all focus:top-4">', "</a>"];
 var _tmpl$22 = ['<li class="col-span-2 flex items-center justify-center sm:col-span-1"><div id="header-in-search"><x-in-search', ' only-button="false"></x-in-search></div></li>'];
 var _tmpl$32 = ['<span class="sm:sr-only">', "</span>"];
 var _tmpl$42 = ['<span data-nav-active-icon aria-hidden="true" class="', '">', "</span>"];
@@ -2963,10 +2963,10 @@ var Header = (props) => {
     get children() {
       return ssr(_tmpl$6, ssrAttribute("title", escape(t2().a11y.toggleTheme, true), false), escape(createComponent(Icon, {
         svg: IconMoon_default,
-        "class": "absolute top-[50%] left-[50%] translate-[-50%] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90"
+        "class": "absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90"
       })), escape(createComponent(Icon, {
         svg: IconSunHigh_default,
-        "class": "absolute top-[50%] left-[50%] translate-[-50%] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0"
+        "class": "absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0"
       })));
     }
   })))];

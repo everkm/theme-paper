@@ -8,3 +8,4 @@ dist
 cache
 .loc
 *.pyc
+out

@@ -28,7 +28,7 @@ export const Header: Component<HeaderProps> = (props) => {
       <a
         id="skip-to-content"
         href="#main-content"
-        class="bg-background text-accent absolute inset-s-16 -top-full z-50 px-3 py-2 backdrop-blur-lg transition-all focus:top-4"
+        class="bg-background text-accent absolute start-16 -top-full z-50 px-3 py-2 backdrop-blur-lg transition-all focus:top-4"
       >
         {t().a11y.skipToContent}
       </a>
@@ -165,11 +165,11 @@ export const Header: Component<HeaderProps> = (props) => {
                   >
                     <Icon
                       svg={IconMoon}
-                      class="absolute top-[50%] left-[50%] translate-[-50%] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90"
+                      class="absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90"
                     />
                     <Icon
                       svg={IconSunHigh}
-                      class="absolute top-[50%] left-[50%] translate-[-50%] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0"
+                      class="absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0"
                     />
                   </button>
                 </li>

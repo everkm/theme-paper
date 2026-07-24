@@ -3,7 +3,8 @@ import stylePlugin from "esbuild-style-plugin";
 import { solidPlugin } from "esbuild-plugin-solid";
 import path from "path";
 import postcssImport from "postcss-import";
-import tailwindcss from "@tailwindcss/postcss";
+import tailwindcss from "tailwindcss";
+import tailwindNesting from "tailwindcss/nesting/index.js";
 import autoprefixer from "autoprefixer";
 import { writeFileSync, mkdirSync } from "fs";
 import chokidar from "chokidar";
@@ -173,7 +174,7 @@ function getClientBuildOptions() {
       }),
       stylePlugin({
         postcss: {
-          plugins: [postcssImport, tailwindcss(), autoprefixer],
+          plugins: [postcssImport, tailwindNesting, tailwindcss, autoprefixer],
         },
         cssModules: false,
         extract: true,

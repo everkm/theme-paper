@@ -1,12 +1,10 @@
-@plugin "@tailwindcss/typography";
-
 @layer base {
   /* ===== Override default Tailwind Typography styles ===== */
   .app-prose {
     /* Typography defaults use light-on-dark pre colors; override for readable fenced blocks */
     --tw-prose-pre-code: var(--foreground);
     --tw-prose-pre-bg: var(--shiki-light-bg);
-    @apply prose max-w-none prose-pre:bg-(--shiki-light-bg) prose-pre:p-0 dark:prose-pre:bg-(--shiki-dark-bg);
+    @apply prose max-w-none prose-pre:bg-[var(--shiki-light-bg)] prose-pre:p-0 dark:prose-pre:bg-[var(--shiki-dark-bg)];
 
     h1,
     h2,
@@ -31,7 +29,7 @@
     }
 
     a {
-      @apply text-foreground hover:text-accent wrap-break-word decoration-dashed underline-offset-4 focus-visible:no-underline;
+      @apply text-foreground hover:text-accent break-words decoration-dashed underline-offset-4 focus-visible:no-underline;
     }
 
     ul {
@@ -75,7 +73,7 @@
 
     /* Inline code */
     :not(pre) > code {
-      @apply bg-muted/75 text-foreground rounded p-1 wrap-break-word before:content-none after:content-none;
+      @apply bg-muted/75 text-foreground rounded p-1 break-words before:content-none after:content-none;
     }
 
     .astro-code code {
@@ -89,19 +87,19 @@
     }
 
     pre:not(.astro-code) > code {
-      @apply text-foreground block w-full bg-(--shiki-light-bg) p-4 wrap-break-word before:content-none after:content-none;
+      @apply text-foreground block w-full bg-[var(--shiki-light-bg)] p-4 break-words before:content-none after:content-none;
     }
 
     &:where([data-theme="dark"], [data-theme="dark"] *) pre:not(.astro-code) > code {
-      @apply bg-(--shiki-dark-bg);
+      @apply bg-[var(--shiki-dark-bg)];
     }
 
     blockquote {
-      @apply border-s-accent/80 wrap-break-word opacity-80;
+      @apply border-s-accent/80 break-words opacity-80;
     }
 
     details:not(.callout) {
-      @apply text-foreground inline-block cursor-pointer select-none [&_p]:hidden [&_ul]:my-0!;
+      @apply text-foreground inline-block cursor-pointer select-none [&_p]:hidden [&_ul]:!my-0;
     }
 
     summary {
@@ -114,15 +112,15 @@
 
     /* Callouts (rehype-callouts / Obsidian syntax) */
     .callout {
-      @apply my-6!;
+      @apply !my-6;
     }
 
     .callout .callout-content > :first-child {
-      @apply mt-0!;
+      @apply !mt-0;
     }
 
     .callout .callout-content > :last-child {
-      @apply mb-0!;
+      @apply !mb-0;
     }
 
     mark {
@@ -154,7 +152,7 @@
     }
 
     .footnote-reference a {
-      @apply text-accent no-underline!;
+      @apply text-accent !no-underline;
       padding: 0 0.1em;
     }
 
@@ -173,7 +171,7 @@
     }
 
     hr.footnote-definitions-separator {
-      @apply mt-16! mb-6! h-0 border-0 border-t p-0!;
+      @apply !mt-16 !mb-6 h-0 border-0 border-t !p-0;
       border-top-color: color-mix(in srgb, var(--muted-foreground) 35%, transparent);
     }
 
@@ -195,14 +193,14 @@
     }
 
     .footnote-definition > p {
-      @apply my-0!;
+      @apply !my-0;
       grid-column: 2;
       grid-row: 1;
       min-width: 0;
     }
 
     .footnote-definition > :last-child {
-      @apply mb-0!;
+      @apply !mb-0;
     }
 
     .footnote-back-button {
@@ -217,11 +215,11 @@
 
   /* ===== Code Blocks & Syntax Highlighting ===== */
   .astro-code {
-    @apply outline-border flex border bg-(--shiki-light-bg) text-(--shiki-light) [&_span]:text-(--shiki-light);
+    @apply outline-border flex border bg-[var(--shiki-light-bg)] text-[var(--shiki-light)] [&_span]:text-[var(--shiki-light)];
   }
 
   html[data-theme="dark"] .astro-code {
-    @apply bg-(--shiki-dark-bg) text-(--shiki-dark) [&_span]:text-(--shiki-dark);
+    @apply bg-[var(--shiki-dark-bg)] text-[var(--shiki-dark)] [&_span]:text-[var(--shiki-dark)];
   }
 
   /* Styles for Shiki transformers */

@@ -1,18 +1,8 @@
-@import "tailwindcss";
-@source "../**/*.{tsx,ts}";
-@source "../../widgets/infinite-loader/**/*.{tsx,ts}";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-/* FloatSearch — map youlog tokens to paper theme variables */
-@theme inline {
-  --color-surface: var(--background);
-  --color-surface-muted: var(--muted);
-  --color-text-primary: var(--foreground);
-  --color-text-secondary: var(--muted-foreground);
-  --color-text-tertiary: var(--muted-foreground);
-  --color-state-hover: color-mix(in srgb, var(--accent) 12%, transparent);
-  --color-state-active: color-mix(in srgb, var(--accent) 20%, transparent);
-  --color-background-dark: var(--background);
-}
+/* FloatSearch — paper design tokens live in tailwind.config.js */
 
 em.hit-keyword {
   color: #003dff;
