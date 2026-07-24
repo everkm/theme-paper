@@ -43,29 +43,39 @@ function getUrlHash(url: string): string {
   }
 }
 
-function scrollToHash(hash: string): void {
-  if (!hash) return;
-  let id: string;
+/**
+ * Instant scroll, bypassing html.scroll-smooth.
+ * Must run inside the VT update callback so the new snapshot is already at the
+ * target position — scrolling after transition.finished feels slow on long pages.
+ */
+function withInstantScroll(fn: () => void): void {
+  const root = document.documentElement;
+  const prev = root.style.scrollBehavior;
+  root.style.scrollBehavior = "auto";
   try {
-    id = decodeURIComponent(hash);
-  } catch {
-    id = hash;
-  }
-  const target = document.getElementById(id);
-  if (target) {
-    target.scrollIntoView({ behavior: "auto", block: "start" });
+    fn();
+  } finally {
+    root.style.scrollBehavior = prev;
   }
 }
 
-/** Reset scroll after VT swap: top for plain URLs, target element for hash URLs. */
-function scrollAfterNavigation(url: string): void {
-  const hash = getUrlHash(url);
-  requestAnimationFrame(() => {
+function scrollNavigatedPage(url: string): void {
+  withInstantScroll(() => {
+    const hash = getUrlHash(url);
     if (hash) {
-      scrollToHash(hash);
-    } else {
-      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      let id: string;
+      try {
+        id = decodeURIComponent(hash);
+      } catch {
+        id = hash;
+      }
+      const target = document.getElementById(id);
+      if (target) {
+        target.scrollIntoView({ block: "start" });
+        return;
+      }
     }
+    window.scrollTo(0, 0);
   });
 }
 
@@ -128,11 +138,14 @@ function swapMainContent(doc: Document, url: string): void {
     swapVtRegion(doc, "header", currentMain);
     syncMainShell(currentMain as HTMLElement, nextMain as HTMLElement);
     currentMain.innerHTML = nextMain.innerHTML;
-    swapVtRegion(
-      doc,
-      "pagination",
-      document.querySelector("footer") ?? currentMain.nextElementSibling,
-    );
+    const bottomAnchor =
+      document.querySelector("footer") ?? currentMain.nextElementSibling;
+    swapVtRegion(doc, "pagination", bottomAnchor);
+    swapVtRegion(doc, "post-nav", bottomAnchor);
+    history.pushState({}, "", url);
+    // Scroll inside the VT update callback so the incoming snapshot is already
+    // at the right offset (avoids a long smooth scroll after the transition).
+    scrollNavigatedPage(url);
   };
 
   const title = doc.querySelector("title")?.textContent;
@@ -143,26 +156,21 @@ function swapMainContent(doc: Document, url: string): void {
     window.matchMedia("(prefers-reduced-motion: reduce)").matches
   ) {
     apply();
-    history.pushState({}, "", url);
-    afterSwap(url);
+    afterSwap();
     return;
   }
 
-  const transition = document.startViewTransition(() => {
-    apply();
-    history.pushState({}, "", url);
-  });
-  transition.finished.then(() => afterSwap(url)).catch(() => afterSwap(url));
+  const transition = document.startViewTransition(apply);
+  transition.finished.then(() => afterSwap()).catch(() => afterSwap());
 }
 
-function afterSwap(url: string): void {
+function afterSwap(): void {
   installTheme();
   installMobileNav();
   updateActiveNav();
   updateBackButton();
   const main = document.querySelector("#main-content");
   if (main) mountClientBlocks(main);
-  scrollAfterNavigation(url);
   document.dispatchEvent(new CustomEvent(PAPER_PAGE_SWAP));
 }
 

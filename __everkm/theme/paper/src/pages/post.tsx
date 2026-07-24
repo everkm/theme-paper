@@ -93,56 +93,59 @@ export const PostPage: Component<PostPageProps> = (p) => {
           )}
         </Show>
       </main>
-      <Show
-        when={prevPost || nextPost}
-        fallback={<Footer ctx={ctx()} config={cfg()} />}
-      >
-        <div class="mt-auto">
-          <nav class="app-layout mt-8 flex flex-col gap-6 border-t border-muted pt-4 pb-4 sm:flex-row sm:justify-between sm:gap-6">
-            <Show when={prevPost}>
-              {(prev) => (
-                <LinkButton
-                  href={prev().url_path}
-                  class="group/nav text-accent max-w-full items-start no-underline sm:max-w-[48%]"
-                >
-                  <span class="flex min-w-0 flex-col gap-0.5">
-                    <span class="text-muted-foreground text-xs tracking-wide">
-                      {t().post.previousPost}
-                    </span>
-                    <span class="flex gap-1.5 decoration-dashed underline-offset-4 group-hover/nav:underline">
-                      <span class="shrink-0" aria-hidden="true">
-                        ←
+      <div data-vt-swap="post-nav">
+        <Show when={prevPost || nextPost}>
+          <div class="mt-auto">
+            <nav class="app-layout mt-8 flex flex-col gap-6 border-t border-muted pt-4 pb-4 sm:flex-row sm:justify-between sm:gap-6">
+              <Show when={prevPost}>
+                {(prev) => (
+                  <LinkButton
+                    href={prev().url_path}
+                    class="group/nav text-accent max-w-full items-start no-underline sm:max-w-[48%]"
+                  >
+                    <span class="flex min-w-0 flex-col gap-0.5">
+                      <span class="text-muted-foreground text-xs tracking-wide">
+                        {t().post.previousPost}
                       </span>
-                      <span class="min-w-0 break-words">{prev().title}</span>
-                    </span>
-                  </span>
-                </LinkButton>
-              )}
-            </Show>
-            <Show when={nextPost}>
-              {(next) => (
-                <LinkButton
-                  href={next().url_path}
-                  class="group/nav text-accent ml-auto max-w-full items-end no-underline sm:max-w-[48%]"
-                >
-                  <span class="flex min-w-0 flex-col items-end gap-0.5">
-                    <span class="text-muted-foreground text-xs tracking-wide">
-                      {t().post.nextPost}
-                    </span>
-                    <span class="flex gap-1.5 text-end decoration-dashed underline-offset-4 group-hover/nav:underline">
-                      <span class="min-w-0 break-words">{next().title}</span>
-                      <span class="shrink-0" aria-hidden="true">
-                        →
+                      <span class="flex gap-1.5 decoration-dashed underline-offset-4 group-hover/nav:underline">
+                        <span class="shrink-0" aria-hidden="true">
+                          ←
+                        </span>
+                        <span class="min-w-0 break-words">{prev().title}</span>
                       </span>
                     </span>
-                  </span>
-                </LinkButton>
-              )}
-            </Show>
-          </nav>
-          <Footer ctx={ctx()} config={cfg()} noMarginTop />
-        </div>
-      </Show>
+                  </LinkButton>
+                )}
+              </Show>
+              <Show when={nextPost}>
+                {(next) => (
+                  <LinkButton
+                    href={next().url_path}
+                    class="group/nav text-accent ml-auto max-w-full items-end no-underline sm:max-w-[48%]"
+                  >
+                    <span class="flex min-w-0 flex-col items-end gap-0.5">
+                      <span class="text-muted-foreground text-xs tracking-wide">
+                        {t().post.nextPost}
+                      </span>
+                      <span class="flex gap-1.5 text-end decoration-dashed underline-offset-4 group-hover/nav:underline">
+                        <span class="min-w-0 break-words">{next().title}</span>
+                        <span class="shrink-0" aria-hidden="true">
+                          →
+                        </span>
+                      </span>
+                    </span>
+                  </LinkButton>
+                )}
+              </Show>
+            </nav>
+          </div>
+        </Show>
+      </div>
+      <Footer
+        ctx={ctx()}
+        config={cfg()}
+        noMarginTop={!!(prevPost || nextPost)}
+      />
     </>
   );
 };

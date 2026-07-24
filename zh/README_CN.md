@@ -2,7 +2,7 @@
 title: 主题配置
 slug: readme
 created_at: 2026-06-28T00:00:00Z
-updated_at: 2026-07-24T10:24:20+08:00
+updated_at: 2026-07-24T10:31:14+08:00
 tags:
   - featured
 ---
@@ -91,7 +91,7 @@ zh/
 
 ### `about` 使用绝对链接
 
-若「关于」指向站外页面，可将 `about` 设为 `http(s)://` 绝对地址。顶栏「关于」会直接打开该链接（新窗口，且不走页面过渡），本地 `/about/` 虚拟页将不再加载 Markdown 正文。
+若「关于」指向站外页面，可将 `about` 设为 `http(s)://` 绝对地址。顶栏「关于」会直接打开该链接（新窗口，且不走 View Transition），本地 `/about/` 虚拟页将不再加载 Markdown 正文。
 
 ```yaml
 config:
@@ -102,16 +102,20 @@ config:
 
 ## 顶栏链接 `header_nav`
 
-在顶栏追加自定义链接：
+在顶栏追加自定义链接，可与内置导航（文章 / 标签 / 关于）混排。
+
+**默认顺序：**
+
+搜索（若启用）→ `at_before: true` 的项 → 文章 → 标签 → 关于 → 其余 `header_nav` → 归档 → 主题切换
 
 | 字段 | 类型 | 默认值 | 说明 |
 |------|------|--------|------|
 | `title` | string | — | 显示文案 |
 | `url` | string | — | 链接地址；`http(s)://` 为外链，相对路径按站点根解析 |
 | `new_window` | boolean | 外链为 `true` | 是否新窗口打开 |
-| `at_before` | boolean | `false` | `true` 时排在内置导航（文章/标签/关于）之前；`false` 时排在「关于」之后、「归档」之前 |
+| `at_before` | boolean | `false` | `true` 时排在内置导航之前；`false` 时排在「关于」之后、「归档」之前 |
 
-外链会带上 `data-no-vt`（以及默认的 `target="_blank"`），避免被 View Transition 拦截。
+外链会带上 `data-no-vt`，并在默认新窗口时附带 `target="_blank"` / `rel="noopener"`，避免被 View Transition 拦截。
 
 ```yaml
 config:
@@ -124,6 +128,20 @@ config:
     - title: 文档
       url: https://publish.everkm.com
       new_window: true
+```
+
+`title` / `url` 也可使用 everkm-publish 的多语言写法（由发布系统按当前语言解析）：
+
+```yaml
+config:
+  header_nav:
+    - title:
+        _default: Everkm
+        zh: 毓知
+      url:
+        _default: https://everkm.com
+        zh: https://everkm.cn/
+      at_before: true
 ```
 
 ---
@@ -305,7 +323,7 @@ Paper 提供以下虚拟页面（无需对应 Markdown 文件）：
 | `/tags/index.html` | 标签索引 | 全部标签 |
 | `/tags/{tag}/index.html` | 标签文章 | 按标签筛选的文章 |
 | `/archives/index.html` | 归档 | 按年月分组的文章 |
-| `/about/` | 关于 | 来自 `config.about` 的关于页 |
+| `/about/` | 关于 | 来自 `config.about` 的关于页；若 `about` 为绝对 URL，顶栏将外链打开 |
 
 ---
 

@@ -2,7 +2,7 @@
 title: Changelog
 slug: changelog
 created_at: 2026-06-28T00:00:00Z
-updated_at: 2026-07-24T10:24:20+08:00
+updated_at: 2026-07-24T10:31:14+08:00
 tags:
   - featured
 ---

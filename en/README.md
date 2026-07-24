@@ -2,7 +2,7 @@
 title: Theme Configuration
 slug: readme
 created_at: 2026-06-28T00:00:00Z
-updated_at: 2026-07-24T10:24:20+08:00
+updated_at: 2026-07-24T10:31:14+08:00
 tags:
   - featured
 ---
@@ -91,7 +91,7 @@ Do **not** create a root `index.md`. If `/index.html` resolves to a Markdown fil
 
 ### Absolute `about` URL
 
-To point About to an external page, set `about` to an `http(s)://` URL. The header About link opens that URL (new tab, skipping view transitions), and the local `/about/` virtual page no longer loads Markdown content.
+To point About to an external page, set `about` to an `http(s)://` URL. The header About link opens that URL (new tab, skipping View Transition), and the local `/about/` virtual page no longer loads Markdown content.
 
 ```yaml
 config:
@@ -102,16 +102,20 @@ config:
 
 ## Header Links `header_nav`
 
-Add custom links in the top nav:
+Add custom links in the top nav, mixed with the built-in items (Posts / Tags / About).
+
+**Default order:**
+
+Search (if enabled) → items with `at_before: true` → Posts → Tags → About → remaining `header_nav` → Archives → theme toggle
 
 | Field | Type | Default | Description |
 |------|------|--------|------|
 | `title` | string | — | Link label |
 | `url` | string | — | Destination; `http(s)://` is treated as external; relative paths resolve from the site root |
 | `new_window` | boolean | `true` for absolute URLs | Open in a new tab |
-| `at_before` | boolean | `false` | When `true`, place before built-in nav (Posts/Tags/About); when `false`, place after About and before Archives |
+| `at_before` | boolean | `false` | When `true`, place before built-in nav; when `false`, place after About and before Archives |
 
-External links include `data-no-vt` (and `target="_blank"` by default) so view transitions do not intercept them.
+External links include `data-no-vt`, and by default also `target="_blank"` / `rel="noopener"`, so View Transitions do not intercept them.
 
 ```yaml
 config:
@@ -124,6 +128,20 @@ config:
     - title: Docs
       url: https://publish.everkm.com
       new_window: true
+```
+
+`title` / `url` also support everkm-publish multilingual maps (resolved by the publish system for the current language):
+
+```yaml
+config:
+  header_nav:
+    - title:
+        _default: Everkm
+        zh: 毓知
+      url:
+        _default: https://everkm.com
+        zh: https://everkm.cn/
+      at_before: true
 ```
 
 ---
@@ -305,7 +323,7 @@ Paper provides these virtual pages (no corresponding Markdown file required):
 | `/tags/index.html` | Tags index | All tags |
 | `/tags/{tag}/index.html` | Tag posts | Posts filtered by tag |
 | `/archives/index.html` | Archives | Posts grouped by year and month |
-| `/about/` | About | About page from `config.about` |
+| `/about/` | About | About page from `config.about`; if `about` is an absolute URL, the header opens it as an external link |
 
 ---
 

@@ -3728,12 +3728,13 @@ function resolvePostDetail(ctx) {
 
 // src/pages/post.tsx
 var _tmpl$20 = ['<main id="main-content" data-layout="post" class="', '">', "</main>"];
-var _tmpl$212 = ['<div class="mt-auto"><nav class="app-layout mt-8 flex flex-col gap-6 border-t border-muted pt-4 pb-4 sm:flex-row sm:justify-between sm:gap-6">', "", "</nav>", "</div>"];
-var _tmpl$37 = ['<h1 style="', '" class="text-accent inline-block text-2xl font-bold sm:text-3xl">', "</h1>"];
-var _tmpl$45 = ['<div class="my-4 flex flex-wrap gap-2"><span class="text-muted-foreground italic">', ':</span><ul class="flex flex-wrap gap-2">', "</ul></div>"];
-var _tmpl$55 = ['<article id="article"', ">", "</article>"];
-var _tmpl$63 = ['<span class="flex min-w-0 flex-col gap-0.5"><span class="text-muted-foreground text-xs tracking-wide">', '</span><span class="flex gap-1.5 decoration-dashed underline-offset-4 group-hover/nav:underline"><span class="shrink-0" aria-hidden="true">\u2190</span><span class="min-w-0 break-words">', "</span></span></span>"];
-var _tmpl$72 = ['<span class="flex min-w-0 flex-col items-end gap-0.5"><span class="text-muted-foreground text-xs tracking-wide">', '</span><span class="flex gap-1.5 text-end decoration-dashed underline-offset-4 group-hover/nav:underline"><span class="min-w-0 break-words">', '</span><span class="shrink-0" aria-hidden="true">\u2192</span></span></span>'];
+var _tmpl$212 = ['<div class="mt-auto"><nav class="app-layout mt-8 flex flex-col gap-6 border-t border-muted pt-4 pb-4 sm:flex-row sm:justify-between sm:gap-6">', "", "</nav></div>"];
+var _tmpl$37 = ['<div data-vt-swap="post-nav">', "</div>"];
+var _tmpl$45 = ['<h1 style="', '" class="text-accent inline-block text-2xl font-bold sm:text-3xl">', "</h1>"];
+var _tmpl$55 = ['<div class="my-4 flex flex-wrap gap-2"><span class="text-muted-foreground italic">', ':</span><ul class="flex flex-wrap gap-2">', "</ul></div>"];
+var _tmpl$63 = ['<article id="article"', ">", "</article>"];
+var _tmpl$72 = ['<span class="flex min-w-0 flex-col gap-0.5"><span class="text-muted-foreground text-xs tracking-wide">', '</span><span class="flex gap-1.5 decoration-dashed underline-offset-4 group-hover/nav:underline"><span class="shrink-0" aria-hidden="true">\u2190</span><span class="min-w-0 break-words">', "</span></span></span>"];
+var _tmpl$82 = ['<span class="flex min-w-0 flex-col items-end gap-0.5"><span class="text-muted-foreground text-xs tracking-wide">', '</span><span class="flex gap-1.5 text-end decoration-dashed underline-offset-4 group-hover/nav:underline"><span class="min-w-0 break-words">', '</span><span class="shrink-0" aria-hidden="true">\u2192</span></span></span>'];
 var PostPage = (p3) => {
   const ctx = () => p3.props;
   const cfg = () => getPaperConfig(ctx());
@@ -3770,7 +3771,7 @@ var PostPage = (p3) => {
     }
   }), ssr(_tmpl$20, `app-layout${padMainTop() ? " mt-8" : ""}`, escape(createComponent(Show, {
     when: post,
-    children: (item) => [ssr(_tmpl$37, "view-transition-name:" + escape(toTransitionName(item().title || item().slug), true), escape(item().title) || escape(item().slug)), createComponent(Datetime, {
+    children: (item) => [ssr(_tmpl$45, "view-transition-name:" + escape(toTransitionName(item().title || item().slug), true), escape(item().title) || escape(item().slug)), createComponent(Datetime, {
       get ctx() {
         return ctx();
       },
@@ -3787,7 +3788,7 @@ var PostPage = (p3) => {
         return (item().tags?.length ?? 0) > 0;
       },
       get children() {
-        return ssr(_tmpl$45, escape(t2().post.tagLabel), escape(createComponent(For, {
+        return ssr(_tmpl$55, escape(t2().post.tagLabel), escape(createComponent(For, {
           get each() {
             return item().tags ?? [];
           },
@@ -3799,19 +3800,9 @@ var PostPage = (p3) => {
           })
         })));
       }
-    }), ssr(_tmpl$55, ssrAttribute("class", escape(APP_PROSE_POST, true), false), item().content_html ?? "")]
-  }))), createComponent(Show, {
+    }), ssr(_tmpl$63, ssrAttribute("class", escape(APP_PROSE_POST, true), false), item().content_html ?? "")]
+  }))), ssr(_tmpl$37, escape(createComponent(Show, {
     when: prevPost || nextPost,
-    get fallback() {
-      return createComponent(Footer, {
-        get ctx() {
-          return ctx();
-        },
-        get config() {
-          return cfg();
-        }
-      });
-    },
     get children() {
       return ssr(_tmpl$212, escape(createComponent(Show, {
         when: prevPost,
@@ -3821,7 +3812,7 @@ var PostPage = (p3) => {
           },
           "class": "group/nav text-accent max-w-full items-start no-underline sm:max-w-[48%]",
           get children() {
-            return ssr(_tmpl$63, escape(t2().post.previousPost), escape(prev().title));
+            return ssr(_tmpl$72, escape(t2().post.previousPost), escape(prev().title));
           }
         })
       })), escape(createComponent(Show, {
@@ -3832,19 +3823,19 @@ var PostPage = (p3) => {
           },
           "class": "group/nav text-accent ml-auto max-w-full items-end no-underline sm:max-w-[48%]",
           get children() {
-            return ssr(_tmpl$72, escape(t2().post.nextPost), escape(next().title));
+            return ssr(_tmpl$82, escape(t2().post.nextPost), escape(next().title));
           }
         })
-      })), escape(createComponent(Footer, {
-        get ctx() {
-          return ctx();
-        },
-        get config() {
-          return cfg();
-        },
-        noMarginTop: true
       })));
     }
+  }))), createComponent(Footer, {
+    get ctx() {
+      return ctx();
+    },
+    get config() {
+      return cfg();
+    },
+    noMarginTop: !!(prevPost || nextPost)
   })];
 };
 

@@ -2,6 +2,7 @@
 title: "Getting Started with Paper"
 description: How to use Paper Theme with everkm-publish.
 created_at: 2026-06-27T10:00:00Z
+updated_at: 2026-07-24T10:31:14+08:00
 tags:
   - guide
 ---
@@ -28,6 +29,20 @@ Add the `featured` tag to surface posts on the homepage:
 tags:
   - featured
 ```
+
+## Custom header links
+
+Configure `header_nav` in `__everkm/everkm.yaml` to add external or in-site links to the top nav. They appear after About by default; set `at_before: true` to place them before the posts list.
+
+```yaml
+config:
+  header_nav:
+    - title: Everkm
+      url: https://everkm.com
+      at_before: true
+```
+
+You can also set `about` to an absolute URL so the header About item opens an external page. Full field reference: [[readme]].
 
 ## Typography samples
 
