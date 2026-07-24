@@ -22,13 +22,17 @@ export const Socials: Component<SocialsProps> = (props) => {
                 rel="noopener noreferrer"
                 class={
                   svg
-                    ? "inline-flex items-center text-accent hover:opacity-80 transition-opacity"
-                    : "inline-flex items-center text-accent hover:underline decoration-dashed underline-offset-4"
+                    ? "inline-flex items-center justify-center leading-none text-accent hover:opacity-80 transition-opacity"
+                    : "inline-flex items-center leading-none text-accent hover:underline decoration-dashed underline-offset-4"
                 }
                 title={item.name}
                 aria-label={svg ? item.name : undefined}
               >
-                {svg ? <Icon svg={svg} class="size-5 block shrink-0" /> : item.name}
+                {svg ? (
+                  <Icon svg={svg} class="size-5 shrink-0" />
+                ) : (
+                  item.name
+                )}
               </a>
             );
           }}

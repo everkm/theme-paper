@@ -27,6 +27,11 @@ export const Icon: Component<
   };
 
   return (
-    <span innerHTML={withAttrs()} aria-hidden="true" {...rest} />
+    <span
+      class="inline-flex items-center justify-center leading-none"
+      innerHTML={withAttrs()}
+      aria-hidden="true"
+      {...rest}
+    />
   ) as JSX.Element;
 };

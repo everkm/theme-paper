@@ -2873,6 +2873,7 @@ var Icon = (props) => {
     return svg;
   };
   return ssrElement("span", mergeProps({
+    "class": "inline-flex items-center justify-center leading-none",
     get innerHTML() {
       return withAttrs();
     },
@@ -3028,9 +3029,9 @@ var Socials = (props) => {
         },
         children: (item) => {
           const svg = getSocialIcon(item.name);
-          return ssr(_tmpl$23, ssrAttribute("href", escape(item.url, true), false), ssrAttribute("class", svg ? "inline-flex items-center text-accent hover:opacity-80 transition-opacity" : "inline-flex items-center text-accent hover:underline decoration-dashed underline-offset-4", false) + ssrAttribute("title", escape(item.name, true), false) + ssrAttribute("aria-label", svg ? escape(item.name, true) : escape(void 0, true), false), svg ? escape(createComponent(Icon, {
+          return ssr(_tmpl$23, ssrAttribute("href", escape(item.url, true), false), ssrAttribute("class", svg ? "inline-flex items-center justify-center leading-none text-accent hover:opacity-80 transition-opacity" : "inline-flex items-center leading-none text-accent hover:underline decoration-dashed underline-offset-4", false) + ssrAttribute("title", escape(item.name, true), false) + ssrAttribute("aria-label", svg ? escape(item.name, true) : escape(void 0, true), false), svg ? escape(createComponent(Icon, {
             svg,
-            "class": "size-5 block shrink-0"
+            "class": "size-5 shrink-0"
           })) : escape(item.name));
         }
       })));
@@ -3039,7 +3040,7 @@ var Socials = (props) => {
 };
 
 // src/components/Footer.tsx
-var _tmpl$9 = ['<footer class="', '"><div class="flex flex-col items-center justify-between border-t border-muted py-6 sm:flex-row-reverse sm:py-4">', '<div class="my-2 flex flex-col items-center whitespace-nowrap sm:flex-row"><span>', " &#169; ", '</span><span class="hidden sm:inline">&nbsp;|&nbsp;</span><span>', "</span></div></div></footer>"];
+var _tmpl$9 = ['<footer class="', '"><div class="flex flex-col items-center justify-between border-t border-muted py-6 sm:flex-row-reverse sm:py-4">', '<div class="my-2 flex flex-col items-center whitespace-nowrap text-sm sm:flex-row"><span>', " &#169; ", '</span><span class="hidden sm:inline">&nbsp;|&nbsp;</span><span>', "</span></div></div></footer>"];
 var Footer = (props) => {
   const t2 = () => useTranslations(props.ctx.lang);
   const year = (/* @__PURE__ */ new Date()).getFullYear();
