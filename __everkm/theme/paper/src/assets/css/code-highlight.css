@@ -5,8 +5,10 @@
 @layer components {
 :root,
 [data-theme="light"] {
-  .app-prose pre:not(.astro-code) { background-color: #fdf6e3;}
-  .app-prose pre:not(.astro-code) > code { color: #657b83;}
+  .app-prose pre:not(.astro-code) .syn-code {
+   color: #657b83;
+   background-color: #fdf6e3;
+  }
   .app-prose pre:not(.astro-code) .syn-comment, .app-prose pre:not(.astro-code) .syn-meta.syn-documentation {
    color: #93a1a1;
   }
@@ -320,8 +322,10 @@
 }
 
 [data-theme="dark"] {
-  .app-prose pre:not(.astro-code) { background-color: #002b36;}
-  .app-prose pre:not(.astro-code) > code { color: #839496;}
+  .app-prose pre:not(.astro-code) .syn-code {
+   color: #839496;
+   background-color: #002b36;
+  }
   .app-prose pre:not(.astro-code) .syn-comment, .app-prose pre:not(.astro-code) .syn-meta.syn-documentation {
    color: #586e75;
   }

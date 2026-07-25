@@ -13,6 +13,10 @@ import { installDcardUse, teardownDcard } from "./dcard";
 import { PAPER_PAGE_SWAP } from "./events";
 import { doneNavProgress, startNavProgress } from "./navProgress";
 
+/** URL of the content currently rendered (popstate already updates location). */
+let renderedUrl =
+  typeof window !== "undefined" ? window.location.href : "";
+
 function shouldIntercept(anchor: HTMLAnchorElement): boolean {
   if (anchor.target === "_blank") return false;
   if (anchor.hasAttribute("download")) return false;
@@ -45,48 +49,87 @@ function getUrlHash(url: string): string {
   }
 }
 
-/**
- * Instant scroll, bypassing html.scroll-smooth.
- * Must run inside the VT update callback so the new snapshot is already at the
- * target position — scrolling after transition.finished feels slow on long pages.
- *
- * Also strips the Tailwind `scroll-smooth` class: some engines still honor it for
- * scrollTo/scrollIntoView even when inline scroll-behavior is "auto".
- */
-function withInstantScroll(fn: () => void): void {
-  const root = document.documentElement;
-  const prevBehavior = root.style.scrollBehavior;
-  const hadSmoothClass = root.classList.contains("scroll-smooth");
-  root.style.scrollBehavior = "auto";
-  if (hadSmoothClass) root.classList.remove("scroll-smooth");
+/** Absolute URL without hash — same document if equal. */
+function normalizePageUrl(url: string): string {
+  return new URL(url, window.location.href).href.split("#")[0]!;
+}
+
+function isSamePage(currentHref: string, nextHref: string): boolean {
+  return normalizePageUrl(currentHref) === normalizePageUrl(nextHref);
+}
+
+function decodeHashId(hash: string): string {
   try {
-    fn();
-  } finally {
-    root.style.scrollBehavior = prevBehavior;
-    if (hadSmoothClass) root.classList.add("scroll-smooth");
+    return decodeURIComponent(hash);
+  } catch {
+    return hash;
+  }
+}
+
+/** Prefer the heading over its empty `a.heading-anchor` (scroll-margin + no focus ring). */
+function preferHeading(el: HTMLElement): HTMLElement {
+  return el.closest("h1, h2, h3, h4, h5, h6") ?? el;
+}
+
+/** Resolve hash target: element id, then everkm `a.heading-anchor[name]`. */
+function resolveAnchorTarget(hash: string): HTMLElement | null {
+  const id = decodeHashId(hash).trim();
+  if (!id) return null;
+
+  const byId = document.getElementById(id);
+  if (byId) return preferHeading(byId);
+
+  try {
+    const byName = document.querySelector<HTMLElement>(
+      `a.heading-anchor[name="${CSS.escape(id)}"]`,
+    );
+    if (byName) return preferHeading(byName);
+  } catch {
+    /* CSS.escape missing or selector invalid */
+  }
+
+  for (const anchor of document.querySelectorAll<HTMLAnchorElement>(
+    "a.heading-anchor[name]",
+  )) {
+    if (anchor.getAttribute("name") === id) return preferHeading(anchor);
+  }
+  return null;
+}
+
+/** Browser fragment navigation focuses empty heading-anchors; drop that ring. */
+function clearHeadingAnchorFocus(): void {
+  const el = document.activeElement;
+  if (
+    el instanceof HTMLElement &&
+    el.classList.contains("heading-anchor")
+  ) {
+    el.blur();
   }
 }
 
 function scrollNavigatedPage(url: string): void {
-  withInstantScroll(() => {
-    const hash = getUrlHash(url);
-    if (hash) {
-      let id: string;
-      try {
-        id = decodeURIComponent(hash);
-      } catch {
-        id = hash;
-      }
-      const target = document.getElementById(id);
-      if (target) {
-        target.scrollIntoView({ behavior: "auto", block: "start" });
-        return;
-      }
+  const hash = getUrlHash(url);
+  if (hash) {
+    const target = resolveAnchorTarget(hash);
+    if (target) {
+      target.scrollIntoView({ behavior: "auto", block: "start" });
     }
-    // Both APIs: Safari historically preferred scrollTop for reliable jumps.
-    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-    rootScrollTop(0);
-  });
+    clearHeadingAnchorFocus();
+    // Hash present but target missing: keep scroll (do not jump to top).
+    return;
+  }
+  // Both APIs: Safari historically preferred scrollTop for reliable jumps.
+  window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  rootScrollTop(0);
+}
+
+/** Cold load / hard refresh with #hash: correct position after layout, clear focus ring. */
+function applyInitialHash(): void {
+  if (!getUrlHash(window.location.href)) return;
+  // Double rAF: wait for layout after fonts/images that shift heading positions.
+  requestAnimationFrame(() =>
+    requestAnimationFrame(() => scrollNavigatedPage(window.location.href)),
+  );
 }
 
 function rootScrollTop(top: number): void {
@@ -138,7 +181,12 @@ function swapVtRegion(
   }
 }
 
-function swapMainContent(doc: Document, url: string, navId: number): void {
+function swapMainContent(
+  doc: Document,
+  url: string,
+  navId: number,
+  fromPopState: boolean,
+): void {
   const nextMain = doc.querySelector("#main-content");
   const currentMain = document.querySelector("#main-content");
   if (!nextMain || !currentMain) {
@@ -163,7 +211,9 @@ function swapMainContent(doc: Document, url: string, navId: number): void {
       document.querySelector("footer") ?? currentMain.nextElementSibling;
     swapVtRegion(doc, "pagination", bottomAnchor);
     swapVtRegion(doc, "post-nav", bottomAnchor);
-    history.pushState({}, "", url);
+    // popstate already updated location; pushState would pollute history.
+    if (!fromPopState) history.pushState({}, "", url);
+    renderedUrl = url;
     // Scroll inside the VT update callback so the incoming snapshot is already
     // at the right offset (avoids a long smooth scroll after the transition).
     scrollNavigatedPage(url);
@@ -195,10 +245,24 @@ function afterSwap(): void {
   document.dispatchEvent(new CustomEvent(PAPER_PAGE_SWAP));
 }
 
-function navigateTo(url: string, onFail: () => void): void {
+function navigateTo(
+  url: string,
+  onFail: () => void,
+  fromPopState = false,
+): void {
+  // Same document (path+search): hash-only or re-click — no fetch / VT.
+  if (isSamePage(renderedUrl, url)) {
+    if (!fromPopState && renderedUrl !== url) {
+      history.pushState({}, "", url);
+    }
+    renderedUrl = url;
+    scrollNavigatedPage(url);
+    return;
+  }
+
   const navId = startNavProgress();
   fetchPage(url)
-    .then((doc) => swapMainContent(doc, url, navId))
+    .then((doc) => swapMainContent(doc, url, navId, fromPopState))
     .catch(() => {
       doneNavProgress(navId);
       onFail();
@@ -206,6 +270,8 @@ function navigateTo(url: string, onFail: () => void): void {
 }
 
 function onClick(e: MouseEvent): void {
+  if (e.defaultPrevented || e.button !== 0) return;
+  if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
   const anchor = (e.target as Element)?.closest?.("a");
   if (!(anchor instanceof HTMLAnchorElement)) return;
   if (!shouldIntercept(anchor)) return;
@@ -220,13 +286,19 @@ function onClick(e: MouseEvent): void {
 export function installViewTransitions(): void {
   if ((window as any).__everkm_features_view_transitions === false) return;
 
+  renderedUrl = window.location.href;
+
   if ("scrollRestoration" in history) {
     history.scrollRestoration = "manual";
   }
 
   document.addEventListener("click", onClick);
   window.addEventListener("popstate", () => {
-    navigateTo(window.location.href, () => window.location.reload());
+    navigateTo(
+      window.location.href,
+      () => window.location.reload(),
+      true,
+    );
   });
 }
 
@@ -239,6 +311,7 @@ export function bootClient(): void {
   installLazyImg("#main-content");
   installDcardUse("#main-content");
   installViewTransitions();
+  applyInitialHash();
   syncBackUrlFromPage();
   updateBackButton();
 

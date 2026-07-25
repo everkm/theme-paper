@@ -38,7 +38,7 @@ export const RootLayout: ParentComponent<RootLayoutProps> = (props) => {
   const customBodyEndHtml = () => cfg().body_end_html || "";
 
   return (
-    <html lang={lang()} dir={dir()} class="overflow-y-scroll scroll-smooth">
+    <html lang={lang()} dir={dir()} class="overflow-y-scroll">
       <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />

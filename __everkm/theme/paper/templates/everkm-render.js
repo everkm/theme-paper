@@ -2775,7 +2775,7 @@ function assetUrl(requestId, path) {
 // src/layout/RootLayout.tsx
 var _tmpl$ = ['<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>', '</title><meta name="title"', '><meta name="description"', '><meta name="generator" content="', '"><meta name="theme" content="', '"><link rel="icon" type="image/svg+xml"', '><meta name="theme-color" content><script>(function () {\n  const stored = localStorage.getItem("theme");\n  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;\n  const theme = stored ?? (prefersDark ? "dark" : "light");\n  const root = document.documentElement;\n  root.setAttribute("data-theme", theme);\n  root.classList.toggle("dark", theme === "dark");\n  window.__theme = { value: theme };\n})();</script><script>', "</script></head>"];
 var _tmpl$2 = ["<div>", "</div>"];
-var _tmpl$3 = ["<html", ' class="overflow-y-scroll scroll-smooth">', '<body class="bg-background font-app text-foreground selection:bg-accent/75 selection:text-accent-foreground flex min-h-svh flex-col">', "", "</body></html>"];
+var _tmpl$3 = ["<html", ' class="overflow-y-scroll">', '<body class="bg-background font-app text-foreground selection:bg-accent/75 selection:text-accent-foreground flex min-h-svh flex-col">', "", "</body></html>"];
 var RootLayout = (props) => {
   const ctx = () => props.context;
   const cfg = () => getPaperConfig(ctx());

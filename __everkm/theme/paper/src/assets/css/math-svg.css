@@ -7,17 +7,17 @@
 
 .app-prose .math-svg.math-inline {
   display: inline-block;
-  vertical-align: -0.25em;
+  /* Optical mid-line with surrounding text; -0.2em sat too low for Typst SVG. */
+  vertical-align: -0.2em;
   line-height: 0;
   max-width: 100%;
 }
 
 .app-prose .math-svg.math-inline svg {
-  display: inline-block;
+  display: block;
   width: auto;
   height: 1.1em;
   max-width: 100%;
-  vertical-align: middle;
   background: transparent;
 }
 

@@ -3,7 +3,7 @@ id: 1784862019952
 title: Changelog
 slug: changelog
 created_at: 2026-06-28T00:00:00Z
-updated_at: 2026-07-25T18:12:53+08:00
+updated_at: 2026-07-25T18:34:06+08:00
 tags:
   - featured
 ---
@@ -23,7 +23,9 @@ This changelog is for end users. Keep the wording user-friendly and avoid exposi
 - Embedded cards in post content (such as the Flash player) now load their styles and scripts correctly instead of showing empty placeholders
 - Navigating away from deep on a long page no longer plays a lengthy “scroll back to top” style transition
 - Plain code blocks without syntax highlighting (bare `pre`) are readable again — text contrast is restored
-- Syntax-highlighted code blocks no longer show a nested “box inside a box”; background fills the whole block
+- Syntax-highlighted code blocks keep background and padding on the same layer (no nested box)
+- Same-page anchor links (e.g. jumping to a heading) no longer trigger a full page transition; they scroll to the target directly
+- Opening a URL with a hash no longer smooth-scrolls slowly, and no longer shows a dashed focus ring on the hidden heading anchor
 
 **Improvements**
 

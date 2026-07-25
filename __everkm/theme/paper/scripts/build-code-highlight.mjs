@@ -74,20 +74,11 @@ function transformSyntectCss(css) {
       i++;
     }
 
-    if (selector === ".code") {
-      const bg = props.find((p) => p.includes("background-color"));
-      const color = props.find(
-        (p) => p.includes("color:") && !p.includes("background-color")
-      );
-      const other = props.filter((p) => p !== bg && p !== color);
-      if (bg) out.push(`${SCOPE} {${bg}}`);
-      if (color) out.push(`${SCOPE} > code {${color}}`);
-      for (const p of other) out.push(`${SCOPE} > code {${p}}`);
-    } else {
-      out.push(`${prefixSelector(selector)} {`);
-      for (const p of props) out.push(p);
-      out.push("}");
-    }
+    // Scope under `.app-prose pre:not(.astro-code)`. Keep `.syn-code` bg on <code>
+    // (classed). Inline preview puts bg on <pre style> instead — do not remap here.
+    out.push(`${prefixSelector(selector)} {`);
+    for (const p of props) out.push(p);
+    out.push("}");
     i++;
   }
 

@@ -32,6 +32,18 @@
       @apply text-foreground hover:text-accent break-words decoration-dashed underline-offset-4 focus-visible:no-underline;
     }
 
+    /* Empty everkm heading anchors: fragment focus must not show a dashed ring. */
+    a.heading-anchor {
+      @apply text-muted-foreground no-underline outline-none focus:outline-none focus-visible:outline-none;
+      opacity: 0;
+      margin-inline-start: 0.35em;
+      font-size: 0.85em;
+    }
+
+    :is(h1, h2, h3, h4, h5, h6):hover > a.heading-anchor {
+      opacity: 1;
+    }
+
     ul {
       @apply overflow-x-clip;
     }
@@ -80,19 +92,29 @@
       @apply flex-[1_0_100%] bg-inherit p-0;
     }
 
-    /* Fenced code blocks: one surface on `pre` (border / padding / fallback bg).
-       syntect root bg is also applied to `pre` (see build-code-highlight.mjs).
-       Inner `code` must stay transparent — never a second box. */
+    /* Fenced code blocks — align with classed syntect + aNote pure preview contract:
+       - classed: `.syn-code` owns token base color/bg on <code>; padding stays on <code>
+       - bare <pre> (no <code>): style the pre itself (prose default is light-on-dark) */
     pre:not(.astro-code) {
-      @apply outline-border text-foreground overflow-x-auto border bg-[var(--shiki-light-bg)] p-4;
+      @apply outline-border overflow-x-auto border bg-transparent p-0;
+    }
+
+    pre:not(.astro-code):not(:has(> code)) {
+      @apply text-foreground bg-[var(--shiki-light-bg)] p-4;
     }
 
     pre:not(.astro-code) > code {
-      @apply text-foreground block w-full bg-transparent p-0 break-words before:content-none after:content-none;
+      @apply text-foreground block w-full bg-[var(--shiki-light-bg)] p-4 break-words before:content-none after:content-none;
     }
 
-    &:where([data-theme="dark"], [data-theme="dark"] *) pre:not(.astro-code) {
-      @apply bg-[var(--shiki-dark-bg)];
+    &:where([data-theme="dark"], [data-theme="dark"] *) {
+      pre:not(.astro-code):not(:has(> code)) {
+        @apply bg-[var(--shiki-dark-bg)];
+      }
+
+      pre:not(.astro-code) > code {
+        @apply bg-[var(--shiki-dark-bg)];
+      }
     }
 
     blockquote {
