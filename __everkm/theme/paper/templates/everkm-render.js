@@ -3111,7 +3111,7 @@ var Header = (props) => {
           return [createComponent(Icon, {
             svg: IconArchive_default,
             "class": "hidden sm:absolute sm:top-1/2 sm:left-1/2 sm:block sm:size-6 sm:-translate-x-1/2 sm:-translate-y-1/2"
-          }), ssr(_tmpl$42, escape(t2().nav.archives)), ssr(_tmpl$52, `pointer-events-none scale-125 max-sm:hidden sm:absolute sm:bottom-0 sm:left-1/2 sm:w-6 sm:-translate-x-1/2 ${isActive("/archives") ? "" : "hidden"}`, escape(createComponent(Icon, {
+          }), ssr(_tmpl$42, escape(t2().nav.archives)), ssr(_tmpl$52, `pointer-events-none scale-125 max-sm:hidden sm:absolute sm:-bottom-2 sm:left-1/2 sm:w-6 sm:-translate-x-1/2 ${isActive("/archives") ? "" : "hidden"}`, escape(createComponent(Icon, {
             svg: IconUnderline_default,
             "class": "w-6"
           })))];

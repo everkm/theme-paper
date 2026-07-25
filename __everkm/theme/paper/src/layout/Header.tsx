@@ -218,7 +218,7 @@ export const Header: Component<HeaderProps> = (props) => {
                     <span
                       data-nav-active-icon
                       aria-hidden="true"
-                      class={`pointer-events-none scale-125 max-sm:hidden sm:absolute sm:bottom-0 sm:left-1/2 sm:w-6 sm:-translate-x-1/2 ${isActive("/archives") ? "" : "hidden"}`}
+                      class={`pointer-events-none scale-125 max-sm:hidden sm:absolute sm:-bottom-2 sm:left-1/2 sm:w-6 sm:-translate-x-1/2 ${isActive("/archives") ? "" : "hidden"}`}
                     >
                       <Icon svg={IconUnderline} class="w-6" />
                     </span>
