@@ -2,6 +2,7 @@ import { Component, For } from "solid-js";
 import dayjs from "dayjs";
 import { getPaperConfig } from "../lib/config";
 import { dayjsLocale } from "../lib/dayjsLocale";
+import { fetchAllPosts } from "../lib/fetchPosts";
 import { POSTS_CONTENT_DIR } from "../lib/postsPath";
 import { postDate, postTimestampSeconds } from "../lib/postDate";
 import { useTranslations } from "../lib/i18n";
@@ -44,13 +45,13 @@ export const ArchivesPage: Component<ArchivesPageProps> = (p) => {
       .format("MMMM");
 
   const posts = () =>
-    everkm.posts(ctx().request_id, {
+    fetchAllPosts(ctx().request_id, {
       dir: POSTS_CONTENT_DIR,
       recursive: true,
       order_by: "date",
       order_direction: "desc",
       draft: false,
-    }).items;
+    });
 
   const grouped = () => groupByYearMonth(posts());
   const years = () =>
@@ -77,34 +78,39 @@ export const ArchivesPage: Component<ArchivesPageProps> = (p) => {
               0,
             );
             return (
-              <div>
-                <span class="text-2xl font-bold">{year}</span>
-                <sup class="text-muted-foreground text-sm">{yearCount}</sup>
+              <section class="mt-10 first:mt-0">
+                <h2 class="bg-background/95 sticky top-0 z-10 -mx-2 mb-1 px-2 py-2 text-2xl font-bold backdrop-blur-sm">
+                  {year}
+                  <sup class="text-muted-foreground ms-0.5 text-sm font-normal">
+                    {yearCount}
+                  </sup>
+                </h2>
                 <For each={months}>
                   {(month) => {
                     const monthPosts = [...grouped()[year][month]].sort(
-                      (a, b) => postTimestampSeconds(b) - postTimestampSeconds(a),
+                      (a, b) =>
+                        postTimestampSeconds(b) - postTimestampSeconds(a),
                     );
                     return (
-                      <div class="flex flex-col sm:flex-row">
-                        <div class="mt-6 min-w-36 text-lg sm:my-6">
-                          <span class="font-bold">
-                            {monthName(Number(month))}
-                          </span>
-                          <sup class="text-muted-foreground text-xs">
+                      <div class="mt-4">
+                        <h3 class="text-foreground/70 mb-1 text-sm font-semibold">
+                          {monthName(Number(month))}
+                          <sup class="text-muted-foreground ms-0.5 text-xs font-normal">
                             {monthPosts.length}
                           </sup>
-                        </div>
+                        </h3>
                         <ul>
                           <For each={monthPosts}>
-                            {(post) => <Card ctx={ctx()} post={post} />}
+                            {(post) => (
+                              <Card ctx={ctx()} post={post} layout="row" />
+                            )}
                           </For>
                         </ul>
                       </div>
                     );
                   }}
                 </For>
-              </div>
+              </section>
             );
           }}
         </For>

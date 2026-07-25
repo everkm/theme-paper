@@ -3286,7 +3286,7 @@ var Footer = (props) => {
 };
 
 // src/components/Datetime.tsx
-var import_dayjs = __toESM(require_dayjs_min(), 1);
+var import_dayjs2 = __toESM(require_dayjs_min(), 1);
 var import_utc = __toESM(require_utc(), 1);
 var import_timezone = __toESM(require_timezone(), 1);
 
@@ -3298,67 +3298,119 @@ function dayjsLocale(lang) {
   return "en";
 }
 
+// src/lib/postDate.ts
+var import_dayjs = __toESM(require_dayjs_min(), 1);
+function toUnixSeconds(raw) {
+  if (!raw) return 0;
+  return raw > 1e12 ? Math.floor(raw / 1e3) : raw;
+}
+function postTimestampSeconds(post) {
+  return toUnixSeconds(post.created_at || post.updated_at);
+}
+function postDate(post) {
+  return import_dayjs.default.unix(postTimestampSeconds(post));
+}
+
 // src/assets/icons/IconCalendar.svg
 var IconCalendar_default = '<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-calendar-week"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z" /><path d="M16 3v4" /><path d="M8 3v4" /><path d="M4 11h16" /><path d="M7 14h.013" /><path d="M10.01 14h.005" /><path d="M13.01 14h.005" /><path d="M16.015 14h.005" /><path d="M13.015 17h.005" /><path d="M7.01 17h.005" /><path d="M10.01 17h.005" /></svg>';
 
 // src/components/Datetime.tsx
-var _tmpl$11 = ["<span", ">", ":</span>"];
-var _tmpl$25 = ['<div class="', '">', "", "<time", ">", "</time></div>"];
-import_dayjs.default.extend(import_utc.default);
-import_dayjs.default.extend(import_timezone.default);
+var _tmpl$11 = ['<div class="', '"', ">", '<time class="', '"', ">", "</time></div>"];
+import_dayjs2.default.extend(import_utc.default);
+import_dayjs2.default.extend(import_timezone.default);
 var Datetime = (props) => {
   const t2 = () => useTranslations(props.ctx.lang);
   const cfg = () => getPaperConfig(props.ctx);
-  const pub = () => props.date ?? 0;
-  const mod = () => props.updatedAt ?? 0;
-  const isModified = () => mod() > pub() && mod() > 0;
-  const datetime = () => import_dayjs.default.unix(isModified() ? mod() : pub()).tz(cfg().site.timezone ?? "UTC").locale(dayjsLocale(props.ctx.lang));
+  const tz = () => cfg().site.timezone ?? "UTC";
+  const locale = () => dayjsLocale(props.ctx.lang);
+  const format = () => t2().post.dateFormat;
+  const pub = () => toUnixSeconds(props.createdAt);
+  const mod = () => toUnixSeconds(props.updatedAt);
+  const toDay = (unix) => import_dayjs2.default.unix(unix).tz(tz()).locale(locale()).format("YYYY-MM-DD");
+  const isModified = () => {
+    if (!(mod() > pub() && mod() > 0 && pub() > 0)) return false;
+    return toDay(mod()) !== toDay(pub());
+  };
+  const displayUnix = () => {
+    if (isModified()) return mod();
+    if (pub() > 0) return pub();
+    if (mod() > 0) return mod();
+    return 0;
+  };
+  const display = () => import_dayjs2.default.unix(displayUnix()).tz(tz()).locale(locale());
+  const publishedLabel = () => import_dayjs2.default.unix(pub()).tz(tz()).locale(locale()).format(format());
   const size = () => props.size ?? "sm";
-  return ssr(_tmpl$25, `text-muted-foreground flex items-center gap-x-2 ${escape(props.class, true) ?? ""}`, escape(createComponent(Icon, {
-    svg: IconCalendar_default,
-    get ["class"]() {
-      return `inline-block ${size() === "sm" ? "size-4 min-w-4" : "size-5 min-w-5"}`;
-    }
-  })), escape(createComponent(Show, {
+  const textClass = () => size() === "lg" ? "text-sm sm:text-base" : "text-sm";
+  return createComponent(Show, {
     get when() {
-      return isModified();
+      return displayUnix() > 0;
     },
     get children() {
-      return ssr(_tmpl$11, ssrAttribute("class", size() === "lg" ? "text-sm sm:text-base" : "text-sm", false), escape(t2().post.updatedAt));
+      return ssr(_tmpl$11, `text-muted-foreground flex items-center gap-x-1 ${escape(props.class, true) ?? ""}`, ssrAttribute("title", isModified() ? `${escape(t2().post.publishedAt, true)} ${escape(publishedLabel(), true)}` : escape(void 0, true), false), escape(createComponent(Icon, {
+        svg: IconCalendar_default,
+        get ["class"]() {
+          return `inline-block ${size() === "sm" ? "size-4 min-w-4" : "size-5 min-w-5"}`;
+        }
+      })), `${escape(textClass(), true)} ${isModified() ? "italic font-bold" : ""}`, ssrAttribute("datetime", escape(display().toISOString(), true), false), escape(display().format(format())));
     }
-  })), ssrAttribute("class", size() === "lg" ? "text-sm sm:text-base" : "text-sm", false) + ssrAttribute("datetime", escape(datetime().toISOString(), true), false), escape(datetime().format(t2().post.dateFormat)));
+  });
 };
 
 // src/components/Card.tsx
 var _tmpl$12 = ["<h3", ">", "</h3>"];
-var _tmpl$26 = ["<h2", ">", "</h2>"];
-var _tmpl$34 = ['<li class="my-8"><a', ' class="text-accent text-lg font-medium decoration-dashed underline-offset-4 hover:underline focus-visible:no-underline focus-visible:underline-offset-0">', "</a>", '<p class="text-foreground/80 mt-3 text-sm leading-relaxed">', "</p></li>"];
+var _tmpl$25 = ["<h2", ">", "</h2>"];
+var _tmpl$34 = ["<a", ' class="text-accent min-w-0 decoration-dashed underline-offset-4 hover:underline focus-visible:no-underline focus-visible:underline-offset-0">', "</a>"];
+var _tmpl$43 = ['<li class="-mx-2 rounded-md px-2 py-1.5 transition-colors hover:bg-muted/40"><div class="flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">', "", "</div></li>"];
+var _tmpl$53 = ['<li class="my-8">', "", '<p class="text-foreground/80 mt-3 text-sm leading-relaxed">', "</p></li>"];
 var Card = (props) => {
   const variant = () => props.variant ?? "h2";
+  const layout = () => props.layout ?? "stack";
   const href = () => props.post.url_path;
-  const titleClass = "line-clamp-2 sm:line-clamp-none";
+  const titleClass = () => layout() === "row" ? "truncate" : "line-clamp-2 sm:line-clamp-none";
   const TitleTag = (p3) => {
     if (variant() === "h3") {
-      return ssr(_tmpl$12, ssrAttribute("class", escape(titleClass, true), false), escape(p3.children));
+      return ssr(_tmpl$12, ssrAttribute("class", escape(titleClass(), true), false), escape(p3.children));
     }
-    return ssr(_tmpl$26, ssrAttribute("class", escape(titleClass, true), false), escape(p3.children));
+    return ssr(_tmpl$25, ssrAttribute("class", escape(titleClass(), true), false), escape(p3.children));
   };
-  return ssr(_tmpl$34, ssrAttribute("href", escape(href(), true), false), escape(createComponent(TitleTag, {
+  const titleLink = () => ssr(_tmpl$34, ssrAttribute("href", escape(href(), true), false), escape(createComponent(TitleTag, {
     get children() {
       return props.post.title;
     }
-  })), escape(createComponent(Datetime, {
-    "class": "mt-1.5",
-    get ctx() {
-      return props.ctx;
+  })));
+  return createComponent(Show, {
+    get when() {
+      return layout() === "row";
     },
-    get date() {
-      return props.post.date;
+    get fallback() {
+      return ssr(_tmpl$53, escape(titleLink()), escape(createComponent(Datetime, {
+        "class": "mt-1.5",
+        get ctx() {
+          return props.ctx;
+        },
+        get createdAt() {
+          return props.post.created_at;
+        },
+        get updatedAt() {
+          return props.post.updated_at;
+        }
+      })), escape(props.post.summary));
     },
-    get updatedAt() {
-      return props.post.updated_at;
+    get children() {
+      return ssr(_tmpl$43, escape(titleLink()), escape(createComponent(Datetime, {
+        "class": "shrink-0 sm:justify-end",
+        get ctx() {
+          return props.ctx;
+        },
+        get createdAt() {
+          return props.post.created_at;
+        },
+        get updatedAt() {
+          return props.post.updated_at;
+        }
+      })));
     }
-  })), escape(props.post.summary));
+  });
 };
 
 // src/assets/icons/IconArrowRight.svg
@@ -3386,10 +3438,10 @@ var EmptyPostsGuide = (props) => {
 
 // src/pages/home.tsx
 var _tmpl$14 = ["<div", ">", "</div>"];
-var _tmpl$27 = ['<div class="', '"><div class="me-2 mb-1 whitespace-nowrap sm:mb-0">', ":</div>", "</div>"];
+var _tmpl$26 = ['<div class="', '"><div class="me-2 mb-1 whitespace-nowrap sm:mb-0">', ":</div>", "</div>"];
 var _tmpl$35 = ['<section id="hero" class="border-border border-b pt-8 pb-6">', "", "</section>"];
-var _tmpl$43 = ['<section id="featured" class="', '"><h2 class="text-2xl font-semibold tracking-wide">', "</h2><ul>", "</ul></section>"];
-var _tmpl$53 = ['<section id="recent-posts" class="pt-12 pb-6"><h2 class="text-2xl font-semibold tracking-wide">', "</h2><ul>", "</ul></section>"];
+var _tmpl$44 = ['<section id="featured" class="', '"><h2 class="text-2xl font-semibold tracking-wide">', "</h2><ul>", "</ul></section>"];
+var _tmpl$54 = ['<section id="recent-posts" class="pt-12 pb-6"><h2 class="text-2xl font-semibold tracking-wide">', "</h2><ul>", "</ul></section>"];
 var _tmpl$62 = ['<div class="my-8 text-center">', "</div>"];
 var _tmpl$72 = ['<main id="main-content" data-layout="home"', ' class="app-layout">', "", "", "", "</main>"];
 var HomePage = (p3) => {
@@ -3446,7 +3498,7 @@ var HomePage = (p3) => {
           return (cfg().socials?.length ?? 0) > 0;
         },
         get children() {
-          return ssr(_tmpl$27, `flex max-sm:flex-col sm:items-center ${heroHtml ? "mt-4" : ""}`, escape(t2().home.socialLinks), escape(createComponent(Socials, {
+          return ssr(_tmpl$26, `flex max-sm:flex-col sm:items-center ${heroHtml ? "mt-4" : ""}`, escape(t2().home.socialLinks), escape(createComponent(Socials, {
             get ctx() {
               return ctx();
             },
@@ -3462,7 +3514,7 @@ var HomePage = (p3) => {
       return featured().length > 0;
     },
     get children() {
-      return ssr(_tmpl$43, `pt-12 pb-6 ${recent().length > 0 ? "border-border border-b" : ""}`, escape(t2().home.featured), escape(createComponent(For, {
+      return ssr(_tmpl$44, `pt-12 pb-6 ${recent().length > 0 ? "border-border border-b" : ""}`, escape(t2().home.featured), escape(createComponent(For, {
         get each() {
           return featured();
         },
@@ -3480,7 +3532,7 @@ var HomePage = (p3) => {
       return recent().length > 0;
     },
     get children() {
-      return ssr(_tmpl$53, escape(t2().home.recentPosts), escape(createComponent(For, {
+      return ssr(_tmpl$54, escape(t2().home.recentPosts), escape(createComponent(For, {
         get each() {
           return recent();
         },
@@ -3654,7 +3706,7 @@ var IconChevronLeft_default = '<svg  xmlns="http://www.w3.org/2000/svg"  width="
 
 // src/components/BackButton.tsx
 var _tmpl$15 = ['<span aria-hidden="true">', "</span>"];
-var _tmpl$28 = ["<span>", "</span>"];
+var _tmpl$27 = ["<span>", "</span>"];
 var _tmpl$36 = ['<div class="app-layout flex items-center justify-start">', "</div>"];
 function chevronMarkup() {
   if (IconChevronLeft_default.includes('class="')) {
@@ -3675,17 +3727,17 @@ var BackButton = (props) => {
       return linkClass();
     },
     get children() {
-      return [ssr(_tmpl$15, chevronMarkup()), ssr(_tmpl$28, escape(t2().post.goBack))];
+      return [ssr(_tmpl$15, chevronMarkup()), ssr(_tmpl$27, escape(t2().post.goBack))];
     }
   })));
 };
 
 // src/components/Breadcrumb.tsx
 var _tmpl$16 = ['<nav class="app-layout mt-8 mb-4" aria-label="breadcrumb"><ul class="font-light flex flex-wrap items-center gap-x-1 [&amp;>li:not(:last-child)>a]:hover:opacity-100"><li class="inline-flex items-center gap-x-1"><a', ' class="opacity-80">', '</a><span aria-hidden="true" class="opacity-80">&raquo;</span></li>', "</ul></nav>"];
-var _tmpl$29 = ["<a", ' class="capitalize opacity-70">', "</a>"];
+var _tmpl$28 = ["<a", ' class="capitalize opacity-70">', "</a>"];
 var _tmpl$37 = '<span aria-hidden="true" class="opacity-70">&raquo;</span>';
-var _tmpl$44 = ['<li class="inline-flex items-center gap-x-1">', "</li>"];
-var _tmpl$54 = ['<span class="', '" aria-current="page">', "</span>"];
+var _tmpl$45 = ['<li class="inline-flex items-center gap-x-1">', "</li>"];
+var _tmpl$55 = ['<span class="', '" aria-current="page">', "</span>"];
 var Breadcrumb = (props) => {
   const t2 = () => useTranslations(props.ctx.lang);
   const pageKey = () => props.pageKey ?? "";
@@ -3700,15 +3752,15 @@ var Breadcrumb = (props) => {
         get each() {
           return segments();
         },
-        children: (item) => ssr(_tmpl$44, escape(createComponent(Show, {
+        children: (item) => ssr(_tmpl$45, escape(createComponent(Show, {
           get when() {
             return item.href;
           },
           get fallback() {
-            return ssr(_tmpl$54, `capitalize opacity-75 ${item.lowercase ? "lowercase" : ""}`, escape(item.label));
+            return ssr(_tmpl$55, `capitalize opacity-75 ${item.lowercase ? "lowercase" : ""}`, escape(item.label));
           },
           get children() {
-            return [ssr(_tmpl$29, ssrAttribute("href", escape(item.href, true), false), escape(item.label)), ssr(_tmpl$37)];
+            return [ssr(_tmpl$28, ssrAttribute("href", escape(item.href, true), false), escape(item.label)), ssr(_tmpl$37)];
           }
         })))
       })));
@@ -3754,7 +3806,7 @@ var PageChrome = (props) => {
 
 // src/components/Main.tsx
 var _tmpl$18 = ['<p class="text-muted-foreground mt-2 mb-6 italic">', "</p>"];
-var _tmpl$210 = ['<main id="main-content"', '><h1 class="text-2xl font-semibold sm:text-3xl">', "</h1>", "", "</main>"];
+var _tmpl$29 = ['<main id="main-content"', '><h1 class="text-2xl font-semibold sm:text-3xl">', "</h1>", "", "</main>"];
 var Main = (props) => {
   const [local] = splitProps(props, ["pageTitle", "pageDesc", "layout", "ctx", "pageKey", "class", "children"]);
   const hasBreadcrumb = () => local.ctx && local.pageKey ? shouldShowBreadcrumb(local.ctx, local.pageKey) : false;
@@ -3765,7 +3817,7 @@ var Main = (props) => {
     return currentPageUrl(local.ctx);
   };
   const mainClass = () => ["app-layout pb-4", hasBreadcrumb() ? "" : "mt-8", local.class ?? ""].filter(Boolean).join(" ");
-  return ssr(_tmpl$210, ssrAttribute("data-layout", escape(local.layout, true) ?? "page", false) + ssrAttribute("data-backurl", escape(backUrl(), true), false) + ssrAttribute("class", escape(mainClass(), true), false), escape(local.pageTitle), escape(createComponent(Show, {
+  return ssr(_tmpl$29, ssrAttribute("data-layout", escape(local.layout, true) ?? "page", false) + ssrAttribute("data-backurl", escape(backUrl(), true), false) + ssrAttribute("class", escape(mainClass(), true), false), escape(local.pageTitle), escape(createComponent(Show, {
     get when() {
       return local.pageDesc;
     },
@@ -3777,7 +3829,7 @@ var Main = (props) => {
 
 // src/pages/about.tsx
 var _tmpl$19 = ['<p class="text-muted-foreground italic">', "</p>"];
-var _tmpl$211 = ["<div>", "</div>"];
+var _tmpl$210 = ["<div>", "</div>"];
 var AboutPage = (p3) => {
   const ctx = () => p3.props;
   const cfg = () => getPaperConfig(ctx());
@@ -3815,7 +3867,7 @@ var AboutPage = (p3) => {
         get fallback() {
           return ssr(_tmpl$19, escape(t2().pages.aboutEmpty));
         },
-        children: (html) => ssr(_tmpl$211, html())
+        children: (html) => ssr(_tmpl$210, html())
       });
     }
   }), createComponent(Footer, {
@@ -3830,11 +3882,11 @@ var AboutPage = (p3) => {
 
 // src/components/Tag.tsx
 var _tmpl$20 = ["<li><a", ' class="text-accent decoration-dashed underline-offset-4 hover:underline">#', "", "</a></li>"];
-var _tmpl$212 = ['<sup class="text-muted-foreground ms-1 text-xs">', "</sup>"];
+var _tmpl$211 = ['<sup class="text-muted-foreground ms-1 text-xs">', "</sup>"];
 var Tag = (props) => {
   const slug = () => encodeURIComponent(props.tag);
   const href = () => pageUrl(props.ctx.request_id, `/tags/${slug()}/index.html`);
-  return ssr(_tmpl$20, ssrAttribute("href", escape(href(), true), false), escape(props.tag), props.count != null && ssr(_tmpl$212, escape(props.count)));
+  return ssr(_tmpl$20, ssrAttribute("href", escape(href(), true), false), escape(props.tag), props.count != null && ssr(_tmpl$211, escape(props.count)));
 };
 
 // src/lib/postDetail.ts
@@ -3856,10 +3908,10 @@ function resolvePostDetail(ctx) {
 
 // src/pages/post.tsx
 var _tmpl$21 = ['<main id="main-content" data-layout="post" class="', '">', "</main>"];
-var _tmpl$213 = ['<div class="mt-auto"><nav class="app-layout mt-8 flex flex-col gap-6 border-t border-muted pt-4 pb-4 sm:flex-row sm:justify-between sm:gap-6">', "", "</nav></div>"];
+var _tmpl$212 = ['<div class="mt-auto"><nav class="app-layout mt-8 flex flex-col gap-6 border-t border-muted pt-4 pb-4 sm:flex-row sm:justify-between sm:gap-6">', "", "</nav></div>"];
 var _tmpl$38 = ['<div data-vt-swap="post-nav">', "</div>"];
-var _tmpl$45 = ['<h1 class="text-foreground inline-block text-[1.8em] font-bold tracking-tight">', "</h1>"];
-var _tmpl$55 = ['<div class="flex flex-wrap items-center gap-x-2 gap-y-1"><span>', ':</span><ul class="flex flex-wrap gap-x-2 gap-y-1">', "</ul></div>"];
+var _tmpl$46 = ['<h1 class="text-foreground inline-block text-[1.8em] font-bold tracking-tight">', "</h1>"];
+var _tmpl$56 = ['<div class="flex flex-wrap items-center gap-x-2 gap-y-1"><span>', ':</span><ul class="flex flex-wrap gap-x-2 gap-y-1">', "</ul></div>"];
 var _tmpl$63 = ['<div class="text-muted-foreground mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm">', "", "</div>"];
 var _tmpl$73 = ['<article id="article"', ">", "</article>"];
 var _tmpl$82 = ['<span class="flex min-w-0 w-full flex-col gap-0.5 overflow-hidden"><span class="text-muted-foreground text-xs tracking-wide">', '</span><span class="flex min-w-0 gap-1.5 decoration-dashed underline-offset-4 group-hover/nav:underline"><span class="shrink-0" aria-hidden="true">\u2190</span><span class="min-w-0 truncate">', "</span></span></span>"];
@@ -3900,12 +3952,12 @@ var PostPage = (p3) => {
     }
   }), ssr(_tmpl$21, `app-layout${padMainTop() ? " mt-8" : ""}`, escape(createComponent(Show, {
     when: post,
-    children: (item) => [ssr(_tmpl$45, escape(item().title) || escape(item().slug)), ssr(_tmpl$63, escape(createComponent(Datetime, {
+    children: (item) => [ssr(_tmpl$46, escape(item().title) || escape(item().slug)), ssr(_tmpl$63, escape(createComponent(Datetime, {
       get ctx() {
         return ctx();
       },
-      get date() {
-        return item().date;
+      get createdAt() {
+        return item().created_at;
       },
       get updatedAt() {
         return item().updated_at;
@@ -3916,7 +3968,7 @@ var PostPage = (p3) => {
         return (item().tags?.length ?? 0) > 0;
       },
       get children() {
-        return ssr(_tmpl$55, escape(t2().post.tagLabel), escape(createComponent(For, {
+        return ssr(_tmpl$56, escape(t2().post.tagLabel), escape(createComponent(For, {
           get each() {
             return item().tags ?? [];
           },
@@ -3932,7 +3984,7 @@ var PostPage = (p3) => {
   }))), ssr(_tmpl$38, escape(createComponent(Show, {
     when: prevPost || nextPost,
     get children() {
-      return ssr(_tmpl$213, escape(createComponent(Show, {
+      return ssr(_tmpl$212, escape(createComponent(Show, {
         when: prevPost,
         children: (prev) => createComponent(LinkButton, {
           get href() {
@@ -3986,12 +4038,12 @@ var IconArrowLeft_default = '<svg  xmlns="http://www.w3.org/2000/svg"  width="24
 
 // src/components/Pagination.tsx
 var _tmpl$30 = ['<nav class="mt-auto mb-8 flex justify-center gap-4" role="navigation" aria-label="Pagination Navigation">', "", " / ", "", "</nav>"];
-var _tmpl$214 = ['<div data-vt-swap="pagination">', "</div>"];
+var _tmpl$213 = ['<div data-vt-swap="pagination">', "</div>"];
 var Pagination = (props) => {
   const t2 = () => useTranslations(props.ctx.lang);
   const prevHref = () => props.pageNo > 1 ? pageUrl(props.ctx.request_id, paginationHref(props.basePath, props.pageNo - 1)) : void 0;
   const nextHref = () => props.pageNo < props.pageCount ? pageUrl(props.ctx.request_id, paginationHref(props.basePath, props.pageNo + 1)) : void 0;
-  return ssr(_tmpl$214, escape(createComponent(Show, {
+  return ssr(_tmpl$213, escape(createComponent(Show, {
     get when() {
       return props.pageCount > 1;
     },
@@ -4286,20 +4338,35 @@ var TagPostsPage = (p3) => {
 // src/pages/archives.tsx
 var import_dayjs3 = __toESM(require_dayjs_min(), 1);
 
-// src/lib/postDate.ts
-var import_dayjs2 = __toESM(require_dayjs_min(), 1);
-function postTimestampSeconds(post) {
-  const raw = post.date || post.updated_at;
-  if (!raw) return 0;
-  return raw > 1e12 ? Math.floor(raw / 1e3) : raw;
-}
-function postDate(post) {
-  return import_dayjs2.default.unix(postTimestampSeconds(post));
+// src/lib/fetchPosts.ts
+var FETCH_PAGE_SIZE = 50;
+function fetchAllPosts(requestId, args) {
+  const first = everkm.posts(requestId, {
+    ...args,
+    offset: 0,
+    limit: FETCH_PAGE_SIZE
+  });
+  if (first.items.length >= first.total) {
+    return first.items;
+  }
+  const items = [...first.items];
+  let offset = first.items.length;
+  while (offset < first.total) {
+    const page = everkm.posts(requestId, {
+      ...args,
+      offset,
+      limit: FETCH_PAGE_SIZE
+    });
+    if (page.items.length === 0) break;
+    items.push(...page.items);
+    offset += page.items.length;
+  }
+  return items;
 }
 
 // src/pages/archives.tsx
-var _tmpl$41 = ['<div><span class="text-2xl font-bold">', '</span><sup class="text-muted-foreground text-sm">', "</sup>", "</div>"];
-var _tmpl$215 = ['<div class="flex flex-col sm:flex-row"><div class="mt-6 min-w-36 text-lg sm:my-6"><span class="font-bold">', '</span><sup class="text-muted-foreground text-xs">', "</sup></div><ul>", "</ul></div>"];
+var _tmpl$41 = ['<section class="mt-10 first:mt-0"><h2 class="bg-background/95 sticky top-0 z-10 -mx-2 mb-1 px-2 py-2 text-2xl font-bold backdrop-blur-sm">', '<sup class="text-muted-foreground ms-0.5 text-sm font-normal">', "</sup></h2>", "</section>"];
+var _tmpl$214 = ['<div class="mt-4"><h3 class="text-foreground/70 mb-1 text-sm font-semibold">', '<sup class="text-muted-foreground ms-0.5 text-xs font-normal">', "</sup></h3><ul>", "</ul></div>"];
 function groupByYearMonth(posts) {
   var _a;
   const byYear = {};
@@ -4320,13 +4387,13 @@ var ArchivesPage = (p3) => {
   const cfg = () => getPaperConfig(ctx());
   const t2 = () => useTranslations(ctx().lang);
   const monthName = (month) => (0, import_dayjs3.default)().locale(dayjsLocale(ctx().lang)).month(month - 1).format("MMMM");
-  const posts = () => everkm.posts(ctx().request_id, {
+  const posts = () => fetchAllPosts(ctx().request_id, {
     dir: POSTS_CONTENT_DIR,
     recursive: true,
     order_by: "date",
     order_direction: "desc",
     draft: false
-  }).items;
+  });
   const grouped = () => groupByYearMonth(posts());
   const years = () => Object.keys(grouped()).sort((a, b2) => Number(b2) - Number(a));
   return [createComponent(Header, {
@@ -4362,13 +4429,14 @@ var ArchivesPage = (p3) => {
             each: months,
             children: (month) => {
               const monthPosts = [...grouped()[year][month]].sort((a, b2) => postTimestampSeconds(b2) - postTimestampSeconds(a));
-              return ssr(_tmpl$215, escape(monthName(Number(month))), escape(monthPosts.length), escape(createComponent(For, {
+              return ssr(_tmpl$214, escape(monthName(Number(month))), escape(monthPosts.length), escape(createComponent(For, {
                 each: monthPosts,
                 children: (post) => createComponent(Card, {
                   get ctx() {
                     return ctx();
                   },
-                  post
+                  post,
+                  layout: "row"
                 })
               })));
             }

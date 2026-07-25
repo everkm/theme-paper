@@ -27,7 +27,9 @@ declare global {
     url_path: string;
     slug: string;
     summary: string;
-    date: number;
+    /** Unix seconds; serialized as `created_at` (input alias `date`). */
+    created_at: number;
+    /** Unix seconds; input alias `updated`. */
     updated_at: number;
     draft: boolean;
     tags: string[];

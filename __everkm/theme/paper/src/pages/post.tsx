@@ -60,7 +60,7 @@ export const PostPage: Component<PostPageProps> = (p) => {
               <div class="text-muted-foreground mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm">
                 <Datetime
                   ctx={ctx()}
-                  date={item().date}
+                  createdAt={item().created_at}
                   updatedAt={item().updated_at}
                   size="sm"
                 />

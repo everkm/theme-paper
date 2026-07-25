@@ -3,7 +3,7 @@ id: 1784862019952
 title: Changelog
 slug: changelog
 created_at: 2026-06-28T00:00:00Z
-updated_at: 2026-07-25T18:34:06+08:00
+updated_at: 2026-07-25T19:59:55+08:00
 tags:
   - featured
 ---
@@ -26,6 +26,9 @@ This changelog is for end users. Keep the wording user-friendly and avoid exposi
 - Syntax-highlighted code blocks keep background and padding on the same layer (no nested box)
 - Same-page anchor links (e.g. jumping to a heading) no longer trigger a full page transition; they scroll to the target directly
 - Opening a URL with a hash no longer smooth-scrolls slowly, and no longer shows a dashed focus ring on the hidden heading anchor
+- Archives now lists every post (no longer truncated by the API’s default page size)
+- Archive entries show title and date only: one row on large screens (date right-aligned), two lines on small screens
+- Post dates now use `created_at` / `updated_at` from the API (no longer the deprecated `date` field)
 
 **Improvements**
 
@@ -36,6 +39,7 @@ This changelog is for end users. Keep the wording user-friendly and avoid exposi
 - On multilingual sites, theme settings (site info, navigation, pagination, search, etc.) now resolve correctly for the current language
 - Incomplete navigation items missing a title or URL are skipped to avoid a broken header
 - In-site navigation now shows a top progress bar while the next page loads, so clicks no longer feel unresponsive
+- More compact dates: icon + date by default; cross-day updates use italics, with the publish date in the hover tooltip
 
 ## v0.1.1 (2026-07-24)
 
