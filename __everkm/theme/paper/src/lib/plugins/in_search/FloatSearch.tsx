@@ -105,6 +105,18 @@ interface IHitItem {
   highlights: string[]
 }
 
+/** Visible path for a hit link (strip __hlts noise). */
+function displayHitUrl(link: string): string {
+  try {
+    const u = new URL(link, window.location.origin)
+    u.searchParams.delete('__hlts')
+    const q = u.searchParams.toString()
+    return q ? `${u.pathname}?${q}${u.hash}` : `${u.pathname}${u.hash}`
+  } catch {
+    return link
+  }
+}
+
 // 搜索结果项组件
 const SearchResultItem = (props: {
   item: IHitItem
@@ -121,9 +133,12 @@ const SearchResultItem = (props: {
     onClick={props.onClick}
   >
     <h2
-      class="text-link dark:text-link inline font-medium underline-offset-2 hover:underline"
+      class="text-accent inline font-medium underline-offset-2 hover:underline"
       innerHTML={props.item.title}
     ></h2>
+    <p class="text-text-tertiary dark:text-text-tertiary truncate text-xs">
+      {displayHitUrl(props.item.link)}
+    </p>
     <p
       class="text-text-secondary dark:text-text-secondary text-sm"
       innerHTML={props.item.summary}
@@ -688,14 +703,14 @@ export default function FloatSearch(props: FloatSearchProps) {
       }}
     >
       <div
-        class="bg-surface dark:bg-surface dark:border-border max-w-screen-lg shadow-lg md:mx-4 md:my-8 md:rounded-lg md:border lg:mx-auto"
+        class="bg-surface dark:bg-surface dark:border-white/10 max-w-screen-lg shadow-lg md:mx-4 md:my-8 md:rounded-lg md:border lg:mx-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* 搜索框 */}
         <div
           class={`relative flex h-12 items-center ${
             noResults() || hitItems().length
-              ? 'dark:border-border border-b'
+              ? 'border-b dark:border-white/10'
               : ''
           }`}
         >
@@ -705,7 +720,7 @@ export default function FloatSearch(props: FloatSearchProps) {
             ref={setSearchInputRef}
             value={wd()}
             onInput={handleInputChange}
-            class="bg-surface dark:bg-surface dark:text-text-primary min-w-12 flex-1 px-1 text-xl outline-0"
+            class="bg-surface dark:bg-surface dark:text-text-primary min-w-12 flex-1 border-0 px-1 text-xl shadow-none outline-none ring-0 focus:border-0 focus:shadow-none focus:outline-none focus:ring-0 focus-visible:outline-none"
           />
           {hitItems().length > 0 && (
             <div
@@ -720,7 +735,7 @@ export default function FloatSearch(props: FloatSearchProps) {
             </div>
           )}
           <div
-            class="dark:border-border hover:bg-state-hover dark:hover:bg-state-hover dark:text-text-primary ml-2 flex h-full flex-shrink-0 flex-grow-0 cursor-pointer select-none items-center whitespace-nowrap border-l px-4"
+            class="border-l dark:border-white/10 hover:bg-state-hover dark:hover:bg-state-hover dark:text-text-primary ml-2 flex h-full flex-shrink-0 flex-grow-0 cursor-pointer select-none items-center whitespace-nowrap px-4"
             onClick={handleClose}
           >
             {t('cancel')}
@@ -741,7 +756,7 @@ export default function FloatSearch(props: FloatSearchProps) {
         {/* 结果列表 */}
         {(hitItems().length > 0 || (wd().length > 0 && !loadFinish())) && (
           <div class="flex max-h-[calc(100dvh-3rem)] flex-col md:max-h-[calc(100dvh-7rem)]">
-            <div class="dark:divide-border flex-1 divide-y overflow-y-auto">
+            <div class="flex-1 divide-y overflow-y-auto dark:divide-white/10">
               {/* 结果项 */}
               <For each={hitItems()}>
                 {(item) => (
@@ -766,7 +781,7 @@ export default function FloatSearch(props: FloatSearchProps) {
             </div>
 
             {/* 底部说明 */}
-            <div class="dark:border-border bg-surface-muted dark:bg-background-dark flex items-center justify-between border-t px-4 py-2 md:rounded-b-lg">
+            <div class="border-t dark:border-white/10 bg-surface-muted dark:bg-background-dark flex items-center justify-between px-4 py-2 md:rounded-b-lg">
               <div class="md:hidden"></div>
               <KeyboardShortcuts />
               <div class="">

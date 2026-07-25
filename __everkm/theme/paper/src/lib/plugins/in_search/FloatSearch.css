@@ -62,3 +62,19 @@ em.hit-keyword {
 .in-search-opened {
   overflow: hidden !important;
 }
+
+/* Kill global `outline-accent` + UA focus ring (white + orange double border). */
+[data-role="float-search"] input {
+  border: 0;
+  outline: none;
+  box-shadow: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+[data-role="float-search"] input:focus,
+[data-role="float-search"] input:focus-visible {
+  border: 0;
+  outline: none;
+  box-shadow: none;
+}
