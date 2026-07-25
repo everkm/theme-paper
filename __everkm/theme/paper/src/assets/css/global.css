@@ -37,3 +37,56 @@
 :target {
   scroll-margin-block: 1rem;
 }
+
+/* AJAX / View Transition navigation progress */
+.paper-nav-progress {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 9999;
+  height: 2px;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0;
+  background: transparent;
+}
+
+.paper-nav-progress.is-active {
+  opacity: 1;
+}
+
+.paper-nav-progress::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 30%;
+  height: 100%;
+  background: var(--accent);
+  transform: translateX(-100%);
+}
+
+.paper-nav-progress.is-active::after {
+  animation: paper-nav-slide 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.paper-nav-progress.is-hiding {
+  opacity: 0;
+  transition: opacity 0.28s ease-out;
+}
+
+@keyframes paper-nav-slide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(350%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .paper-nav-progress.is-active::after {
+    animation: none;
+    width: 100%;
+    transform: none;
+    opacity: 0.7;
+  }
+}

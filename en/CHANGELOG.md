@@ -3,7 +3,7 @@ id: 1784862019952
 title: Changelog
 slug: changelog
 created_at: 2026-06-28T00:00:00Z
-updated_at: 2026-07-25T11:58:55+08:00
+updated_at: 2026-07-25T14:31:25+08:00
 tags:
   - featured
 ---
@@ -30,6 +30,7 @@ This changelog is for end users. Keep the wording user-friendly and avoid exposi
 - Added `body_end_html` config option to append custom HTML at the bottom of every page, for analytics scripts, live chat widgets, and other third-party integrations
 - On multilingual sites, theme settings (site info, navigation, pagination, search, etc.) now resolve correctly for the current language
 - Incomplete navigation items missing a title or URL are skipped to avoid a broken header
+- In-site navigation now shows a top progress bar while the next page loads, so clicks no longer feel unresponsive
 
 ## v0.1.1 (2026-07-24)
 

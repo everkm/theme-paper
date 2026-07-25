@@ -11,6 +11,7 @@ import { installLazyImg } from "./widgets/image-lazy";
 import { installDcardUse, teardownDcard } from "./dcard";
 
 import { PAPER_PAGE_SWAP } from "./events";
+import { doneNavProgress, startNavProgress } from "./navProgress";
 
 function shouldIntercept(anchor: HTMLAnchorElement): boolean {
   if (anchor.target === "_blank") return false;
@@ -124,10 +125,11 @@ function swapVtRegion(
   }
 }
 
-function swapMainContent(doc: Document, url: string): void {
+function swapMainContent(doc: Document, url: string, navId: number): void {
   const nextMain = doc.querySelector("#main-content");
   const currentMain = document.querySelector("#main-content");
   if (!nextMain || !currentMain) {
+    doneNavProgress(navId);
     window.location.href = url;
     return;
   }
@@ -135,6 +137,9 @@ function swapMainContent(doc: Document, url: string): void {
   teardownClientMounts(currentMain);
   // Must run before innerHTML swap so uninstall sees outgoing dcard manifests.
   teardownDcard();
+
+  // Finish the bar before VT starts so progress and page morph don't overlap.
+  doneNavProgress(navId);
 
   const apply = () => {
     swapVtRegion(doc, "page-chrome", currentMain);
@@ -177,6 +182,16 @@ function afterSwap(): void {
   document.dispatchEvent(new CustomEvent(PAPER_PAGE_SWAP));
 }
 
+function navigateTo(url: string, onFail: () => void): void {
+  const navId = startNavProgress();
+  fetchPage(url)
+    .then((doc) => swapMainContent(doc, url, navId))
+    .catch(() => {
+      doneNavProgress(navId);
+      onFail();
+    });
+}
+
 function onClick(e: MouseEvent): void {
   const anchor = (e.target as Element)?.closest?.("a");
   if (!(anchor instanceof HTMLAnchorElement)) return;
@@ -184,11 +199,9 @@ function onClick(e: MouseEvent): void {
   e.preventDefault();
   syncBackUrlFromPage();
   const url = anchor.href;
-  fetchPage(url)
-    .then((doc) => swapMainContent(doc, url))
-    .catch(() => {
-      window.location.href = url;
-    });
+  navigateTo(url, () => {
+    window.location.href = url;
+  });
 }
 
 export function installViewTransitions(): void {
@@ -200,9 +213,7 @@ export function installViewTransitions(): void {
 
   document.addEventListener("click", onClick);
   window.addEventListener("popstate", () => {
-    fetchPage(window.location.href)
-      .then((doc) => swapMainContent(doc, window.location.href))
-      .catch(() => window.location.reload());
+    navigateTo(window.location.href, () => window.location.reload());
   });
 }
 
