@@ -3,7 +3,7 @@ id: 1784862019952
 title: Changelog
 slug: changelog
 created_at: 2026-06-28T00:00:00Z
-updated_at: 2026-07-25T11:48:09+08:00
+updated_at: 2026-07-25T11:58:55+08:00
 tags:
   - featured
 ---
@@ -17,6 +17,10 @@ This changelog is for end users. Keep the wording user-friendly and avoid exposi
 
 
 ## v0.1.2 (2026-07-25)
+
+**Fixes**
+
+- Embedded cards in post content (such as the Flash player) now load their styles and scripts correctly instead of showing empty placeholders
 
 **Improvements**
 

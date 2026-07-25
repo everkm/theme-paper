@@ -8,6 +8,7 @@ import { installFootnoteBackButton } from "./footnote";
 import { updateActiveNav } from "./activeNav";
 import { syncBackUrlFromPage, updateBackButton } from "./backButton";
 import { installLazyImg } from "./widgets/image-lazy";
+import { installDcardUse, teardownDcard } from "./dcard";
 
 import { PAPER_PAGE_SWAP } from "./events";
 
@@ -132,6 +133,8 @@ function swapMainContent(doc: Document, url: string): void {
   }
 
   teardownClientMounts(currentMain);
+  // Must run before innerHTML swap so uninstall sees outgoing dcard manifests.
+  teardownDcard();
 
   const apply = () => {
     swapVtRegion(doc, "page-chrome", currentMain);
@@ -210,6 +213,7 @@ export function bootClient(): void {
   mountClientBlocks();
   installFootnoteBackButton("#article");
   installLazyImg("#main-content");
+  installDcardUse("#main-content");
   installViewTransitions();
   syncBackUrlFromPage();
   updateBackButton();
