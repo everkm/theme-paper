@@ -1,10 +1,10 @@
 @layer base {
   /* ===== Override default Tailwind Typography styles ===== */
   .app-prose {
-    /* Typography defaults use light-on-dark pre colors; override for readable fenced blocks */
+    /* Typography defaults use light-on-dark pre colors; override after @apply prose */
+    @apply prose max-w-none prose-pre:bg-[var(--shiki-light-bg)] prose-pre:p-0 dark:prose-pre:bg-[var(--shiki-dark-bg)];
     --tw-prose-pre-code: var(--foreground);
     --tw-prose-pre-bg: var(--shiki-light-bg);
-    @apply prose max-w-none prose-pre:bg-[var(--shiki-light-bg)] prose-pre:p-0 dark:prose-pre:bg-[var(--shiki-dark-bg)];
 
     h1,
     h2,
@@ -80,17 +80,18 @@
       @apply flex-[1_0_100%] bg-inherit p-0;
     }
 
-    /* Fenced code blocks (prose `pre` + inner `code` both ship padding — keep it on `code` only) */
+    /* Fenced code blocks: one surface on `pre` (border / padding / fallback bg).
+       syntect root bg is also applied to `pre` (see build-code-highlight.mjs).
+       Inner `code` must stay transparent — never a second box. */
     pre:not(.astro-code) {
-      @apply outline-border overflow-x-auto border bg-transparent p-0;
-      /* token colors when code_highlight.server: code-highlight.css */
+      @apply outline-border text-foreground overflow-x-auto border bg-[var(--shiki-light-bg)] p-4;
     }
 
     pre:not(.astro-code) > code {
-      @apply text-foreground block w-full bg-[var(--shiki-light-bg)] p-4 break-words before:content-none after:content-none;
+      @apply text-foreground block w-full bg-transparent p-0 break-words before:content-none after:content-none;
     }
 
-    &:where([data-theme="dark"], [data-theme="dark"] *) pre:not(.astro-code) > code {
+    &:where([data-theme="dark"], [data-theme="dark"] *) pre:not(.astro-code) {
       @apply bg-[var(--shiki-dark-bg)];
     }
 
