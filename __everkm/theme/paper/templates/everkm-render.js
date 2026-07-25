@@ -3285,12 +3285,6 @@ var Footer = (props) => {
   })));
 };
 
-// src/lib/toTransitionName.ts
-function toTransitionName(title) {
-  if (!title) return "";
-  return title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
-}
-
 // src/components/Datetime.tsx
 var import_dayjs = __toESM(require_dayjs_min(), 1);
 var import_utc = __toESM(require_utc(), 1);
@@ -3336,21 +3330,18 @@ var Datetime = (props) => {
 };
 
 // src/components/Card.tsx
-var _tmpl$12 = ['<h3 style="', '"', ">", "</h3>"];
-var _tmpl$26 = ['<h2 style="', '"', ">", "</h2>"];
+var _tmpl$12 = ["<h3", ">", "</h3>"];
+var _tmpl$26 = ["<h2", ">", "</h2>"];
 var _tmpl$34 = ['<li class="my-8"><a', ' class="text-accent text-lg font-medium decoration-dashed underline-offset-4 hover:underline focus-visible:no-underline focus-visible:underline-offset-0">', "</a>", '<p class="text-foreground/80 mt-3 text-sm leading-relaxed">', "</p></li>"];
 var Card = (props) => {
   const variant = () => props.variant ?? "h2";
   const href = () => props.post.url_path;
   const titleClass = "line-clamp-2 sm:line-clamp-none";
   const TitleTag = (p3) => {
-    const style = {
-      "view-transition-name": toTransitionName(props.post.title)
-    };
     if (variant() === "h3") {
-      return ssr(_tmpl$12, ssrStyle(style), ssrAttribute("class", escape(titleClass, true), false), escape(p3.children));
+      return ssr(_tmpl$12, ssrAttribute("class", escape(titleClass, true), false), escape(p3.children));
     }
-    return ssr(_tmpl$26, ssrStyle(style), ssrAttribute("class", escape(titleClass, true), false), escape(p3.children));
+    return ssr(_tmpl$26, ssrAttribute("class", escape(titleClass, true), false), escape(p3.children));
   };
   return ssr(_tmpl$34, ssrAttribute("href", escape(href(), true), false), escape(createComponent(TitleTag, {
     get children() {
@@ -3867,7 +3858,7 @@ function resolvePostDetail(ctx) {
 var _tmpl$21 = ['<main id="main-content" data-layout="post" class="', '">', "</main>"];
 var _tmpl$213 = ['<div class="mt-auto"><nav class="app-layout mt-8 flex flex-col gap-6 border-t border-muted pt-4 pb-4 sm:flex-row sm:justify-between sm:gap-6">', "", "</nav></div>"];
 var _tmpl$38 = ['<div data-vt-swap="post-nav">', "</div>"];
-var _tmpl$45 = ['<h1 style="', '" class="text-foreground inline-block text-[1.8em] font-bold tracking-tight">', "</h1>"];
+var _tmpl$45 = ['<h1 class="text-foreground inline-block text-[1.8em] font-bold tracking-tight">', "</h1>"];
 var _tmpl$55 = ['<div class="flex flex-wrap items-center gap-x-2 gap-y-1"><span>', ':</span><ul class="flex flex-wrap gap-x-2 gap-y-1">', "</ul></div>"];
 var _tmpl$63 = ['<div class="text-muted-foreground mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm">', "", "</div>"];
 var _tmpl$73 = ['<article id="article"', ">", "</article>"];
@@ -3909,7 +3900,7 @@ var PostPage = (p3) => {
     }
   }), ssr(_tmpl$21, `app-layout${padMainTop() ? " mt-8" : ""}`, escape(createComponent(Show, {
     when: post,
-    children: (item) => [ssr(_tmpl$45, "view-transition-name:" + escape(toTransitionName(item().title || item().slug), true), escape(item().title) || escape(item().slug)), ssr(_tmpl$63, escape(createComponent(Datetime, {
+    children: (item) => [ssr(_tmpl$45, escape(item().title) || escape(item().slug)), ssr(_tmpl$63, escape(createComponent(Datetime, {
       get ctx() {
         return ctx();
       },

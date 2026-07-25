@@ -1,5 +1,4 @@
 import { Component } from "solid-js";
-import { toTransitionName } from "../lib/toTransitionName";
 import { Datetime } from "./Datetime";
 
 type CardProps = {
@@ -16,19 +15,10 @@ export const Card: Component<CardProps> = (props) => {
     "line-clamp-2 sm:line-clamp-none";
 
   const TitleTag = (p: { children: any }) => {
-    const style = { "view-transition-name": toTransitionName(props.post.title) };
     if (variant() === "h3") {
-      return (
-        <h3 style={style} class={titleClass}>
-          {p.children}
-        </h3>
-      );
+      return <h3 class={titleClass}>{p.children}</h3>;
     }
-    return (
-      <h2 style={style} class={titleClass}>
-        {p.children}
-      </h2>
-    );
+    return <h2 class={titleClass}>{p.children}</h2>;
   };
 
   return (

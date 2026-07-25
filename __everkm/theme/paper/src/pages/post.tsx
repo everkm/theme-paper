@@ -1,7 +1,6 @@
 import { Component, For, Show } from "solid-js";
 import { getPaperConfig } from "../lib/config";
 import { useTranslations } from "../lib/i18n";
-import { toTransitionName } from "../lib/toTransitionName";
 import { Header } from "../layout/Header";
 import { Footer } from "../components/Footer";
 import { PageChrome } from "../components/PageChrome";
@@ -55,14 +54,7 @@ export const PostPage: Component<PostPageProps> = (p) => {
         <Show when={post}>
           {(item) => (
             <>
-              <h1
-                style={{
-                  "view-transition-name": toTransitionName(
-                    item().title || item().slug,
-                  ),
-                }}
-                class="text-foreground inline-block text-[1.8em] font-bold tracking-tight"
-              >
+              <h1 class="text-foreground inline-block text-[1.8em] font-bold tracking-tight">
                 {item().title || item().slug}
               </h1>
               <div class="text-muted-foreground mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm">
