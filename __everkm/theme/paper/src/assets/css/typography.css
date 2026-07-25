@@ -15,8 +15,22 @@
       scroll-margin-block: 1rem;
     }
 
+    /* Cap heading scale for mobile readability (prose default h1 is 2.25em) */
+    h1 {
+      font-size: 1.8em;
+    }
+
+    h2 {
+      font-size: 1.4em;
+    }
+
     h3 {
       @apply italic;
+      font-size: 1.2em;
+    }
+
+    h4 {
+      font-size: 1.1em;
     }
 
     p,
