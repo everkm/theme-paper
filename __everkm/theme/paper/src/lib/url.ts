@@ -76,7 +76,8 @@ export function pageUrl(requestId: string, path: string): string {
 }
 
 /** Absolute http(s) or protocol-relative URL (header external links). */
-export function isAbsoluteUrl(url: string): boolean {
+export function isAbsoluteUrl(url: unknown): boolean {
+  if (typeof url !== "string" || !url) return false;
   return /^https?:\/\//i.test(url) || url.startsWith("//");
 }
 

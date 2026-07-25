@@ -1,3 +1,5 @@
+import { configValue } from "./configValue";
+
 export interface PaperSiteConfig {
   name: string;
   description: string;
@@ -72,16 +74,55 @@ const DEFAULTS: PaperConfig = {
   share_links: [],
 };
 
+function asObject(value: unknown): Record<string, unknown> {
+  return value != null && typeof value === "object" && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : {};
+}
+
+function asArray<T>(value: unknown): T[] {
+  return Array.isArray(value) ? (value as T[]) : [];
+}
+
+/** Drop incomplete header_nav entries (missing title/url after materialize). */
+function normalizeHeaderNav(items: unknown): HeaderNavItem[] {
+  return asArray<Partial<HeaderNavItem>>(items).filter(
+    (item): item is HeaderNavItem =>
+      typeof item?.title === "string" &&
+      !!item.title &&
+      typeof item?.url === "string" &&
+      !!item.url,
+  );
+}
+
+/**
+ * Theme config from `everkm.config` (i18n-materialized).
+ * Do not read `ctx.config` directly.
+ */
 export function getPaperConfig(ctx: PageContext): PaperConfig {
-  const raw = (ctx.config || {}) as Partial<PaperConfig>;
+  const id = ctx.request_id;
+  const site = asObject(configValue(id, "site", {}));
+  const posts = asObject(configValue(id, "posts", {}));
+  const features = asObject(configValue(id, "features", {}));
+
   return {
-    ...DEFAULTS,
-    ...raw,
-    site: { ...DEFAULTS.site, ...raw.site },
-    posts: { ...DEFAULTS.posts, ...raw.posts },
-    features: { ...DEFAULTS.features, ...raw.features },
-    header_nav: raw.header_nav ?? DEFAULTS.header_nav,
-    socials: raw.socials ?? DEFAULTS.socials,
-    share_links: raw.share_links ?? DEFAULTS.share_links,
+    site: { ...DEFAULTS.site, ...site } as PaperSiteConfig,
+    home: (configValue(id, "home", DEFAULTS.home) as string) ?? DEFAULTS.home,
+    about:
+      (configValue(id, "about", DEFAULTS.about) as string) ?? DEFAULTS.about,
+    posts: { ...DEFAULTS.posts, ...posts },
+    features: { ...DEFAULTS.features, ...features },
+    header_nav: normalizeHeaderNav(
+      configValue(id, "header_nav", DEFAULTS.header_nav),
+    ),
+    socials: asArray(configValue(id, "socials", DEFAULTS.socials)),
+    share_links: asArray(configValue(id, "share_links", DEFAULTS.share_links)),
+    copyright: (() => {
+      const raw = configValue(id, "copyright", null);
+      if (raw == null) return undefined;
+      return asObject(raw) as PaperConfig["copyright"];
+    })(),
+    body_end_html:
+      (configValue(id, "body_end_html", "") as string) || undefined,
   };
 }

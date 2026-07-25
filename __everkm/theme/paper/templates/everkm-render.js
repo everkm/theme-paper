@@ -2601,6 +2601,15 @@ function replacePlaceholder(html, key, value) {
 }
 var RequestContext = Symbol();
 
+// src/lib/configValue.ts
+var MISSING = Symbol("configDefaultMissing");
+function configValue(requestId, path, defaultValue = MISSING) {
+  if (defaultValue !== MISSING) {
+    return everkm.config(requestId, { key: path, default: defaultValue });
+  }
+  return everkm.config(requestId, { key: path });
+}
+
 // src/lib/config.ts
 var DEFAULTS = {
   site: {
@@ -2628,17 +2637,39 @@ var DEFAULTS = {
   socials: [],
   share_links: []
 };
+function asObject(value) {
+  return value != null && typeof value === "object" && !Array.isArray(value) ? value : {};
+}
+function asArray(value) {
+  return Array.isArray(value) ? value : [];
+}
+function normalizeHeaderNav(items) {
+  return asArray(items).filter(
+    (item) => typeof item?.title === "string" && !!item.title && typeof item?.url === "string" && !!item.url
+  );
+}
 function getPaperConfig(ctx) {
-  const raw = ctx.config || {};
+  const id = ctx.request_id;
+  const site = asObject(configValue(id, "site", {}));
+  const posts = asObject(configValue(id, "posts", {}));
+  const features = asObject(configValue(id, "features", {}));
   return {
-    ...DEFAULTS,
-    ...raw,
-    site: { ...DEFAULTS.site, ...raw.site },
-    posts: { ...DEFAULTS.posts, ...raw.posts },
-    features: { ...DEFAULTS.features, ...raw.features },
-    header_nav: raw.header_nav ?? DEFAULTS.header_nav,
-    socials: raw.socials ?? DEFAULTS.socials,
-    share_links: raw.share_links ?? DEFAULTS.share_links
+    site: { ...DEFAULTS.site, ...site },
+    home: configValue(id, "home", DEFAULTS.home) ?? DEFAULTS.home,
+    about: configValue(id, "about", DEFAULTS.about) ?? DEFAULTS.about,
+    posts: { ...DEFAULTS.posts, ...posts },
+    features: { ...DEFAULTS.features, ...features },
+    header_nav: normalizeHeaderNav(
+      configValue(id, "header_nav", DEFAULTS.header_nav)
+    ),
+    socials: asArray(configValue(id, "socials", DEFAULTS.socials)),
+    share_links: asArray(configValue(id, "share_links", DEFAULTS.share_links)),
+    copyright: (() => {
+      const raw = configValue(id, "copyright", null);
+      if (raw == null) return void 0;
+      return asObject(raw);
+    })(),
+    body_end_html: configValue(id, "body_end_html", "") || void 0
   };
 }
 
@@ -2706,6 +2737,7 @@ function pageUrl(requestId, path) {
   return `${base}${normalized}`;
 }
 function isAbsoluteUrl(url) {
+  if (typeof url !== "string" || !url) return false;
   return /^https?:\/\//i.test(url) || url.startsWith("//");
 }
 function pageNoFromCtx(ctx) {
@@ -2761,18 +2793,6 @@ var RootLayout = (props) => {
     }
   })));
 };
-
-// src/lib/configValue.ts
-function configValue(config, path, defaultValue) {
-  if (!config) return defaultValue;
-  const keys = path.split("/").filter(Boolean);
-  let val = config;
-  for (const key of keys) {
-    if (val == null || typeof val !== "object") return defaultValue;
-    val = val[key];
-  }
-  return val ?? defaultValue;
-}
 
 // src/lib/i18n/lang/en.ts
 var en = {
@@ -3004,6 +3024,10 @@ function externalLinkAttrs(newWindow) {
   };
 }
 function resolveNavHref(requestId, url) {
+  if (!url) return {
+    href: "#",
+    absolute: false
+  };
   if (isAbsoluteUrl(url)) return {
     href: url,
     absolute: true
@@ -3058,10 +3082,10 @@ var Header = (props) => {
     id: "menu-icon"
   })), escape(createComponent(Show, {
     get when() {
-      return configValue(props.ctx.config, "algolia_search");
+      return configValue(props.ctx.request_id, "algolia_search", null);
     },
     get children() {
-      return ssr(_tmpl$32, ssrAttribute("app-id", escape(String(configValue(props.ctx.config, "algolia_search/app_id", "")), true), false) + ssrAttribute("api-key", escape(String(configValue(props.ctx.config, "algolia_search/api_key", "")), true), false) + ssrAttribute("index", escape(String(configValue(props.ctx.config, "algolia_search/index_name", "")), true), false) + ssrAttribute("site", escape(String(configValue(props.ctx.config, "algolia_search/site", "")), true), false));
+      return ssr(_tmpl$32, ssrAttribute("app-id", escape(String(configValue(props.ctx.request_id, "algolia_search/app_id", "")), true), false) + ssrAttribute("api-key", escape(String(configValue(props.ctx.request_id, "algolia_search/api_key", "")), true), false) + ssrAttribute("index", escape(String(configValue(props.ctx.request_id, "algolia_search/index_name", "")), true), false) + ssrAttribute("site", escape(String(configValue(props.ctx.request_id, "algolia_search/site", "")), true), false));
     }
   })), escape(createComponent(For, {
     get each() {
@@ -3886,14 +3910,12 @@ var PostPage = (p3) => {
 };
 
 // src/lib/pagination.ts
-function readPagination(qs, config, total) {
+function readPagination(qs, pageSize, total) {
   const pageNo = Math.max(1, parseInt(String(qs?.page ?? "1"), 10) || 1);
-  const pageSize = Number(
-    config?.posts?.per_page ?? 4
-  );
-  const offset = (pageNo - 1) * pageSize;
-  const pageCount = Math.max(1, Math.ceil(total / pageSize));
-  return { pageNo, pageSize, offset, pageCount };
+  const size = Number.isFinite(pageSize) && pageSize > 0 ? pageSize : 4;
+  const offset = (pageNo - 1) * size;
+  const pageCount = Math.max(1, Math.ceil(total / size));
+  return { pageNo, pageSize: size, offset, pageCount };
 }
 function paginationHref(base, targetPage) {
   const normalized = base.replace(/\/+$/, "");
@@ -3972,7 +3994,7 @@ var PostsListPage = (p3) => {
     order_direction: "desc",
     draft: false
   });
-  const pagination = () => readPagination(ctx().qs ?? {}, ctx().config ?? {}, all().total);
+  const pagination = () => readPagination(ctx().qs ?? {}, cfg().posts?.per_page ?? 4, all().total);
   const items = () => everkm.posts(ctx().request_id, {
     dir: POSTS_CONTENT_DIR,
     recursive: true,
@@ -4116,7 +4138,7 @@ var TagPostsPage = (p3) => {
     order_direction: "desc",
     draft: false
   });
-  const pagination = () => readPagination(ctx().qs ?? {}, ctx().config ?? {}, all().total);
+  const pagination = () => readPagination(ctx().qs ?? {}, cfg().posts?.per_page ?? 4, all().total);
   const items = () => everkm.posts(ctx().request_id, {
     dir: POSTS_CONTENT_DIR,
     recursive: true,
@@ -4358,7 +4380,7 @@ async function renderPage(compName, props) {
     type: "css",
     section: "paper"
   }) || "";
-  const cssSearch = configValue(props.config, "algolia_search") ? everkm.assets(props.request_id, {
+  const cssSearch = configValue(props.request_id, "algolia_search", null) ? everkm.assets(props.request_id, {
     type: "css",
     section: "plugin-in-search"
   }) || "" : "";
@@ -4366,7 +4388,7 @@ async function renderPage(compName, props) {
     type: "js",
     section: "paper"
   }) || "";
-  const jsSearch = configValue(props.config, "algolia_search") ? everkm.assets(props.request_id, {
+  const jsSearch = configValue(props.request_id, "algolia_search", null) ? everkm.assets(props.request_id, {
     type: "js",
     section: "plugin-in-search"
   }) || "" : "";

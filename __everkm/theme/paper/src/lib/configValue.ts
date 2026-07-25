@@ -1,15 +1,22 @@
-/** Read nested config by slash-separated path (e.g. `algolia_search/app_id`). */
+const MISSING = Symbol("configDefaultMissing");
+
+/**
+ * Read config via `everkm.config` (materialized / i18n-resolved tree).
+ * Path uses `/` separators (e.g. `algolia_search/app_id`).
+ * Always pass `defaultValue` for optional keys — missing keys throw without it.
+ */
 export function configValue(
-  config: Record<string, unknown> | undefined,
+  requestId: string,
   path: string,
-  defaultValue?: unknown,
+  defaultValue: unknown = MISSING,
 ): unknown {
-  if (!config) return defaultValue;
-  const keys = path.split("/").filter(Boolean);
-  let val: unknown = config;
-  for (const key of keys) {
-    if (val == null || typeof val !== "object") return defaultValue;
-    val = (val as Record<string, unknown>)[key];
+  if (defaultValue !== MISSING) {
+    return everkm.config(requestId, { key: path, default: defaultValue });
   }
-  return val ?? defaultValue;
+  return everkm.config(requestId, { key: path });
+}
+
+/** Whether a top-level or nested config key exists. */
+export function hasConfig(requestId: string, path: string): boolean {
+  return everkm.has_config(requestId, { key: path });
 }

@@ -34,8 +34,9 @@ function externalLinkAttrs(newWindow: boolean) {
 
 function resolveNavHref(
   requestId: string,
-  url: string,
+  url: string | undefined,
 ): { href: string; absolute: boolean } {
+  if (!url) return { href: "#", absolute: false };
   if (isAbsoluteUrl(url)) return { href: url, absolute: true };
   return { href: pageUrl(requestId, url), absolute: false };
 }
@@ -125,34 +126,36 @@ export const Header: Component<HeaderProps> = (props) => {
               id="menu-items"
               class="[&>li>a:hover]:text-accent mt-4 hidden w-44 grid-cols-2 place-content-center gap-2 sm:mt-0 sm:flex sm:w-auto sm:gap-x-5 sm:gap-y-0 sm:[&>li]:h-8 [&>li>a]:block [&>li>a]:px-4 [&>li>a]:py-3 [&>li>a]:text-center [&>li>a]:font-medium sm:[&>li>a]:px-2 sm:[&>li>a]:py-1"
             >
-              <Show when={configValue(props.ctx.config, "algolia_search")}>
+              <Show
+                when={configValue(props.ctx.request_id, "algolia_search", null)}
+              >
                 <li class="col-span-2 flex items-center justify-center sm:col-span-1">
                   <div id="header-in-search">
                     <x-in-search
                       app-id={String(
                         configValue(
-                          props.ctx.config,
+                          props.ctx.request_id,
                           "algolia_search/app_id",
                           "",
                         ),
                       )}
                       api-key={String(
                         configValue(
-                          props.ctx.config,
+                          props.ctx.request_id,
                           "algolia_search/api_key",
                           "",
                         ),
                       )}
                       index={String(
                         configValue(
-                          props.ctx.config,
+                          props.ctx.request_id,
                           "algolia_search/index_name",
                           "",
                         ),
                       )}
                       site={String(
                         configValue(
-                          props.ctx.config,
+                          props.ctx.request_id,
                           "algolia_search/site",
                           "",
                         ),

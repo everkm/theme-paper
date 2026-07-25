@@ -29,7 +29,7 @@ export const PostsListPage: Component<PostsListPageProps> = (p) => {
     });
 
   const pagination = () =>
-    readPagination(ctx().qs ?? {}, ctx().config ?? {}, all().total);
+    readPagination(ctx().qs ?? {}, cfg().posts?.per_page ?? 4, all().total);
 
   const items = () =>
     everkm.posts(ctx().request_id, {

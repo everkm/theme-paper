@@ -7,16 +7,14 @@ export interface PaginationState {
 
 export function readPagination(
   qs: Record<string, unknown>,
-  config: Record<string, unknown>,
+  pageSize: number,
   total: number,
 ): PaginationState {
   const pageNo = Math.max(1, parseInt(String(qs?.page ?? "1"), 10) || 1);
-  const pageSize = Number(
-    (config as { posts?: { per_page?: number } })?.posts?.per_page ?? 4,
-  );
-  const offset = (pageNo - 1) * pageSize;
-  const pageCount = Math.max(1, Math.ceil(total / pageSize));
-  return { pageNo, pageSize, offset, pageCount };
+  const size = Number.isFinite(pageSize) && pageSize > 0 ? pageSize : 4;
+  const offset = (pageNo - 1) * size;
+  const pageCount = Math.max(1, Math.ceil(total / size));
+  return { pageNo, pageSize: size, offset, pageCount };
 }
 
 export function paginationHref(base: string, targetPage: number): string {
