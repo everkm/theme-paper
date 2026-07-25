@@ -103,8 +103,9 @@
       @apply text-foreground bg-[var(--shiki-light-bg)] p-4;
     }
 
+    /* min-w-full + w-max: short blocks still fill pre; long lines grow so bg scrolls with content */
     pre:not(.astro-code) > code {
-      @apply text-foreground block w-full bg-[var(--shiki-light-bg)] p-4 break-words before:content-none after:content-none;
+      @apply text-foreground block w-max min-w-full bg-[var(--shiki-light-bg)] p-4 before:content-none after:content-none;
     }
 
     &:where([data-theme="dark"], [data-theme="dark"] *) {
