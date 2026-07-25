@@ -3,7 +3,7 @@ id: 1784862019952
 title: Changelog
 slug: changelog
 created_at: 2026-06-28T00:00:00Z
-updated_at: 2026-07-25T14:31:25+08:00
+updated_at: 2026-07-25T14:41:00+08:00
 tags:
   - featured
 ---
@@ -21,6 +21,7 @@ This changelog is for end users. Keep the wording user-friendly and avoid exposi
 **Fixes**
 
 - Embedded cards in post content (such as the Flash player) now load their styles and scripts correctly instead of showing empty placeholders
+- Navigating away from deep on a long page no longer plays a lengthy “scroll back to top” style transition
 
 **Improvements**
 

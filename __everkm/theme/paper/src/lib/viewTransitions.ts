@@ -49,15 +49,21 @@ function getUrlHash(url: string): string {
  * Instant scroll, bypassing html.scroll-smooth.
  * Must run inside the VT update callback so the new snapshot is already at the
  * target position — scrolling after transition.finished feels slow on long pages.
+ *
+ * Also strips the Tailwind `scroll-smooth` class: some engines still honor it for
+ * scrollTo/scrollIntoView even when inline scroll-behavior is "auto".
  */
 function withInstantScroll(fn: () => void): void {
   const root = document.documentElement;
-  const prev = root.style.scrollBehavior;
+  const prevBehavior = root.style.scrollBehavior;
+  const hadSmoothClass = root.classList.contains("scroll-smooth");
   root.style.scrollBehavior = "auto";
+  if (hadSmoothClass) root.classList.remove("scroll-smooth");
   try {
     fn();
   } finally {
-    root.style.scrollBehavior = prev;
+    root.style.scrollBehavior = prevBehavior;
+    if (hadSmoothClass) root.classList.add("scroll-smooth");
   }
 }
 
@@ -73,12 +79,19 @@ function scrollNavigatedPage(url: string): void {
       }
       const target = document.getElementById(id);
       if (target) {
-        target.scrollIntoView({ block: "start" });
+        target.scrollIntoView({ behavior: "auto", block: "start" });
         return;
       }
     }
-    window.scrollTo(0, 0);
+    // Both APIs: Safari historically preferred scrollTop for reliable jumps.
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    rootScrollTop(0);
   });
+}
+
+function rootScrollTop(top: number): void {
+  document.documentElement.scrollTop = top;
+  if (document.body) document.body.scrollTop = top;
 }
 
 function syncMainShell(

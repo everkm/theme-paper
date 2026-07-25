@@ -90,3 +90,21 @@
     opacity: 0.7;
   }
 }
+
+/*
+ * View Transitions: kill "pseudo-smooth-scroll".
+ * Instant scroll-to-top inside the VT update callback + named title morphs makes
+ * the default ::view-transition-group transform look like a long smooth scroll.
+ * Keep a short opacity crossfade; jump groups to the end geometry immediately.
+ */
+@supports (view-transition-name: none) {
+  ::view-transition-group(*) {
+    animation: none;
+  }
+
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 140ms;
+    animation-timing-function: ease-out;
+  }
+}
