@@ -3,7 +3,7 @@ id: 1784862019952
 title: Changelog
 slug: changelog
 created_at: 2026-06-28T00:00:00Z
-updated_at: 2026-07-24T22:00:03+08:00
+updated_at: 2026-07-25T11:48:09+08:00
 tags:
   - featured
 ---
@@ -16,7 +16,7 @@ This changelog is for end users. Keep the wording user-friendly and avoid exposi
 - When no new version is specified, append entries under the latest version
 
 
-## v0.1.2 (2026-07-24)
+## v0.1.2 (2026-07-25)
 
 **Improvements**
 
@@ -24,6 +24,8 @@ This changelog is for end users. Keep the wording user-friendly and avoid exposi
 - More balanced post title size on article pages
 - Long previous / next post titles truncate to a single line to avoid layout overflow
 - Added `body_end_html` config option to append custom HTML at the bottom of every page, for analytics scripts, live chat widgets, and other third-party integrations
+- On multilingual sites, theme settings (site info, navigation, pagination, search, etc.) now resolve correctly for the current language
+- Incomplete navigation items missing a title or URL are skipped to avoid a broken header
 
 ## v0.1.1 (2026-07-24)
 

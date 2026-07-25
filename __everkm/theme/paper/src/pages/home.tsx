@@ -7,6 +7,7 @@ import { APP_PROSE } from "../lib/proseClasses";
 import { Header } from "../layout/Header";
 import { Footer } from "../components/Footer";
 import { Card } from "../components/Card";
+import { EmptyPostsGuide } from "../components/EmptyPostsGuide";
 import { LinkButton } from "../components/LinkButton";
 import { Socials } from "../components/Socials";
 import { Icon } from "../components/Icon";
@@ -50,6 +51,14 @@ export const HomePage: Component<HomePageProps> = (p) => {
       order_direction: "desc",
       draft: false,
     }).items;
+
+  const hasPosts = () =>
+    everkm.posts(ctx().request_id, {
+      dir: POSTS_CONTENT_DIR,
+      recursive: true,
+      draft: false,
+      limit: 1,
+    }).total > 0;
 
   return (
     <>
@@ -115,12 +124,17 @@ export const HomePage: Component<HomePageProps> = (p) => {
           </section>
         </Show>
 
-        <div class="my-8 text-center">
-          <LinkButton href={pageUrl(ctx().request_id, POSTS_INDEX_URL)}>
-            {t().home.allPosts}
-            <Icon svg={IconArrowRight} class="inline-block rtl:-rotate-180" />
-          </LinkButton>
-        </div>
+        <Show
+          when={hasPosts()}
+          fallback={<EmptyPostsGuide ctx={ctx()} class="my-12" />}
+        >
+          <div class="my-8 text-center">
+            <LinkButton href={pageUrl(ctx().request_id, POSTS_INDEX_URL)}>
+              {t().home.allPosts}
+              <Icon svg={IconArrowRight} class="inline-block rtl:-rotate-180" />
+            </LinkButton>
+          </div>
+        </Show>
       </main>
       <Footer ctx={ctx()} config={cfg()} />
     </>

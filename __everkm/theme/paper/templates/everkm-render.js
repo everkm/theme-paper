@@ -2648,6 +2648,17 @@ function normalizeHeaderNav(items) {
     (item) => typeof item?.title === "string" && !!item.title && typeof item?.url === "string" && !!item.url
   );
 }
+function normalizeSocials(items) {
+  const out = [];
+  for (const raw of asArray(items)) {
+    if (raw == null || typeof raw !== "object") continue;
+    const label = typeof raw.name === "string" && raw.name.trim() || typeof raw.title === "string" && raw.title.trim() || "";
+    const url = typeof raw.url === "string" ? raw.url.trim() : "";
+    if (!label || !url) continue;
+    out.push({ name: label, url });
+  }
+  return out;
+}
 function getPaperConfig(ctx) {
   const id = ctx.request_id;
   const site = asObject(configValue(id, "site", {}));
@@ -2662,8 +2673,10 @@ function getPaperConfig(ctx) {
     header_nav: normalizeHeaderNav(
       configValue(id, "header_nav", DEFAULTS.header_nav)
     ),
-    socials: asArray(configValue(id, "socials", DEFAULTS.socials)),
-    share_links: asArray(configValue(id, "share_links", DEFAULTS.share_links)),
+    socials: normalizeSocials(configValue(id, "socials", DEFAULTS.socials)),
+    share_links: normalizeSocials(
+      configValue(id, "share_links", DEFAULTS.share_links)
+    ),
     copyright: (() => {
       const raw = configValue(id, "copyright", null);
       if (raw == null) return void 0;
@@ -2825,7 +2838,10 @@ var en = {
     socialLinks: "My Links",
     featured: "Featured",
     recentPosts: "Recent Posts",
-    allPosts: "All Posts"
+    allPosts: "All Posts",
+    emptyPostsTitle: "No posts yet",
+    emptyPostsDesc: "This site has no posts yet. Visit the Paper Theme site to learn how to set up and start writing.",
+    emptyPostsCta: "Visit Paper Theme"
   },
   pages: {
     tagTitle: "Tag",
@@ -2881,7 +2897,10 @@ var zh = {
     socialLinks: "\u6211\u7684\u94FE\u63A5",
     featured: "\u7CBE\u9009",
     recentPosts: "\u6700\u8FD1\u6587\u7AE0",
-    allPosts: "\u5168\u90E8\u6587\u7AE0"
+    allPosts: "\u5168\u90E8\u6587\u7AE0",
+    emptyPostsTitle: "\u8FD8\u6CA1\u6709\u6587\u7AE0",
+    emptyPostsDesc: "\u5F53\u524D\u7AD9\u70B9\u6682\u65E0\u5185\u5BB9\u3002\u53EF\u524D\u5F80 Paper Theme \u5B98\u7F51\u4E86\u89E3\u4E3B\u9898\u7528\u6CD5\u4E0E\u914D\u7F6E\u3002",
+    emptyPostsCta: "\u524D\u5F80\u5B98\u7F51\u4E86\u89E3"
   },
   pages: {
     tagTitle: "\u6807\u7B7E",
@@ -3196,11 +3215,14 @@ var SOCIAL_ICON_MAP = {
   twitter: x_default
 };
 function getSocialIcon(name) {
-  return SOCIAL_ICON_MAP[name.toLowerCase().trim()];
+  if (typeof name !== "string") return void 0;
+  const key = name.trim().toLowerCase();
+  if (!key) return void 0;
+  return SOCIAL_ICON_MAP[key];
 }
 
 // src/components/Socials.tsx
-var _tmpl$9 = ['<div class="flex flex-wrap items-center gap-4">', "</div>"];
+var _tmpl$9 = ['<div class="flex flex-wrap items-center gap-4 text-sm">', "</div>"];
 var _tmpl$23 = ["<a", ' target="_blank" rel="noopener noreferrer"', ">", "</a>"];
 var Socials = (props) => {
   return createComponent(Show, {
@@ -3213,11 +3235,14 @@ var Socials = (props) => {
           return props.socials;
         },
         children: (item) => {
-          const svg = getSocialIcon(item.name);
-          return ssr(_tmpl$23, ssrAttribute("href", escape(item.url, true), false), ssrAttribute("class", svg ? "inline-flex items-center justify-center leading-none text-accent hover:opacity-80 transition-opacity" : "inline-flex items-center leading-none text-accent hover:underline decoration-dashed underline-offset-4", false) + ssrAttribute("title", escape(item.name, true), false) + ssrAttribute("aria-label", svg ? escape(item.name, true) : escape(void 0, true), false), svg ? escape(createComponent(Icon, {
+          const label = (typeof item.name === "string" && item.name || typeof item.title === "string" && item.title || "").trim();
+          const url = typeof item.url === "string" ? item.url.trim() : "";
+          if (!label || !url) return null;
+          const svg = getSocialIcon(label);
+          return ssr(_tmpl$23, ssrAttribute("href", escape(url, true), false), ssrAttribute("class", svg ? "inline-flex items-center justify-center leading-none text-accent hover:opacity-80 transition-opacity" : "inline-flex items-center leading-none text-accent hover:underline decoration-dashed underline-offset-4", false) + ssrAttribute("title", escape(label, true), false) + ssrAttribute("aria-label", svg ? escape(label, true) : escape(void 0, true), false), svg ? escape(createComponent(Icon, {
             svg,
             "class": "size-5 shrink-0"
-          })) : escape(item.name));
+          })) : escape(label));
         }
       })));
     }
@@ -3348,13 +3373,34 @@ var Card = (props) => {
 // src/assets/icons/IconArrowRight.svg
 var IconArrowRight_default = '<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M13 18l6 -6" /><path d="M13 6l6 6" /></svg>';
 
+// src/components/EmptyPostsGuide.tsx
+var _tmpl$13 = ['<section class="', '"', '><h2 class="text-xl font-semibold tracking-wide">', '</h2><p class="text-foreground/80 mx-auto mt-3 max-w-md text-sm leading-relaxed">', '</p><div class="mt-6">', "</div></section>"];
+var PAPER_THEME_DEMO_URL = "https://paper.theme.everkm.com/";
+var EmptyPostsGuide = (props) => {
+  const t2 = () => useTranslations(props.ctx.lang);
+  return ssr(_tmpl$13, `border-border border-dashed border px-6 py-10 text-center ${escape(props.class, true) ?? ""}`, ssrAttribute("aria-label", escape(t2().home.emptyPostsTitle, true), false), escape(t2().home.emptyPostsTitle), escape(t2().home.emptyPostsDesc), escape(createComponent(LinkButton, {
+    href: PAPER_THEME_DEMO_URL,
+    "class": "text-accent",
+    target: "_blank",
+    rel: "noopener noreferrer",
+    "data-no-vt": "",
+    get children() {
+      return [t2().home.emptyPostsCta, createComponent(Icon, {
+        svg: IconArrowRight_default,
+        "class": "inline-block rtl:-rotate-180"
+      })];
+    }
+  })));
+};
+
 // src/pages/home.tsx
-var _tmpl$13 = ["<div", ">", "</div>"];
+var _tmpl$14 = ["<div", ">", "</div>"];
 var _tmpl$27 = ['<div class="', '"><div class="me-2 mb-1 whitespace-nowrap sm:mb-0">', ":</div>", "</div>"];
 var _tmpl$35 = ['<section id="hero" class="border-border border-b pt-8 pb-6">', "", "</section>"];
 var _tmpl$43 = ['<section id="featured" class="', '"><h2 class="text-2xl font-semibold tracking-wide">', "</h2><ul>", "</ul></section>"];
 var _tmpl$53 = ['<section id="recent-posts" class="pt-12 pb-6"><h2 class="text-2xl font-semibold tracking-wide">', "</h2><ul>", "</ul></section>"];
-var _tmpl$62 = ['<main id="main-content" data-layout="home"', ' class="app-layout">', "", "", '<div class="my-8 text-center">', "</div></main>"];
+var _tmpl$62 = ['<div class="my-8 text-center">', "</div>"];
+var _tmpl$72 = ['<main id="main-content" data-layout="home"', ' class="app-layout">', "", "", "", "</main>"];
 var HomePage = (p3) => {
   const ctx = () => p3.props;
   const cfg = () => getPaperConfig(ctx());
@@ -3384,11 +3430,17 @@ var HomePage = (p3) => {
     order_direction: "desc",
     draft: false
   }).items;
+  const hasPosts = () => everkm.posts(ctx().request_id, {
+    dir: POSTS_CONTENT_DIR,
+    recursive: true,
+    draft: false,
+    limit: 1
+  }).total > 0;
   return [createComponent(Header, {
     get ctx() {
       return ctx();
     }
-  }), ssr(_tmpl$62, ssrAttribute("data-home-path", escape(pageUrl(ctx().request_id, "/index.html"), true), false), escape(createComponent(Show, {
+  }), ssr(_tmpl$72, ssrAttribute("data-home-path", escape(pageUrl(ctx().request_id, "/index.html"), true), false), escape(createComponent(Show, {
     get when() {
       return !!heroHtml || (cfg().socials?.length ?? 0) > 0;
     },
@@ -3396,7 +3448,7 @@ var HomePage = (p3) => {
       return ssr(_tmpl$35, escape(createComponent(Show, {
         when: !!heroHtml,
         get children() {
-          return ssr(_tmpl$13, ssrAttribute("class", escape(APP_PROSE, true), false), heroHtml);
+          return ssr(_tmpl$14, ssrAttribute("class", escape(APP_PROSE, true), false), heroHtml);
         }
       })), escape(createComponent(Show, {
         get when() {
@@ -3450,15 +3502,30 @@ var HomePage = (p3) => {
         })
       })));
     }
-  })), escape(createComponent(LinkButton, {
-    get href() {
-      return pageUrl(ctx().request_id, POSTS_INDEX_URL);
+  })), escape(createComponent(Show, {
+    get when() {
+      return hasPosts();
+    },
+    get fallback() {
+      return createComponent(EmptyPostsGuide, {
+        get ctx() {
+          return ctx();
+        },
+        "class": "my-12"
+      });
     },
     get children() {
-      return [t2().home.allPosts, createComponent(Icon, {
-        svg: IconArrowRight_default,
-        "class": "inline-block rtl:-rotate-180"
-      })];
+      return ssr(_tmpl$62, escape(createComponent(LinkButton, {
+        get href() {
+          return pageUrl(ctx().request_id, POSTS_INDEX_URL);
+        },
+        get children() {
+          return [t2().home.allPosts, createComponent(Icon, {
+            svg: IconArrowRight_default,
+            "class": "inline-block rtl:-rotate-180"
+          })];
+        }
+      })));
     }
   }))), createComponent(Footer, {
     get ctx() {
@@ -3595,7 +3662,7 @@ function buildBreadcrumbSegments(ctx, t2, pageKey) {
 var IconChevronLeft_default = '<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-left"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 6l-6 6l6 6" /></svg>\n';
 
 // src/components/BackButton.tsx
-var _tmpl$14 = ['<span aria-hidden="true">', "</span>"];
+var _tmpl$15 = ['<span aria-hidden="true">', "</span>"];
 var _tmpl$28 = ["<span>", "</span>"];
 var _tmpl$36 = ['<div class="app-layout flex items-center justify-start">', "</div>"];
 function chevronMarkup() {
@@ -3617,13 +3684,13 @@ var BackButton = (props) => {
       return linkClass();
     },
     get children() {
-      return [ssr(_tmpl$14, chevronMarkup()), ssr(_tmpl$28, escape(t2().post.goBack))];
+      return [ssr(_tmpl$15, chevronMarkup()), ssr(_tmpl$28, escape(t2().post.goBack))];
     }
   })));
 };
 
 // src/components/Breadcrumb.tsx
-var _tmpl$15 = ['<nav class="app-layout mt-8 mb-4" aria-label="breadcrumb"><ul class="font-light flex flex-wrap items-center gap-x-1 [&amp;>li:not(:last-child)>a]:hover:opacity-100"><li class="inline-flex items-center gap-x-1"><a', ' class="opacity-80">', '</a><span aria-hidden="true" class="opacity-80">&raquo;</span></li>', "</ul></nav>"];
+var _tmpl$16 = ['<nav class="app-layout mt-8 mb-4" aria-label="breadcrumb"><ul class="font-light flex flex-wrap items-center gap-x-1 [&amp;>li:not(:last-child)>a]:hover:opacity-100"><li class="inline-flex items-center gap-x-1"><a', ' class="opacity-80">', '</a><span aria-hidden="true" class="opacity-80">&raquo;</span></li>', "</ul></nav>"];
 var _tmpl$29 = ["<a", ' class="capitalize opacity-70">', "</a>"];
 var _tmpl$37 = '<span aria-hidden="true" class="opacity-70">&raquo;</span>';
 var _tmpl$44 = ['<li class="inline-flex items-center gap-x-1">', "</li>"];
@@ -3638,7 +3705,7 @@ var Breadcrumb = (props) => {
       return show();
     },
     get children() {
-      return ssr(_tmpl$15, ssrAttribute("href", escape(pageUrl(props.ctx.request_id, "/index.html"), true), false), escape(t2().nav.home), escape(createComponent(For, {
+      return ssr(_tmpl$16, ssrAttribute("href", escape(pageUrl(props.ctx.request_id, "/index.html"), true), false), escape(t2().nav.home), escape(createComponent(For, {
         get each() {
           return segments();
         },
@@ -3659,11 +3726,11 @@ var Breadcrumb = (props) => {
 };
 
 // src/components/PageChrome.tsx
-var _tmpl$16 = ['<div data-vt-swap="page-chrome">', "", "</div>"];
+var _tmpl$17 = ['<div data-vt-swap="page-chrome">', "", "</div>"];
 var PageChrome = (props) => {
   const hasBreadcrumb = () => shouldShowBreadcrumb(props.ctx, props.pageKey);
   const hasBack = () => !!props.showBack;
-  return ssr(_tmpl$16, escape(createComponent(Show, {
+  return ssr(_tmpl$17, escape(createComponent(Show, {
     get when() {
       return hasBreadcrumb();
     },
@@ -3695,7 +3762,7 @@ var PageChrome = (props) => {
 };
 
 // src/components/Main.tsx
-var _tmpl$17 = ['<p class="text-muted-foreground mt-2 mb-6 italic">', "</p>"];
+var _tmpl$18 = ['<p class="text-muted-foreground mt-2 mb-6 italic">', "</p>"];
 var _tmpl$210 = ['<main id="main-content"', '><h1 class="text-2xl font-semibold sm:text-3xl">', "</h1>", "", "</main>"];
 var Main = (props) => {
   const [local] = splitProps(props, ["pageTitle", "pageDesc", "layout", "ctx", "pageKey", "class", "children"]);
@@ -3712,13 +3779,13 @@ var Main = (props) => {
       return local.pageDesc;
     },
     get children() {
-      return ssr(_tmpl$17, escape(local.pageDesc));
+      return ssr(_tmpl$18, escape(local.pageDesc));
     }
   })), escape(local.children));
 };
 
 // src/pages/about.tsx
-var _tmpl$18 = ['<p class="text-muted-foreground italic">', "</p>"];
+var _tmpl$19 = ['<p class="text-muted-foreground italic">', "</p>"];
 var _tmpl$211 = ["<div>", "</div>"];
 var AboutPage = (p3) => {
   const ctx = () => p3.props;
@@ -3755,7 +3822,7 @@ var AboutPage = (p3) => {
           return aboutDoc?.content_html;
         },
         get fallback() {
-          return ssr(_tmpl$18, escape(t2().pages.aboutEmpty));
+          return ssr(_tmpl$19, escape(t2().pages.aboutEmpty));
         },
         children: (html) => ssr(_tmpl$211, html())
       });
@@ -3771,12 +3838,12 @@ var AboutPage = (p3) => {
 };
 
 // src/components/Tag.tsx
-var _tmpl$19 = ["<li><a", ' class="text-accent decoration-dashed underline-offset-4 hover:underline">#', "", "</a></li>"];
+var _tmpl$20 = ["<li><a", ' class="text-accent decoration-dashed underline-offset-4 hover:underline">#', "", "</a></li>"];
 var _tmpl$212 = ['<sup class="text-muted-foreground ms-1 text-xs">', "</sup>"];
 var Tag = (props) => {
   const slug = () => encodeURIComponent(props.tag);
   const href = () => pageUrl(props.ctx.request_id, `/tags/${slug()}/index.html`);
-  return ssr(_tmpl$19, ssrAttribute("href", escape(href(), true), false), escape(props.tag), props.count != null && ssr(_tmpl$212, escape(props.count)));
+  return ssr(_tmpl$20, ssrAttribute("href", escape(href(), true), false), escape(props.tag), props.count != null && ssr(_tmpl$212, escape(props.count)));
 };
 
 // src/lib/postDetail.ts
@@ -3797,13 +3864,13 @@ function resolvePostDetail(ctx) {
 }
 
 // src/pages/post.tsx
-var _tmpl$20 = ['<main id="main-content" data-layout="post" class="', '">', "</main>"];
+var _tmpl$21 = ['<main id="main-content" data-layout="post" class="', '">', "</main>"];
 var _tmpl$213 = ['<div class="mt-auto"><nav class="app-layout mt-8 flex flex-col gap-6 border-t border-muted pt-4 pb-4 sm:flex-row sm:justify-between sm:gap-6">', "", "</nav></div>"];
 var _tmpl$38 = ['<div data-vt-swap="post-nav">', "</div>"];
 var _tmpl$45 = ['<h1 style="', '" class="text-foreground inline-block text-[1.8em] font-bold tracking-tight">', "</h1>"];
 var _tmpl$55 = ['<div class="flex flex-wrap items-center gap-x-2 gap-y-1"><span>', ':</span><ul class="flex flex-wrap gap-x-2 gap-y-1">', "</ul></div>"];
 var _tmpl$63 = ['<div class="text-muted-foreground mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm">', "", "</div>"];
-var _tmpl$72 = ['<article id="article"', ">", "</article>"];
+var _tmpl$73 = ['<article id="article"', ">", "</article>"];
 var _tmpl$82 = ['<span class="flex min-w-0 w-full flex-col gap-0.5 overflow-hidden"><span class="text-muted-foreground text-xs tracking-wide">', '</span><span class="flex min-w-0 gap-1.5 decoration-dashed underline-offset-4 group-hover/nav:underline"><span class="shrink-0" aria-hidden="true">\u2190</span><span class="min-w-0 truncate">', "</span></span></span>"];
 var _tmpl$92 = ['<span class="flex min-w-0 w-full flex-col items-end gap-0.5 overflow-hidden"><span class="text-muted-foreground text-xs tracking-wide">', '</span><span class="flex min-w-0 max-w-full gap-1.5 text-end decoration-dashed underline-offset-4 group-hover/nav:underline"><span class="min-w-0 truncate">', '</span><span class="shrink-0" aria-hidden="true">\u2192</span></span></span>'];
 var PostPage = (p3) => {
@@ -3840,7 +3907,7 @@ var PostPage = (p3) => {
     get showBack() {
       return showBack();
     }
-  }), ssr(_tmpl$20, `app-layout${padMainTop() ? " mt-8" : ""}`, escape(createComponent(Show, {
+  }), ssr(_tmpl$21, `app-layout${padMainTop() ? " mt-8" : ""}`, escape(createComponent(Show, {
     when: post,
     children: (item) => [ssr(_tmpl$45, "view-transition-name:" + escape(toTransitionName(item().title || item().slug), true), escape(item().title) || escape(item().slug)), ssr(_tmpl$63, escape(createComponent(Datetime, {
       get ctx() {
@@ -3870,7 +3937,7 @@ var PostPage = (p3) => {
           })
         })));
       }
-    }))), ssr(_tmpl$72, ssrAttribute("class", escape(APP_PROSE_POST, true), false), item().content_html ?? "")]
+    }))), ssr(_tmpl$73, ssrAttribute("class", escape(APP_PROSE_POST, true), false), item().content_html ?? "")]
   }))), ssr(_tmpl$38, escape(createComponent(Show, {
     when: prevPost || nextPost,
     get children() {
@@ -3927,7 +3994,7 @@ function paginationHref(base, targetPage) {
 var IconArrowLeft_default = '<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-left"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M5 12l6 6" /><path d="M5 12l6 -6" /></svg>';
 
 // src/components/Pagination.tsx
-var _tmpl$21 = ['<nav class="mt-auto mb-8 flex justify-center gap-4" role="navigation" aria-label="Pagination Navigation">', "", " / ", "", "</nav>"];
+var _tmpl$30 = ['<nav class="mt-auto mb-8 flex justify-center gap-4" role="navigation" aria-label="Pagination Navigation">', "", " / ", "", "</nav>"];
 var _tmpl$214 = ['<div data-vt-swap="pagination">', "</div>"];
 var Pagination = (props) => {
   const t2 = () => useTranslations(props.ctx.lang);
@@ -3938,7 +4005,7 @@ var Pagination = (props) => {
       return props.pageCount > 1;
     },
     get children() {
-      return ssr(_tmpl$21, escape(createComponent(LinkButton, {
+      return ssr(_tmpl$30, escape(createComponent(LinkButton, {
         get href() {
           return prevHref();
         },
@@ -3982,7 +4049,7 @@ var Pagination = (props) => {
 };
 
 // src/pages/posts-list.tsx
-var _tmpl$30 = ["<ul>", "</ul>"];
+var _tmpl$31 = ["<ul>", "</ul>"];
 var PostsListPage = (p3) => {
   const ctx = () => p3.props;
   const cfg = () => getPaperConfig(ctx());
@@ -4026,17 +4093,32 @@ var PostsListPage = (p3) => {
     },
     layout: "posts-list",
     get children() {
-      return ssr(_tmpl$30, escape(createComponent(For, {
-        get each() {
-          return items();
+      return createComponent(Show, {
+        get when() {
+          return all().total > 0;
         },
-        children: (post) => createComponent(Card, {
-          get ctx() {
-            return ctx();
-          },
-          post
-        })
-      })));
+        get fallback() {
+          return createComponent(EmptyPostsGuide, {
+            get ctx() {
+              return ctx();
+            },
+            "class": "mt-8"
+          });
+        },
+        get children() {
+          return ssr(_tmpl$31, escape(createComponent(For, {
+            get each() {
+              return items();
+            },
+            children: (post) => createComponent(Card, {
+              get ctx() {
+                return ctx();
+              },
+              post
+            })
+          })));
+        }
+      });
     }
   }), createComponent(Pagination, {
     get ctx() {
@@ -4063,7 +4145,7 @@ var PostsListPage = (p3) => {
 };
 
 // src/pages/tags-index.tsx
-var _tmpl$31 = ['<ul class="flex flex-wrap gap-6">', "</ul>"];
+var _tmpl$39 = ['<ul class="flex flex-wrap gap-6">', "</ul>"];
 var TagsIndexPage = (p3) => {
   const ctx = () => p3.props;
   const cfg = () => getPaperConfig(ctx());
@@ -4096,7 +4178,7 @@ var TagsIndexPage = (p3) => {
     },
     layout: "tags-index",
     get children() {
-      return ssr(_tmpl$31, escape(createComponent(For, {
+      return ssr(_tmpl$39, escape(createComponent(For, {
         get each() {
           return tagEntries();
         },
@@ -4120,7 +4202,7 @@ var TagsIndexPage = (p3) => {
 };
 
 // src/pages/tag-posts.tsx
-var _tmpl$39 = ["<ul>", "</ul>"];
+var _tmpl$40 = ["<ul>", "</ul>"];
 var TagPostsPage = (p3) => {
   const ctx = () => p3.props;
   const cfg = () => getPaperConfig(ctx());
@@ -4172,7 +4254,7 @@ var TagPostsPage = (p3) => {
     },
     layout: "tag-posts",
     get children() {
-      return ssr(_tmpl$39, escape(createComponent(For, {
+      return ssr(_tmpl$40, escape(createComponent(For, {
         get each() {
           return items();
         },
@@ -4225,7 +4307,7 @@ function postDate(post) {
 }
 
 // src/pages/archives.tsx
-var _tmpl$40 = ['<div><span class="text-2xl font-bold">', '</span><sup class="text-muted-foreground text-sm">', "</sup>", "</div>"];
+var _tmpl$41 = ['<div><span class="text-2xl font-bold">', '</span><sup class="text-muted-foreground text-sm">', "</sup>", "</div>"];
 var _tmpl$215 = ['<div class="flex flex-col sm:flex-row"><div class="mt-6 min-w-36 text-lg sm:my-6"><span class="font-bold">', '</span><sup class="text-muted-foreground text-xs">', "</sup></div><ul>", "</ul></div>"];
 function groupByYearMonth(posts) {
   var _a;
@@ -4285,7 +4367,7 @@ var ArchivesPage = (p3) => {
         children: (year) => {
           const months = Object.keys(grouped()[year]).sort((a, b2) => Number(b2) - Number(a));
           const yearCount = months.reduce((sum, m3) => sum + grouped()[year][m3].length, 0);
-          return ssr(_tmpl$40, escape(year), escape(yearCount), escape(createComponent(For, {
+          return ssr(_tmpl$41, escape(year), escape(yearCount), escape(createComponent(For, {
             each: months,
             children: (month) => {
               const monthPosts = [...grouped()[year][month]].sort((a, b2) => postTimestampSeconds(b2) - postTimestampSeconds(a));

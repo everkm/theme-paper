@@ -20,6 +20,10 @@ const SOCIAL_ICON_MAP: Record<string, string> = {
   twitter: xSvg,
 };
 
-export function getSocialIcon(name: string): string | undefined {
-  return SOCIAL_ICON_MAP[name.toLowerCase().trim()];
+/** 查图标；`name` 缺失或非字符串时返回 undefined，不抛错。 */
+export function getSocialIcon(name: unknown): string | undefined {
+  if (typeof name !== "string") return undefined;
+  const key = name.trim().toLowerCase();
+  if (!key) return undefined;
+  return SOCIAL_ICON_MAP[key];
 }

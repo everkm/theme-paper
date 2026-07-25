@@ -29,6 +29,10 @@ export const en = {
     featured: "Featured",
     recentPosts: "Recent Posts",
     allPosts: "All Posts",
+    emptyPostsTitle: "No posts yet",
+    emptyPostsDesc:
+      "This site has no posts yet. Visit the Paper Theme site to learn how to set up and start writing.",
+    emptyPostsCta: "Visit Paper Theme",
   },
   pages: {
     tagTitle: "Tag",

@@ -31,6 +31,10 @@ export const zh: UIStrings = {
     featured: "精选",
     recentPosts: "最近文章",
     allPosts: "全部文章",
+    emptyPostsTitle: "还没有文章",
+    emptyPostsDesc:
+      "当前站点暂无内容。可前往 Paper Theme 官网了解主题用法与配置。",
+    emptyPostsCta: "前往官网了解",
   },
   pages: {
     tagTitle: "标签",

@@ -1,4 +1,4 @@
-import { Component, For } from "solid-js";
+import { Component, For, Show } from "solid-js";
 import { getPaperConfig } from "../lib/config";
 import { useTranslations } from "../lib/i18n";
 import { POSTS_CONTENT_DIR, POSTS_PATH } from "../lib/postsPath";
@@ -8,6 +8,7 @@ import { Footer } from "../components/Footer";
 import { PageChrome } from "../components/PageChrome";
 import { Main } from "../components/Main";
 import { Card } from "../components/Card";
+import { EmptyPostsGuide } from "../components/EmptyPostsGuide";
 import { Pagination } from "../components/Pagination";
 
 type PostsListPageProps = {
@@ -53,9 +54,16 @@ export const PostsListPage: Component<PostsListPageProps> = (p) => {
         pageDesc={t().pages.postsDesc}
         layout="posts-list"
       >
-        <ul>
-          <For each={items()}>{(post) => <Card ctx={ctx()} post={post} />}</For>
-        </ul>
+        <Show
+          when={all().total > 0}
+          fallback={<EmptyPostsGuide ctx={ctx()} class="mt-8" />}
+        >
+          <ul>
+            <For each={items()}>
+              {(post) => <Card ctx={ctx()} post={post} />}
+            </For>
+          </ul>
+        </Show>
       </Main>
       <Pagination
         ctx={ctx()}

@@ -95,6 +95,26 @@ function normalizeHeaderNav(items: unknown): HeaderNavItem[] {
   );
 }
 
+type SocialLink = { name: string; url: string };
+
+/**
+ * `name` / `title` 可互为降级；缺 label 或 url 的项直接忽略，不抛错。
+ */
+function normalizeSocials(items: unknown): SocialLink[] {
+  const out: SocialLink[] = [];
+  for (const raw of asArray<Record<string, unknown>>(items)) {
+    if (raw == null || typeof raw !== "object") continue;
+    const label =
+      (typeof raw.name === "string" && raw.name.trim()) ||
+      (typeof raw.title === "string" && raw.title.trim()) ||
+      "";
+    const url = typeof raw.url === "string" ? raw.url.trim() : "";
+    if (!label || !url) continue;
+    out.push({ name: label, url });
+  }
+  return out;
+}
+
 /**
  * Theme config from `everkm.config` (i18n-materialized).
  * Do not read `ctx.config` directly.
@@ -115,8 +135,10 @@ export function getPaperConfig(ctx: PageContext): PaperConfig {
     header_nav: normalizeHeaderNav(
       configValue(id, "header_nav", DEFAULTS.header_nav),
     ),
-    socials: asArray(configValue(id, "socials", DEFAULTS.socials)),
-    share_links: asArray(configValue(id, "share_links", DEFAULTS.share_links)),
+    socials: normalizeSocials(configValue(id, "socials", DEFAULTS.socials)),
+    share_links: normalizeSocials(
+      configValue(id, "share_links", DEFAULTS.share_links),
+    ),
     copyright: (() => {
       const raw = configValue(id, "copyright", null);
       if (raw == null) return undefined;
