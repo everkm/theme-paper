@@ -38,6 +38,20 @@
   scroll-margin-block: 1rem;
 }
 
+/* Search __hlts keyword highlight (mark.js) */
+mark.keyword-hlt,
+mark[data-markjs] {
+  background-color: #ffe58f;
+  color: inherit;
+  border-radius: 0.15em;
+}
+
+[data-theme="dark"] mark.keyword-hlt,
+[data-theme="dark"] mark[data-markjs] {
+  background-color: #9a6700;
+  color: inherit;
+}
+
 /* AJAX / View Transition navigation progress */
 .paper-nav-progress {
   position: fixed;

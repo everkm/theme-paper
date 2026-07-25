@@ -5,6 +5,7 @@ import {
 } from "./clientMounts";
 import { carryThemeColorTo, installTheme } from "./theme";
 import { installFootnoteBackButton } from "./footnote";
+import { installKeywordHighlighter } from "./keywordHighlighter";
 import { updateActiveNav } from "./activeNav";
 import { syncBackUrlFromPage, updateBackButton } from "./backButton";
 import { installLazyImg } from "./widgets/image-lazy";
@@ -308,6 +309,7 @@ export function bootClient(): void {
   updateActiveNav();
   mountClientBlocks();
   installFootnoteBackButton("#article");
+  installKeywordHighlighter("#main-content");
   installLazyImg("#main-content");
   installDcardUse("#main-content");
   installViewTransitions();
