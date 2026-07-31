@@ -3,7 +3,7 @@ id: 1784862019953
 title: Theme Configuration
 slug: readme
 created_at: 2026-06-28T00:00:00Z
-updated_at: 2026-07-25T07:32:07+08:00
+updated_at: 2026-07-31T11:48:28+08:00
 tags:
   - featured
 ---
@@ -195,13 +195,13 @@ config:
 
 ---
 
-## Search `algolia_search`
+## Search `algolia`
 
 When configured, the Algolia full-text search component appears in the header (requires `plugin-in-search` build artifacts).
 
 ```yaml
 config:
-  algolia_search:
+  algolia:
     app_id: YOUR_APP_ID
     api_key: YOUR_SEARCH_API_KEY
     index_name: your_index

@@ -3,7 +3,7 @@ id: 1784862019958
 title: 主题配置
 slug: readme
 created_at: 2026-06-28T00:00:00Z
-updated_at: 2026-07-25T07:32:07+08:00
+updated_at: 2026-07-31T11:48:28+08:00
 tags:
   - featured
 ---
@@ -195,13 +195,13 @@ config:
 
 ---
 
-## 搜索 `algolia_search`
+## 搜索 `algolia`
 
 配置后，Algolia 全文搜索组件会出现在页眉（需要 `plugin-in-search` 构建产物）。
 
 ```yaml
 config:
-  algolia_search:
+  algolia:
     app_id: YOUR_APP_ID
     api_key: YOUR_SEARCH_API_KEY
     index_name: your_index

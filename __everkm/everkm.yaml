@@ -17,7 +17,7 @@ config:
         zh: https://everkm.cn/
       at_before: true
 
-  algolia_search:
+  algolia:
     app_id: 1N74YC70XF
     api_key: 95bb37e3122ee9cb57a8ee0abbd14409
     index_name: yilog

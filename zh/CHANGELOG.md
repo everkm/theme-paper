@@ -3,7 +3,7 @@ id: 1784862019957
 title: 更新日志
 slug: changelog
 created_at: 2026-06-28T00:00:00Z
-updated_at: 2026-07-25T19:59:55+08:00
+updated_at: 2026-07-31T11:49:55+08:00
 tags:
   - featured
 ---
@@ -16,6 +16,12 @@ tags:
 - 版本号后的日期为发布日期
 - 未指定新版本时，将条目追加到最新版本下
 
+
+## v0.1.3 (2026-07-31)
+
+**改进**
+
+- 搜索配置 key 由 `algolia_search` 更名为 `algolia`
 
 ## v0.1.2 (2026-07-25)
 
@@ -77,7 +83,7 @@ tags:
   - 深色模式切换，偏好保存在 localStorage
   - View Transitions 实现站内平滑导航
   - 导航时恢复滚动位置（页面顶部或锚点目标）
-  - 配置 `algolia_search` 后，通过 `plugin-in-search` 在顶部提供 Algolia 全文搜索
+  - 配置 `algolia` 后，通过 `plugin-in-search` 在顶部提供 Algolia 全文搜索
   - 可选的归档按钮与文章页返回按钮
 
 - **渲染**

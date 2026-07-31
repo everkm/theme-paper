@@ -3,7 +3,7 @@ id: 1784862019960
 title: "Paper 入门指南"
 description: 如何在 everkm-publish 中使用 Paper 主题。
 created_at: 2026-06-27T10:00:00Z
-updated_at: 2026-07-24T10:27:58+08:00
+updated_at: 2026-07-31T11:48:28+08:00
 tags:
   - guide
 ---
@@ -61,7 +61,7 @@ export function hello(name) {
 | --- | --- |
 | 深色模式 | ✅ |
 | View Transitions | ✅ |
-| Algolia 搜索 | ✅（需配置 `algolia_search`） |
+| Algolia 搜索 | ✅（需配置 `algolia`） |
 
 - 无序列表项
 - 另一项，含 **粗体** 与 _斜体_

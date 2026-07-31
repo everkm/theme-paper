@@ -3101,10 +3101,10 @@ var Header = (props) => {
     id: "menu-icon"
   })), escape(createComponent(Show, {
     get when() {
-      return configValue(props.ctx.request_id, "algolia_search", null);
+      return configValue(props.ctx.request_id, "algolia", null);
     },
     get children() {
-      return ssr(_tmpl$32, ssrAttribute("app-id", escape(String(configValue(props.ctx.request_id, "algolia_search/app_id", "")), true), false) + ssrAttribute("api-key", escape(String(configValue(props.ctx.request_id, "algolia_search/api_key", "")), true), false) + ssrAttribute("index", escape(String(configValue(props.ctx.request_id, "algolia_search/index_name", "")), true), false) + ssrAttribute("site", escape(String(configValue(props.ctx.request_id, "algolia_search/site", "")), true), false));
+      return ssr(_tmpl$32, ssrAttribute("app-id", escape(String(configValue(props.ctx.request_id, "algolia/app_id", "")), true), false) + ssrAttribute("api-key", escape(String(configValue(props.ctx.request_id, "algolia/api_key", "")), true), false) + ssrAttribute("index", escape(String(configValue(props.ctx.request_id, "algolia/index_name", "")), true), false) + ssrAttribute("site", escape(String(configValue(props.ctx.request_id, "algolia/site", "")), true), false));
     }
   })), escape(createComponent(For, {
     get each() {
@@ -4521,7 +4521,7 @@ async function renderPage(compName, props) {
     type: "css",
     section: "paper"
   }) || "";
-  const cssSearch = configValue(props.request_id, "algolia_search", null) ? everkm.assets(props.request_id, {
+  const cssSearch = configValue(props.request_id, "algolia", null) ? everkm.assets(props.request_id, {
     type: "css",
     section: "plugin-in-search"
   }) || "" : "";
@@ -4529,7 +4529,7 @@ async function renderPage(compName, props) {
     type: "js",
     section: "paper"
   }) || "";
-  const jsSearch = configValue(props.request_id, "algolia_search", null) ? everkm.assets(props.request_id, {
+  const jsSearch = configValue(props.request_id, "algolia", null) ? everkm.assets(props.request_id, {
     type: "js",
     section: "plugin-in-search"
   }) || "" : "";

@@ -3,7 +3,7 @@ id: 1784862019952
 title: Changelog
 slug: changelog
 created_at: 2026-06-28T00:00:00Z
-updated_at: 2026-07-25T19:59:55+08:00
+updated_at: 2026-07-31T11:49:55+08:00
 tags:
   - featured
 ---
@@ -15,6 +15,12 @@ This changelog is for end users. Keep the wording user-friendly and avoid exposi
 - The date in parentheses after the version number is the release date
 - When no new version is specified, append entries under the latest version
 
+
+## v0.1.3 (2026-07-31)
+
+**Improvements**
+
+- Search config key renamed from `algolia_search` to `algolia`
 
 ## v0.1.2 (2026-07-25)
 
@@ -76,7 +82,7 @@ This changelog is for end users. Keep the wording user-friendly and avoid exposi
   - Dark mode toggle with localStorage persistence
   - View Transitions for smooth in-site navigation
   - View Transitions restore scroll position on navigation (top of page, or hash target)
-  - Algolia full-text search in the header via `plugin-in-search` (when `algolia_search` is configured)
+  - Algolia full-text search in the header via `plugin-in-search` (when `algolia` is configured)
   - Optional archives button and back button on post pages
 
 - **Rendering**

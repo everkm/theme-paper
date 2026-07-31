@@ -2,7 +2,7 @@ const MISSING = Symbol("configDefaultMissing");
 
 /**
  * Read config via `everkm.config` (materialized / i18n-resolved tree).
- * Path uses `/` separators (e.g. `algolia_search/app_id`).
+ * Path uses `/` separators (e.g. `algolia/app_id`).
  * Always pass `defaultValue` for optional keys — missing keys throw without it.
  */
 export function configValue(

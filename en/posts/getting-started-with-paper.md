@@ -3,7 +3,7 @@ id: 1784862019956
 title: "Getting Started with Paper"
 description: How to use Paper Theme with everkm-publish.
 created_at: 2026-06-27T10:00:00Z
-updated_at: 2026-07-24T10:31:14+08:00
+updated_at: 2026-07-31T11:48:28+08:00
 tags:
   - guide
 ---
@@ -61,7 +61,7 @@ export function hello(name) {
 | --- | --- |
 | Dark mode | ✅ |
 | View Transitions | ✅ |
-| Algolia search | ✅ (with `algolia_search` config) |
+| Algolia search | ✅ (with `algolia` config) |
 
 - Unordered list item
 - Another item with **bold** and _italic_

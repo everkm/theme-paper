@@ -68,7 +68,7 @@ async function renderPage(compName: string, props: PageContext) {
 
   const cssPaper =
     everkm.assets(props.request_id, { type: "css", section: "paper" }) || "";
-  const cssSearch = configValue(props.request_id, "algolia_search", null)
+  const cssSearch = configValue(props.request_id, "algolia", null)
     ? everkm.assets(props.request_id, {
         type: "css",
         section: "plugin-in-search",
@@ -76,7 +76,7 @@ async function renderPage(compName: string, props: PageContext) {
     : "";
   const jsPaper =
     everkm.assets(props.request_id, { type: "js", section: "paper" }) || "";
-  const jsSearch = configValue(props.request_id, "algolia_search", null)
+  const jsSearch = configValue(props.request_id, "algolia", null)
     ? everkm.assets(props.request_id, {
         type: "js",
         section: "plugin-in-search",
