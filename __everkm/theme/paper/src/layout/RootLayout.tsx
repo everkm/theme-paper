@@ -53,12 +53,11 @@ export const RootLayout: ParentComponent<RootLayoutProps> = (props) => {
           name="theme"
           content={`${ctx().theme_name}@${ctx().theme_version}`}
         />
-        <link
+        {/* <link
           rel="icon"
           type="image/svg+xml"
           href={assetUrl(ctx().request_id, "/assets/favicon.svg")}
-        />
-        <meta name="theme-color" content="" />
+        /> */}
         <script innerHTML={FOUC_SCRIPT} />
         <script
           innerHTML={`
